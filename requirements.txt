@@ -1,0 +1,27 @@
+# --- Thư viện tiền xử lý và xử lý dữ liệu cơ bản ---
+pandas
+numpy
+openpyxl
+tabulate
+pyarrow
+requests
+jsonschema
+
+# --- Lưu trữ dữ liệu và Vector Search (Database & Vector Store) ---
+duckdb                     # Cơ sở dữ liệu phân tích nhúng cho các truy vấn SQL hiệu năng cao
+qdrant-client              # Client kết nối với Vector Database Qdrant (đã cấu hình trong .env)
+
+# --- Xây dựng RAG và Orchestrator (LangChain & LLM APIs) ---
+langchain                  # Framework phát triển ứng dụng LLM / Agent
+langchain-core             # Các giao diện trừu tượng cốt lõi của LangChain
+langchain-community        # Các tích hợp cộng đồng của LangChain (vectorstores, document loaders, v.v.)
+openai                     # Thư viện client gọi API OpenAI (GPT-4o, GPT-3.5)
+google-generativeai        # Thư viện client gọi API Google Gemini
+python-dotenv              # Đọc cấu hình API Keys và DB connection từ file .env
+pydantic>=2.0              # Xác thực dữ liệu, định nghĩa cấu trúc dữ liệu đầu ra cho LLM
+
+# --- Mô hình cục bộ & Embeddings (Local Models & Embeddings) ---
+sentence-transformers      # Tạo embeddings cục bộ bằng các mô hình HuggingFace (ví dụ: bge-m3, phobert)
+
+# --- Đánh giá hệ thống RAG (RAG Evaluation) ---
+ragas                      # Thư viện đánh giá hệ thống RAG (Faithfulness, Answer Relevance, Context Recall, v.v.)

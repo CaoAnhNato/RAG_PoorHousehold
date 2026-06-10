@@ -1,0 +1,22 @@
+{
+  "qdrant_url": "http://localhost:6333",
+  "collection_name": "query_control_semantic",
+  "embedding_model": "intfloat/multilingual-e5-small",
+  "distance": "Cosine",
+  "vector_name": "text",
+  "recreate_collection": false,
+  "top_k": 8,
+  "score_threshold": 0.35,
+  "payload_indexes": [
+    "doc_type",
+    "semantic_id",
+    "status",
+    "base_table"
+  ],
+  "doc_types": [
+    "metric_definition",
+    "dimension_definition",
+    "business_term",
+    "query_example"
+  ]
+}

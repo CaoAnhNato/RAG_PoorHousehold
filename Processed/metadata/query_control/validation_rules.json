@@ -1,0 +1,48 @@
+{
+  "qdrant_index_rules": [
+    "Only semantic_layer objects, metric definitions, dimension definitions, query examples, and business terms are embedded",
+    "No raw household rows are embedded",
+    "No Excel files are embedded as documents",
+    "Every Qdrant point must have doc_type, semantic_id, text, and status in payload",
+    "Collection vector size must match embedding model dimension",
+    "Collection must not be recreated unless --recreate flag is provided"
+  ],
+  "retrieval_rules": [
+    "Retriever must group candidates by doc_type",
+    "Retriever must prefer status=ready",
+    "Retriever must return LOW_RETRIEVAL_CONFIDENCE if top scores are below threshold",
+    "Planner prompt must only receive compact candidates, not the full schema"
+  ],
+  "domain_gate_rules": [
+    "Every user question must be routed before planning",
+    "Dataset numeric/statistical questions must route to DATASET_QA",
+    "Definition/explanation questions must route to GENERAL_KNOWLEDGE unless they request dataset numbers",
+    "Mixed explanation and data questions should route to HYBRID",
+    "Unrelated questions should route to OUT_OF_SCOPE",
+    "Low confidence questions should route to CLARIFICATION_NEEDED"
+  ],
+  "query_plan_rules": [
+    "task_type must be one of allowed enum",
+    "metrics must be non-empty for aggregate_query, topk_query, comparison_query",
+    "metrics must exist in semantic_layer and status must be ready",
+    "dimensions must exist in semantic_layer and status must be ready",
+    "filters must reference valid dimensions or measures",
+    "detail_query must have limit",
+    "topk_query must have sort and limit",
+    "output_type must be text or table"
+  ],
+  "sql_rules": [
+    "SQL must start with SELECT",
+    "SQL must not contain INSERT, UPDATE, DELETE, DROP, ALTER, TRUNCATE",
+    "SQL must not contain SELECT * unless explicitly allowed",
+    "Aggregate query with dimensions must contain GROUP BY",
+    "topk_query must contain ORDER BY and LIMIT",
+    "All referenced columns must exist in schema_graph"
+  ],
+  "answer_rules": [
+    "Dataset answers must only use query results",
+    "General answers must not invent dataset numbers",
+    "Out-of-scope answers must be short and polite",
+    "Clarification answers must provide concrete options"
+  ]
+}

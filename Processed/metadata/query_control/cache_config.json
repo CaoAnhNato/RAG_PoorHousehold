@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "cache_dir": "Runtime/cache",
+  "enabled": true,
+  "ttl_seconds": 86400,
+  "max_entries": 1000,
+  "cache_layers": {
+    "query_plan_cache": true,
+    "sql_result_cache": true,
+    "final_answer_cache": false
+  },
+  "hash_fields": [
+    "task_type",
+    "metrics",
+    "dimensions",
+    "filters",
+    "sort",
+    "limit",
+    "output_type"
+  ],
+  "invalidate_on_data_rebuild": true
+}

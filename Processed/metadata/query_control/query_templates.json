@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "templates": {
+    "aggregate_query": "SELECT {select_expr} FROM {table} {join_clause} {where_clause} {group_by_clause} {order_by_clause} {limit_clause}",
+    "detail_query": "SELECT {select_expr} FROM {table} {join_clause} {where_clause} {order_by_clause} {limit_clause}",
+    "comparison_query": "SELECT {select_expr} FROM {table} {join_clause} {where_clause} {group_by_clause} {order_by_clause} {limit_clause}",
+    "topk_query": "SELECT {select_expr} FROM {table} {join_clause} {where_clause} {group_by_clause} {order_by_clause} {limit_clause}"
+  }
+}

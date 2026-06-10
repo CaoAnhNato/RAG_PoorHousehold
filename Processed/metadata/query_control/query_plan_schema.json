@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "required": ["task_type", "metrics", "dimensions", "filters", "output_type"],
+  "properties": {
+    "task_type": {
+      "enum": [
+        "aggregate_query",
+        "detail_query",
+        "comparison_query",
+        "topk_query",
+        "unknown"
+      ]
+    },
+    "metrics": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "dimensions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "filters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["field", "operator", "value"],
+        "properties": {
+          "field": {"type": "string"},
+          "operator": {
+            "enum": ["=", "!=", ">", ">=", "<", "<=", "IN", "BETWEEN", "LIKE"]
+          },
+          "value": {}
+        }
+      }
+    },
+    "sort": {
+      "type": ["object", "null"],
+      "properties": {
+        "field": {"type": "string"},
+        "direction": {"enum": ["asc", "desc"]}
+      }
+    },
+    "limit": {
+      "type": ["integer", "null"]
+    },
+    "output_type": {
+      "enum": ["text", "table"]
+    },
+    "ambiguities": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

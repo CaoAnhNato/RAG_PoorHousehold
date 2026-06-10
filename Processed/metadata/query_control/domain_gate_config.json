@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "routing_labels": [
+    "DATASET_QA",
+    "GENERAL_KNOWLEDGE",
+    "HYBRID",
+    "CLARIFICATION_NEEDED",
+    "OUT_OF_SCOPE"
+  ],
+  "confidence_thresholds": {
+    "accept": 0.75,
+    "clarify": 0.45
+  }
+}

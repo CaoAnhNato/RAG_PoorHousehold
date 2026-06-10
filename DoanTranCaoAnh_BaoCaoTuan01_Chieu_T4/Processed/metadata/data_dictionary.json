@@ -1,0 +1,362 @@
+{
+  "date": {
+    "type": "string",
+    "scope": "original",
+    "description": "Ngày rà soát theo định dạng dd/mm/yyyy"
+  },
+  "family.hostName": {
+    "type": "string",
+    "scope": "original",
+    "description": "Chủ hộ"
+  },
+  "family.code": {
+    "type": "string",
+    "scope": "original",
+    "description": "Mã hộ sau khi xử lý duplicate"
+  },
+  "family.coDanTocTaiCho": {
+    "type": "string",
+    "scope": "original",
+    "description": "Có/Không về dân tộc tại chỗ"
+  },
+  "family.hostGender": {
+    "type": "string",
+    "scope": "original",
+    "description": "Giới tính chủ hộ"
+  },
+  "family.numberOfMembers": {
+    "type": "integer",
+    "scope": "original",
+    "description": "Số nhân khẩu"
+  },
+  "quickReview.result": {
+    "type": "string",
+    "scope": "original",
+    "description": "Kết quả phiếu rà soát nhanh"
+  },
+  "b1Point": {
+    "type": "string",
+    "scope": "original",
+    "description": "Điểm phiếu B1"
+  },
+  "b2Point": {
+    "type": "string",
+    "scope": "original",
+    "description": "Điểm phiếu B2"
+  },
+  "classify": {
+    "type": "string",
+    "scope": "original",
+    "description": "Phân loại hộ"
+  },
+  "reviewer": {
+    "type": "string",
+    "scope": "original",
+    "description": "Người rà soát"
+  },
+  "processing.original_family_code": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Mã hộ gốc trước khi thêm hậu tố"
+  },
+  "processing.family_code_was_changed": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Mã hộ có được đổi hậu tố hay không"
+  },
+  "processing.duplicate_core_removed": {
+    "type": "boolean",
+    "scope": "derived",
+    "description": "Dòng thuộc nhóm có duplicate lõi đã bị loại bớt"
+  },
+  "processing.duplicate_code_group_size": {
+    "type": "integer",
+    "scope": "derived",
+    "description": "Kích thước nhóm mã hộ trùng"
+  },
+  "processing.note": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Ghi chú xử lý"
+  },
+  "processing.original_date": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Giá trị date gốc"
+  },
+  "processing.date_was_normalized": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Đã chuẩn hóa ngày hay chưa"
+  },
+  "administrative.year": {
+    "type": "integer",
+    "scope": "derived",
+    "description": "Năm dữ liệu"
+  },
+  "administrative.province": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Tỉnh"
+  },
+  "administrative.district": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Huyện/thành phố"
+  },
+  "administrative.commune": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Xã/phường/thị trấn"
+  },
+  "administrative.village_or_group": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Thôn/bon/tổ dân phố"
+  },
+  "family.isDTTC": {
+    "type": "boolean",
+    "scope": "derived",
+    "description": "Có dân tộc tại chỗ"
+  },
+  "family.hostBirthDate": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Ngày sinh chủ hộ"
+  },
+  "family.hostBirthYear": {
+    "type": "integer",
+    "scope": "generated",
+    "description": "Năm sinh chủ hộ"
+  },
+  "family.ethnicity": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Dân tộc chủ hộ"
+  },
+  "family.isDTTS": {
+    "type": "boolean",
+    "scope": "derived",
+    "description": "Hộ DTTS"
+  },
+  "family.isKinh": {
+    "type": "boolean",
+    "scope": "derived",
+    "description": "Hộ Kinh"
+  },
+  "family.hasNoLaborCapacity": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Hộ không có khả năng lao động"
+  },
+  "family.hasRevolutionMeritPolicy": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Hộ có chính sách người có công"
+  },
+  "family.povertyStatusDetail": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Trạng thái nghèo chi tiết"
+  },
+  "family.nearPovertyStatusDetail": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Trạng thái cận nghèo chi tiết"
+  },
+  "family.isAgricultureForestryFisherySaltMediumLivingStandard": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Hộ có mức sống trung bình"
+  },
+  "deprivation.totalCount": {
+    "type": "integer",
+    "scope": "derived",
+    "description": "Tổng số chỉ số thiếu hụt"
+  },
+  "children.totalCount": {
+    "type": "integer",
+    "scope": "derived",
+    "description": "Tổng số trẻ em"
+  },
+  "children.lackHealthInsuranceCount": {
+    "type": "integer",
+    "scope": "derived",
+    "description": "Số trẻ thiếu BHYT"
+  },
+  "children.nutritionDeprivedCount": {
+    "type": "integer",
+    "scope": "derived",
+    "description": "Số trẻ thiếu dinh dưỡng"
+  },
+  "children.schoolAttendanceDeprivedCount": {
+    "type": "integer",
+    "scope": "derived",
+    "description": "Số trẻ thiếu đi học"
+  },
+  "transition.beginningClassify": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Phân loại đầu kỳ"
+  },
+  "transition.endingClassify": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Phân loại cuối kỳ"
+  },
+  "transition.poorChangeType": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Kiểu biến động hộ nghèo"
+  },
+  "transition.nearPoorChangeType": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Kiểu biến động hộ cận nghèo"
+  },
+  "family.membersGenerated": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Đã sinh member file"
+  },
+  "family.membersFile": {
+    "type": "string",
+    "scope": "generated",
+    "description": "Đường dẫn file member"
+  },
+  "family.membersJson": {
+    "type": "string",
+    "scope": "generated",
+    "description": "JSON danh sách thành viên"
+  },
+  "support.health": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Hỗ trợ y tế"
+  },
+  "support.education": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Hỗ trợ giáo dục"
+  },
+  "support.production": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Hỗ trợ sản xuất"
+  },
+  "support.credit": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Hỗ trợ tín dụng"
+  },
+  "support.housing": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Hỗ trợ nhà ở"
+  },
+  "support.other": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Hỗ trợ khác"
+  },
+  "deprivation.employment": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.dependentPerson": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.nutrition": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.healthInsurance": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.adultEducation": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.childSchoolAttendance": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.housingQuality": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.housingArea": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.cleanWater": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.hygienicToilet": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.telecommunication": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.informationAccessAssets": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "reason.lackProductionLand": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.lackCapital": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.lackLabor": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.lackProductionTools": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.lackProductionKnowledge": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.lackLaborSkill": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.illnessOrAccident": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.other": {
+    "type": "boolean",
+    "scope": "generated",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  }
+}

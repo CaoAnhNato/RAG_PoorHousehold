@@ -1,0 +1,106 @@
+# ============================================================
+# .gitignore - Dự án Chatbot Q&A Rà soát Hộ Nghèo Đắk Nông
+# ============================================================
+
+# --- Môi trường Python ---
+venv/
+.venv/
+env/
+.env/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# --- Biến môi trường & Cấu hình bí mật ---
+.env
+.env.*
+*.env
+secrets.json
+
+# --- File tài liệu Word/Excel thô (kích thước lớn) ---
+*.docx
+*.xlsx
+*.xls
+*.pptx
+*.pdf
+
+# --- File YAML / Docker ---
+*.yml
+*.yaml
+docker-compose.yml
+docker-compose*.yml
+Dockerfile*
+
+# --- Dữ liệu thô đầu vào (kích thước lớn) ---
+2023/
+2024/
+Format_Report/
+Doanh*/
+
+# --- Thư mục Runtime (dữ liệu động, cache, DB) ---
+Runtime/
+qdrant_storage/
+
+# --- Scratch (file tạm thời, phân tích debug) ---
+scratch/
+
+# --- Thư mục AI Agent config ---
+.agents/
+
+# --- Thư mục test tạm ---
+test/
+
+# --- Thư mục Report (file HTML lớn tạm) ---
+report/
+
+# --- Log và trace files ---
+*.log
+*.jsonl
+Processed/logs/
+Runtime/logs/
+Runtime/traces/
+Runtime/cache/
+Runtime/conversations/
+
+# --- DuckDB database file ---
+*.duckdb
+*.duckdb.wal
+Runtime/duckdb/
+
+# --- Parquet data files ---
+Runtime/parquet/
+*.parquet
+
+# --- EDA Notebooks output ---
+EDA/*.html
+EDA/.ipynb_checkpoints/
+
+# --- IDE & Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+desktop.ini
+Thumbs.db
+
+# --- Debug scripts tạm thời ở root ---
+debug_eval_failures.py
+
+# --- pycache và compiled ---
+**/__pycache__/
+**/*.pyc
+
+# --- Evaluation results (tự sinh, không cần track) ---
+Evaluation/golden_questions/evaluation_results.jsonl
+Evaluation/golden_questions/evaluation_report.md
+
+# --- Gemini/AI agent internal ---
+.gemini/

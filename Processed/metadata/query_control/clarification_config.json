@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "max_options": 4,
+  "default_questions": {
+    "missing_metric": "Bạn muốn xem chỉ số nào: số hộ nghèo, số hộ cận nghèo, điểm B1 trung bình hay điểm B2 trung bình?",
+    "missing_dimension": "Bạn muốn xem kết quả theo năm, huyện hay xã?",
+    "missing_time": "Bạn muốn xem dữ liệu năm 2023, năm 2024 hay cả hai năm?",
+    "low_retrieval_confidence": "Mình chưa xác định chắc chỉ số cần truy vấn. Bạn muốn hỏi về hộ nghèo, hộ cận nghèo, điểm B1/B2 hay nhân khẩu?",
+    "ambiguous_route": "Bạn muốn truy vấn số liệu trong dataset hay hỏi giải thích kiến thức chung?"
+  }
+}

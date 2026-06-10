@@ -1,0 +1,550 @@
+[
+  {
+    "report_id": 1,
+    "report_name": "TỔNG HỢP KẾT QUẢ CHÍNH THỨC RÀ SOÁT HỘ NGHÈO; HỘ CẬN NGHÈO; HỘ LÀM NÔNG, LÂM, NGƯ NGHIỆP CÓ MỨC SỐNG TRUNG BÌNH",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:P90",
+    "header_rows": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "main_groups": [
+      "Tổng hợp theo huyện",
+      "Địa bàn xã/phường/thị trấn"
+    ],
+    "required_columns": [
+      "administrative.province",
+      "administrative.district",
+      "administrative.commune",
+      "family.isAgricultureForestryFisherySaltMediumLivingStandard",
+      "classify"
+    ],
+    "column_notes": {
+      "family.isAgricultureForestryFisherySaltMediumLivingStandard": "aggregate count / flag",
+      "classify": "grouping label"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 2,
+    "report_name": "TỔNG HỢP DIỄN BIẾN HỘ NGHÈO",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:L167",
+    "header_rows": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "main_groups": [
+      "Biến động hộ nghèo",
+      "Đầu kỳ / cuối kỳ"
+    ],
+    "required_columns": [
+      "transition.beginningClassify",
+      "transition.endingClassify",
+      "transition.poorChangeType",
+      "classify",
+      "administrative.district",
+      "administrative.commune"
+    ],
+    "column_notes": {
+      "transition.beginningClassify": "detail list / aggregate count",
+      "transition.endingClassify": "detail list / aggregate count",
+      "transition.poorChangeType": "aggregate count"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 3,
+    "report_name": "TỔNG HỢP DIỄN BIẾN HỘ CẬN NGHÈO",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:L169",
+    "header_rows": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "main_groups": [
+      "Biến động hộ cận nghèo",
+      "Đầu kỳ / cuối kỳ"
+    ],
+    "required_columns": [
+      "transition.beginningClassify",
+      "transition.endingClassify",
+      "transition.nearPoorChangeType",
+      "classify",
+      "administrative.district",
+      "administrative.commune"
+    ],
+    "column_notes": {
+      "transition.beginningClassify": "detail list / aggregate count",
+      "transition.endingClassify": "detail list / aggregate count",
+      "transition.nearPoorChangeType": "aggregate count"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 4,
+    "report_name": "PHÂN TÍCH CÁC CHỈ SỐ THIẾU HỤT DỊCH VỤ XÃ HỘI CƠ BẢN CỦA HỘ NGHÈO",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:P88",
+    "header_rows": [
+      8,
+      9
+    ],
+    "main_groups": [
+      "12 chỉ số thiếu hụt",
+      "Tổng số thiếu hụt"
+    ],
+    "required_columns": [
+      "classify",
+      "deprivation.totalCount",
+      "deprivation.employment",
+      "deprivation.dependentPerson",
+      "deprivation.nutrition",
+      "deprivation.healthInsurance",
+      "deprivation.adultEducation",
+      "deprivation.childSchoolAttendance",
+      "deprivation.housingQuality",
+      "deprivation.housingArea",
+      "deprivation.cleanWater",
+      "deprivation.hygienicToilet",
+      "deprivation.telecommunication",
+      "deprivation.informationAccessAssets"
+    ],
+    "column_notes": {
+      "deprivation.employment": "aggregate count",
+      "deprivation.dependentPerson": "aggregate count",
+      "deprivation.nutrition": "aggregate count",
+      "deprivation.healthInsurance": "aggregate count",
+      "deprivation.adultEducation": "aggregate count",
+      "deprivation.childSchoolAttendance": "aggregate count",
+      "deprivation.housingQuality": "aggregate count",
+      "deprivation.housingArea": "aggregate count",
+      "deprivation.cleanWater": "aggregate count",
+      "deprivation.hygienicToilet": "aggregate count",
+      "deprivation.telecommunication": "aggregate count",
+      "deprivation.informationAccessAssets": "aggregate count",
+      "deprivation.totalCount": "sum / aggregate count"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 5,
+    "report_name": "PHÂN TÍCH TỶ LỆ CÁC CHỈ SỐ THIẾU HỤT DỊCH VỤ XÃ HỘI CƠ BẢN CỦA HỘ NGHÈO",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:O88",
+    "header_rows": [
+      8,
+      9
+    ],
+    "main_groups": [
+      "12 chỉ số thiếu hụt",
+      "Tỷ lệ phần trăm"
+    ],
+    "required_columns": [
+      "classify",
+      "deprivation.totalCount",
+      "deprivation.employment",
+      "deprivation.dependentPerson",
+      "deprivation.nutrition",
+      "deprivation.healthInsurance",
+      "deprivation.adultEducation",
+      "deprivation.childSchoolAttendance",
+      "deprivation.housingQuality",
+      "deprivation.housingArea",
+      "deprivation.cleanWater",
+      "deprivation.hygienicToilet",
+      "deprivation.telecommunication",
+      "deprivation.informationAccessAssets"
+    ],
+    "column_notes": {
+      "deprivation.employment": "percentage",
+      "deprivation.dependentPerson": "percentage",
+      "deprivation.nutrition": "percentage",
+      "deprivation.healthInsurance": "percentage",
+      "deprivation.adultEducation": "percentage",
+      "deprivation.childSchoolAttendance": "percentage",
+      "deprivation.housingQuality": "percentage",
+      "deprivation.housingArea": "percentage",
+      "deprivation.cleanWater": "percentage",
+      "deprivation.hygienicToilet": "percentage",
+      "deprivation.telecommunication": "percentage",
+      "deprivation.informationAccessAssets": "percentage"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 6,
+    "report_name": "PHÂN TÍCH CÁC CHỈ SỐ THIẾU HỤT DỊCH VỤ XÃ HỘI CƠ BẢN CỦA HỘ CẬN NGHÈO",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:P88",
+    "header_rows": [
+      8,
+      9
+    ],
+    "main_groups": [
+      "12 chỉ số thiếu hụt",
+      "Tổng số thiếu hụt"
+    ],
+    "required_columns": [
+      "classify",
+      "deprivation.totalCount",
+      "deprivation.employment",
+      "deprivation.dependentPerson",
+      "deprivation.nutrition",
+      "deprivation.healthInsurance",
+      "deprivation.adultEducation",
+      "deprivation.childSchoolAttendance",
+      "deprivation.housingQuality",
+      "deprivation.housingArea",
+      "deprivation.cleanWater",
+      "deprivation.hygienicToilet",
+      "deprivation.telecommunication",
+      "deprivation.informationAccessAssets"
+    ],
+    "column_notes": {
+      "deprivation.employment": "aggregate count",
+      "deprivation.dependentPerson": "aggregate count",
+      "deprivation.nutrition": "aggregate count",
+      "deprivation.healthInsurance": "aggregate count",
+      "deprivation.adultEducation": "aggregate count",
+      "deprivation.childSchoolAttendance": "aggregate count",
+      "deprivation.housingQuality": "aggregate count",
+      "deprivation.housingArea": "aggregate count",
+      "deprivation.cleanWater": "aggregate count",
+      "deprivation.hygienicToilet": "aggregate count",
+      "deprivation.telecommunication": "aggregate count",
+      "deprivation.informationAccessAssets": "aggregate count",
+      "deprivation.totalCount": "sum / aggregate count"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 7,
+    "report_name": "PHÂN TÍCH TỶ LỆ CÁC CHỈ SỐ THIẾU HỤT DỊCH VỤ XÃ HỘI CƠ BẢN CỦA HỘ CẬN NGHÈO",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:O88",
+    "header_rows": [
+      8,
+      9
+    ],
+    "main_groups": [
+      "12 chỉ số thiếu hụt",
+      "Tỷ lệ phần trăm"
+    ],
+    "required_columns": [
+      "classify",
+      "deprivation.totalCount",
+      "deprivation.employment",
+      "deprivation.dependentPerson",
+      "deprivation.nutrition",
+      "deprivation.healthInsurance",
+      "deprivation.adultEducation",
+      "deprivation.childSchoolAttendance",
+      "deprivation.housingQuality",
+      "deprivation.housingArea",
+      "deprivation.cleanWater",
+      "deprivation.hygienicToilet",
+      "deprivation.telecommunication",
+      "deprivation.informationAccessAssets"
+    ],
+    "column_notes": {
+      "deprivation.employment": "percentage",
+      "deprivation.dependentPerson": "percentage",
+      "deprivation.nutrition": "percentage",
+      "deprivation.healthInsurance": "percentage",
+      "deprivation.adultEducation": "percentage",
+      "deprivation.childSchoolAttendance": "percentage",
+      "deprivation.housingQuality": "percentage",
+      "deprivation.housingArea": "percentage",
+      "deprivation.cleanWater": "percentage",
+      "deprivation.hygienicToilet": "percentage",
+      "deprivation.telecommunication": "percentage",
+      "deprivation.informationAccessAssets": "percentage"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 8,
+    "report_name": "PHÂN TÍCH HỘ NGHÈO, HỘ CẬN NGHÈO THEO CÁC NHÓM ĐỐI TƯỢNG",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:M168",
+    "header_rows": [
+      8,
+      9,
+      10
+    ],
+    "main_groups": [
+      "Nhóm đối tượng",
+      "Hộ nghèo / cận nghèo"
+    ],
+    "required_columns": [
+      "classify",
+      "family.hasNoLaborCapacity",
+      "family.hasRevolutionMeritPolicy",
+      "family.isDTTC",
+      "support.health",
+      "support.education",
+      "support.production",
+      "support.credit",
+      "support.housing",
+      "support.other"
+    ],
+    "column_notes": {
+      "family.hasNoLaborCapacity": "aggregate count",
+      "family.hasRevolutionMeritPolicy": "aggregate count",
+      "family.isDTTC": "aggregate count",
+      "support.health": "aggregate count",
+      "support.education": "aggregate count",
+      "support.production": "aggregate count",
+      "support.credit": "aggregate count",
+      "support.housing": "aggregate count",
+      "support.other": "aggregate count"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 9,
+    "report_name": "PHÂN TÍCH HỘ NGHÈO, HỘ CẬN NGHÈO THEO DÂN TỘC",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:AB89",
+    "header_rows": [
+      8,
+      9,
+      10
+    ],
+    "main_groups": [
+      "Dân tộc",
+      "Hộ nghèo / cận nghèo"
+    ],
+    "required_columns": [
+      "family.ethnicity",
+      "family.isDTTS",
+      "family.isKinh",
+      "classify"
+    ],
+    "column_notes": {
+      "family.ethnicity": "detail list / aggregate count",
+      "family.isDTTS": "aggregate count",
+      "family.isKinh": "aggregate count"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 10,
+    "report_name": "10. Phân tích hộ nghèo, hộ cận nghèo theo nguyên nhân nghèo",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:J247",
+    "header_rows": null,
+    "main_groups": [
+      "Nguyên nhân nghèo/cận nghèo",
+      "Hộ nghèo / cận nghèo"
+    ],
+    "required_columns": [
+      "reason.lackProductionLand",
+      "reason.lackCapital",
+      "reason.lackLabor",
+      "reason.lackProductionTools",
+      "reason.lackProductionKnowledge",
+      "reason.lackLaborSkill",
+      "reason.illnessOrAccident",
+      "reason.other",
+      "classify"
+    ],
+    "column_notes": {
+      "reason.lackProductionLand": "aggregate count",
+      "reason.lackCapital": "aggregate count",
+      "reason.lackLabor": "aggregate count",
+      "reason.lackProductionTools": "aggregate count",
+      "reason.lackProductionKnowledge": "aggregate count",
+      "reason.lackLaborSkill": "aggregate count",
+      "reason.illnessOrAccident": "aggregate count",
+      "reason.other": "aggregate count"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 11,
+    "report_name": "TỔNG HỢP CHỈ TIÊU THIẾU HỤT CỦA TRẺ EM THUỘC HỘ NGHÈO, HỘ CẬN NGHÈO",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:J90",
+    "header_rows": [
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "main_groups": [
+      "Trẻ em",
+      "Thiếu hụt của trẻ em"
+    ],
+    "required_columns": [
+      "children.totalCount",
+      "children.lackHealthInsuranceCount",
+      "children.nutritionDeprivedCount",
+      "children.schoolAttendanceDeprivedCount",
+      "classify"
+    ],
+    "column_notes": {
+      "children.totalCount": "sum",
+      "children.lackHealthInsuranceCount": "sum",
+      "children.nutritionDeprivedCount": "sum",
+      "children.schoolAttendanceDeprivedCount": "sum"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 12,
+    "report_name": "TỔNG HỢP KẾT QUẢ RÀ SOÁT HỘ NGHÈO THEO CHUẨN NGHÈO ĐA CHIỀU",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:X89",
+    "header_rows": [
+      7,
+      8,
+      10
+    ],
+    "main_groups": [
+      "Chuẩn đa chiều",
+      "Hộ nghèo"
+    ],
+    "required_columns": [
+      "classify",
+      "family.povertyStatusDetail",
+      "family.hasNoLaborCapacity",
+      "family.hasRevolutionMeritPolicy",
+      "family.ethnicity",
+      "family.isDTTC",
+      "support.health",
+      "support.education",
+      "support.production",
+      "support.credit",
+      "support.housing",
+      "support.other",
+      "deprivation.totalCount",
+      "children.totalCount"
+    ],
+    "column_notes": {
+      "family.povertyStatusDetail": "detail list / aggregate count",
+      "deprivation.totalCount": "sum",
+      "children.totalCount": "sum"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 13,
+    "report_name": "TỔNG HỢP KẾT QUẢ RÀ SOÁT HỘ NGHÈO THEO CHUẨN NGHÈO ĐA CHIỀU",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:X90",
+    "header_rows": [
+      8,
+      9,
+      11
+    ],
+    "main_groups": [
+      "Chuẩn đa chiều",
+      "Hộ cận nghèo"
+    ],
+    "required_columns": [
+      "classify",
+      "family.nearPovertyStatusDetail",
+      "family.hasNoLaborCapacity",
+      "family.hasRevolutionMeritPolicy",
+      "family.ethnicity",
+      "family.isDTTC",
+      "support.health",
+      "support.education",
+      "support.production",
+      "support.credit",
+      "support.housing",
+      "support.other",
+      "deprivation.totalCount",
+      "children.totalCount"
+    ],
+    "column_notes": {
+      "family.nearPovertyStatusDetail": "detail list / aggregate count",
+      "deprivation.totalCount": "sum",
+      "children.totalCount": "sum"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 14,
+    "report_name": "DANH SÁCH CHI TIẾT HỘ CẬN NGHÈO",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:S21560",
+    "header_rows": [
+      8,
+      9,
+      10,
+      12
+    ],
+    "main_groups": [
+      "Danh sách hộ cận nghèo",
+      "Danh sách thành viên hộ"
+    ],
+    "required_columns": [
+      "family.membersGenerated",
+      "family.membersFile",
+      "family.membersJson",
+      "family.nearPovertyStatusDetail",
+      "family.hasRevolutionMeritPolicy",
+      "family.isDTTC",
+      "family.hasNoLaborCapacity",
+      "support.health",
+      "support.education",
+      "support.production",
+      "support.credit",
+      "support.housing",
+      "support.other"
+    ],
+    "column_notes": {
+      "family.membersGenerated": "detail list",
+      "family.membersFile": "detail list",
+      "family.membersJson": "detail list"
+    },
+    "template_status": "parsed_from_templates"
+  },
+  {
+    "report_id": 15,
+    "report_name": "DANH SÁCH CHI TIẾT HỘ NGHÈO",
+    "sheet_name": "Sheet1",
+    "used_range": "A2:S15008",
+    "header_rows": [
+      8,
+      9,
+      10,
+      12
+    ],
+    "main_groups": [
+      "Danh sách hộ nghèo",
+      "Danh sách thành viên hộ"
+    ],
+    "required_columns": [
+      "family.membersGenerated",
+      "family.membersFile",
+      "family.membersJson",
+      "family.povertyStatusDetail",
+      "family.hasRevolutionMeritPolicy",
+      "family.isDTTC",
+      "family.hasNoLaborCapacity",
+      "support.health",
+      "support.education",
+      "support.production",
+      "support.credit",
+      "support.housing",
+      "support.other"
+    ],
+    "column_notes": {
+      "family.membersGenerated": "detail list",
+      "family.membersFile": "detail list",
+      "family.membersJson": "detail list"
+    },
+    "template_status": "parsed_from_templates"
+  }
+]

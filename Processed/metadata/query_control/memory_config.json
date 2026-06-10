@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "memory_dir": "Runtime/conversations",
+  "enabled": true,
+  "max_turns": 10,
+  "persist_to_disk": true,
+  "track_fields": [
+    "last_route",
+    "last_query_plan",
+    "last_sql",
+    "last_result_summary",
+    "last_clarification",
+    "active_filters",
+    "active_metric",
+    "active_dimensions"
+  ]
+}

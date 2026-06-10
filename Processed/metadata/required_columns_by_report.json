@@ -1,0 +1,371 @@
+{
+  "1": {
+    "report_id": 1,
+    "report_name": "Tổng hợp kết quả rà soát HC,CN,NL,NN có mức sống trung bình",
+    "required_columns": [
+      "administrative.province",
+      "administrative.district",
+      "administrative.commune",
+      "family.isAgricultureForestryFisherySaltMediumLivingStandard",
+      "classify"
+    ],
+    "notes": {
+      "family.isAgricultureForestryFisherySaltMediumLivingStandard": "aggregate count / flag",
+      "classify": "grouping label"
+    }
+  },
+  "2": {
+    "report_id": 2,
+    "report_name": "Tổng hợp diễn biến hộ nghèo",
+    "required_columns": [
+      "transition.beginningClassify",
+      "transition.endingClassify",
+      "transition.poorChangeType",
+      "classify",
+      "administrative.district",
+      "administrative.commune"
+    ],
+    "notes": {
+      "transition.beginningClassify": "detail list / aggregate count",
+      "transition.endingClassify": "detail list / aggregate count",
+      "transition.poorChangeType": "aggregate count"
+    }
+  },
+  "3": {
+    "report_id": 3,
+    "report_name": "Tổng hợp diễn biến hộ cận nghèo",
+    "required_columns": [
+      "transition.beginningClassify",
+      "transition.endingClassify",
+      "transition.nearPoorChangeType",
+      "classify",
+      "administrative.district",
+      "administrative.commune"
+    ],
+    "notes": {
+      "transition.beginningClassify": "detail list / aggregate count",
+      "transition.endingClassify": "detail list / aggregate count",
+      "transition.nearPoorChangeType": "aggregate count"
+    }
+  },
+  "4": {
+    "report_id": 4,
+    "report_name": "Phân tích chỉ số thiếu hụt dịch vụ xã hội cơ bản hộ nghèo",
+    "required_columns": [
+      "classify",
+      "deprivation.totalCount",
+      "deprivation.employment",
+      "deprivation.dependentPerson",
+      "deprivation.nutrition",
+      "deprivation.healthInsurance",
+      "deprivation.adultEducation",
+      "deprivation.childSchoolAttendance",
+      "deprivation.housingQuality",
+      "deprivation.housingArea",
+      "deprivation.cleanWater",
+      "deprivation.hygienicToilet",
+      "deprivation.telecommunication",
+      "deprivation.informationAccessAssets"
+    ],
+    "notes": {
+      "deprivation.employment": "aggregate count",
+      "deprivation.dependentPerson": "aggregate count",
+      "deprivation.nutrition": "aggregate count",
+      "deprivation.healthInsurance": "aggregate count",
+      "deprivation.adultEducation": "aggregate count",
+      "deprivation.childSchoolAttendance": "aggregate count",
+      "deprivation.housingQuality": "aggregate count",
+      "deprivation.housingArea": "aggregate count",
+      "deprivation.cleanWater": "aggregate count",
+      "deprivation.hygienicToilet": "aggregate count",
+      "deprivation.telecommunication": "aggregate count",
+      "deprivation.informationAccessAssets": "aggregate count",
+      "deprivation.totalCount": "sum / aggregate count"
+    }
+  },
+  "5": {
+    "report_id": 5,
+    "report_name": "Phân tích tỷ lệ các chỉ số thiếu hụt dịch vụ xã hội cơ bản hộ nghèo",
+    "required_columns": [
+      "classify",
+      "deprivation.totalCount",
+      "deprivation.employment",
+      "deprivation.dependentPerson",
+      "deprivation.nutrition",
+      "deprivation.healthInsurance",
+      "deprivation.adultEducation",
+      "deprivation.childSchoolAttendance",
+      "deprivation.housingQuality",
+      "deprivation.housingArea",
+      "deprivation.cleanWater",
+      "deprivation.hygienicToilet",
+      "deprivation.telecommunication",
+      "deprivation.informationAccessAssets"
+    ],
+    "notes": {
+      "deprivation.employment": "percentage",
+      "deprivation.dependentPerson": "percentage",
+      "deprivation.nutrition": "percentage",
+      "deprivation.healthInsurance": "percentage",
+      "deprivation.adultEducation": "percentage",
+      "deprivation.childSchoolAttendance": "percentage",
+      "deprivation.housingQuality": "percentage",
+      "deprivation.housingArea": "percentage",
+      "deprivation.cleanWater": "percentage",
+      "deprivation.hygienicToilet": "percentage",
+      "deprivation.telecommunication": "percentage",
+      "deprivation.informationAccessAssets": "percentage"
+    }
+  },
+  "6": {
+    "report_id": 6,
+    "report_name": "Phân tích chỉ số thiếu hụt dịch vụ xã hội cơ bản hộ cận nghèo",
+    "required_columns": [
+      "classify",
+      "deprivation.totalCount",
+      "deprivation.employment",
+      "deprivation.dependentPerson",
+      "deprivation.nutrition",
+      "deprivation.healthInsurance",
+      "deprivation.adultEducation",
+      "deprivation.childSchoolAttendance",
+      "deprivation.housingQuality",
+      "deprivation.housingArea",
+      "deprivation.cleanWater",
+      "deprivation.hygienicToilet",
+      "deprivation.telecommunication",
+      "deprivation.informationAccessAssets"
+    ],
+    "notes": {
+      "deprivation.employment": "aggregate count",
+      "deprivation.dependentPerson": "aggregate count",
+      "deprivation.nutrition": "aggregate count",
+      "deprivation.healthInsurance": "aggregate count",
+      "deprivation.adultEducation": "aggregate count",
+      "deprivation.childSchoolAttendance": "aggregate count",
+      "deprivation.housingQuality": "aggregate count",
+      "deprivation.housingArea": "aggregate count",
+      "deprivation.cleanWater": "aggregate count",
+      "deprivation.hygienicToilet": "aggregate count",
+      "deprivation.telecommunication": "aggregate count",
+      "deprivation.informationAccessAssets": "aggregate count",
+      "deprivation.totalCount": "sum / aggregate count"
+    }
+  },
+  "7": {
+    "report_id": 7,
+    "report_name": "Phân tích tỷ lệ các chỉ số thiếu hụt dịch vụ xã hội cơ bản hộ cận nghèo",
+    "required_columns": [
+      "classify",
+      "deprivation.totalCount",
+      "deprivation.employment",
+      "deprivation.dependentPerson",
+      "deprivation.nutrition",
+      "deprivation.healthInsurance",
+      "deprivation.adultEducation",
+      "deprivation.childSchoolAttendance",
+      "deprivation.housingQuality",
+      "deprivation.housingArea",
+      "deprivation.cleanWater",
+      "deprivation.hygienicToilet",
+      "deprivation.telecommunication",
+      "deprivation.informationAccessAssets"
+    ],
+    "notes": {
+      "deprivation.employment": "percentage",
+      "deprivation.dependentPerson": "percentage",
+      "deprivation.nutrition": "percentage",
+      "deprivation.healthInsurance": "percentage",
+      "deprivation.adultEducation": "percentage",
+      "deprivation.childSchoolAttendance": "percentage",
+      "deprivation.housingQuality": "percentage",
+      "deprivation.housingArea": "percentage",
+      "deprivation.cleanWater": "percentage",
+      "deprivation.hygienicToilet": "percentage",
+      "deprivation.telecommunication": "percentage",
+      "deprivation.informationAccessAssets": "percentage"
+    }
+  },
+  "8": {
+    "report_id": 8,
+    "report_name": "Phân tích hộ nghèo, hộ cận nghèo theo các nhóm đối tượng",
+    "required_columns": [
+      "classify",
+      "family.hasNoLaborCapacity",
+      "family.hasRevolutionMeritPolicy",
+      "family.isDTTC",
+      "support.health",
+      "support.education",
+      "support.production",
+      "support.credit",
+      "support.housing",
+      "support.other"
+    ],
+    "notes": {
+      "family.hasNoLaborCapacity": "aggregate count",
+      "family.hasRevolutionMeritPolicy": "aggregate count",
+      "family.isDTTC": "aggregate count",
+      "support.health": "aggregate count",
+      "support.education": "aggregate count",
+      "support.production": "aggregate count",
+      "support.credit": "aggregate count",
+      "support.housing": "aggregate count",
+      "support.other": "aggregate count"
+    }
+  },
+  "9": {
+    "report_id": 9,
+    "report_name": "Phân tích hộ nghèo, hộ cận nghèo theo dân tộc",
+    "required_columns": [
+      "family.ethnicity",
+      "family.isDTTS",
+      "family.isKinh",
+      "classify"
+    ],
+    "notes": {
+      "family.ethnicity": "detail list / aggregate count",
+      "family.isDTTS": "aggregate count",
+      "family.isKinh": "aggregate count"
+    }
+  },
+  "10": {
+    "report_id": 10,
+    "report_name": "Phân tích hộ nghèo, hộ cận nghèo theo nguyên nhân nghèo",
+    "required_columns": [
+      "reason.lackProductionLand",
+      "reason.lackCapital",
+      "reason.lackLabor",
+      "reason.lackProductionTools",
+      "reason.lackProductionKnowledge",
+      "reason.lackLaborSkill",
+      "reason.illnessOrAccident",
+      "reason.other",
+      "classify"
+    ],
+    "notes": {
+      "reason.lackProductionLand": "aggregate count",
+      "reason.lackCapital": "aggregate count",
+      "reason.lackLabor": "aggregate count",
+      "reason.lackProductionTools": "aggregate count",
+      "reason.lackProductionKnowledge": "aggregate count",
+      "reason.lackLaborSkill": "aggregate count",
+      "reason.illnessOrAccident": "aggregate count",
+      "reason.other": "aggregate count"
+    }
+  },
+  "11": {
+    "report_id": 11,
+    "report_name": "Tổng hợp chỉ tiêu thiếu hụt của trẻ em thuộc hộ nghèo, hộ cận nghèo",
+    "required_columns": [
+      "children.totalCount",
+      "children.lackHealthInsuranceCount",
+      "children.nutritionDeprivedCount",
+      "children.schoolAttendanceDeprivedCount",
+      "classify"
+    ],
+    "notes": {
+      "children.totalCount": "sum",
+      "children.lackHealthInsuranceCount": "sum",
+      "children.nutritionDeprivedCount": "sum",
+      "children.schoolAttendanceDeprivedCount": "sum"
+    }
+  },
+  "12": {
+    "report_id": 12,
+    "report_name": "Tổng hợp kết quả rà soát hộ nghèo theo chuẩn đa chiều",
+    "required_columns": [
+      "classify",
+      "family.povertyStatusDetail",
+      "family.hasNoLaborCapacity",
+      "family.hasRevolutionMeritPolicy",
+      "family.ethnicity",
+      "family.isDTTC",
+      "support.health",
+      "support.education",
+      "support.production",
+      "support.credit",
+      "support.housing",
+      "support.other",
+      "deprivation.totalCount",
+      "children.totalCount"
+    ],
+    "notes": {
+      "family.povertyStatusDetail": "detail list / aggregate count",
+      "deprivation.totalCount": "sum",
+      "children.totalCount": "sum"
+    }
+  },
+  "13": {
+    "report_id": 13,
+    "report_name": "Tổng hợp kết quả rà soát hộ cận nghèo theo chuẩn đa chiều",
+    "required_columns": [
+      "classify",
+      "family.nearPovertyStatusDetail",
+      "family.hasNoLaborCapacity",
+      "family.hasRevolutionMeritPolicy",
+      "family.ethnicity",
+      "family.isDTTC",
+      "support.health",
+      "support.education",
+      "support.production",
+      "support.credit",
+      "support.housing",
+      "support.other",
+      "deprivation.totalCount",
+      "children.totalCount"
+    ],
+    "notes": {
+      "family.nearPovertyStatusDetail": "detail list / aggregate count",
+      "deprivation.totalCount": "sum",
+      "children.totalCount": "sum"
+    }
+  },
+  "14": {
+    "report_id": 14,
+    "report_name": "Danh sách chi tiết hộ cận nghèo",
+    "required_columns": [
+      "family.membersGenerated",
+      "family.membersFile",
+      "family.membersJson",
+      "family.nearPovertyStatusDetail",
+      "family.hasRevolutionMeritPolicy",
+      "family.isDTTC",
+      "family.hasNoLaborCapacity",
+      "support.health",
+      "support.education",
+      "support.production",
+      "support.credit",
+      "support.housing",
+      "support.other"
+    ],
+    "notes": {
+      "family.membersGenerated": "detail list",
+      "family.membersFile": "detail list",
+      "family.membersJson": "detail list"
+    }
+  },
+  "15": {
+    "report_id": 15,
+    "report_name": "Danh sách chi tiết hộ nghèo",
+    "required_columns": [
+      "family.membersGenerated",
+      "family.membersFile",
+      "family.membersJson",
+      "family.povertyStatusDetail",
+      "family.hasRevolutionMeritPolicy",
+      "family.isDTTC",
+      "family.hasNoLaborCapacity",
+      "support.health",
+      "support.education",
+      "support.production",
+      "support.credit",
+      "support.housing",
+      "support.other"
+    ],
+    "notes": {
+      "family.membersGenerated": "detail list",
+      "family.membersFile": "detail list",
+      "family.membersJson": "detail list"
+    }
+  }
+}
