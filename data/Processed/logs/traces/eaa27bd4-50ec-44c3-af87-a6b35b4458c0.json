@@ -1,0 +1,201 @@
+{
+  "trace_id": "eaa27bd4-50ec-44c3-af87-a6b35b4458c0",
+  "timestamp": "2026-06-19 15:50:29",
+  "user_question": "gia đình ông/bà NÔNG VĂN THỀ có bị nghèo do thiếu vốn không?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [
+      "household_member_count"
+    ],
+    "dimensions": [
+      "lack_capital"
+    ],
+    "filters": [
+      {
+        "field": "host_name",
+        "operator": "=",
+        "value": "NÔNG VĂN THỀ"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      },
+      {
+        "field": "lack_capital",
+        "operator": "=",
+        "value": true
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [
+      "Metric 'household_member_count' được sử dụng để đại diện cho việc đếm các yếu tố trong hộ gia đình vì không có metric chuyên biệt cho 'số điểm thiếu vốn' trong danh sách ứng viên."
+    ],
+    "original_question": "Gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu điểm thiếu vốn năm 2024",
+    "output_mode": "text"
+  },
+  "sql": "SELECT households.\"reason.lackCapital\" AS lack_capital, households.\"family.hostName\" AS host_name, households.\"family.code\" AS household_id, households.\"administrative.district\" AS district, households.\"administrative.commune\" AS commune, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.hostName\") = 'nông văn thề' AND households.\"administrative.year\" = 2024 AND households.\"reason.lackCapital\" = True GROUP BY lack_capital, host_name, household_id, district, commune",
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 2296.020199999475,
+  "status": "success",
+  "errors": [],
+  "warnings": [
+    {
+      "code": "EMPTY_RESULT",
+      "message": "Truy vấn trả về kết quả rỗng."
+    }
+  ],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 6.733199999871431
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà NÔNG VĂN THỀ có bị nghèo do thiếu vốn không?",
+      "rewritten_question": "Gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu điểm thiếu vốn năm 2024",
+      "latency_ms": 957.0612999996229
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.06920000123500358
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 218.63519999897107
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1103.3762999995815
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "household_member_count"
+        ],
+        "dimensions": [
+          "lack_capital"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "NÔNG VĂN THỀ"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "lack_capital",
+            "operator": "=",
+            "value": true
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Metric 'household_member_count' được sử dụng để đại diện cho việc đếm các yếu tố trong hộ gia đình vì không có metric chuyên biệt cho 'số điểm thiếu vốn' trong danh sách ứng viên."
+        ],
+        "original_question": "Gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu điểm thiếu vốn năm 2024",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "4e3785a07ad5ce1692cad52507c8a05b",
+      "latency_ms": 0.270799999270821
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT households.\"reason.lackCapital\" AS lack_capital, households.\"family.hostName\" AS host_name, households.\"family.code\" AS household_id, households.\"administrative.district\" AS district, households.\"administrative.commune\" AS commune, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.hostName\") = 'nông văn thề' AND households.\"administrative.year\" = 2024 AND households.\"reason.lackCapital\" = True GROUP BY lack_capital, host_name, household_id, district, commune",
+      "latency_ms": 0.07019999975454994
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT households.\"reason.lackCapital\" AS lack_capital, households.\"family.hostName\" AS host_name, households.\"family.code\" AS household_id, households.\"administrative.district\" AS district, households.\"administrative.commune\" AS commune, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.hostName\") = 'nông văn thề' AND households.\"administrative.year\" = 2024 AND households.\"reason.lackCapital\" = True GROUP BY lack_capital, host_name, household_id, district, commune",
+      "latency_ms": 2.788699999655364
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 0.01049999991664663
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.2691000010818243
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Không tìm thấy số liệu phù hợp với yêu cầu của bạn trong cơ sở dữ liệu.",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "household_member_count"
+        ],
+        "dimensions": [
+          "lack_capital"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "NÔNG VĂN THỀ"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "lack_capital",
+            "operator": "=",
+            "value": true
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Metric 'household_member_count' được sử dụng để đại diện cho việc đếm các yếu tố trong hộ gia đình vì không có metric chuyên biệt cho 'số điểm thiếu vốn' trong danh sách ứng viên."
+        ],
+        "original_question": "Gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu điểm thiếu vốn năm 2024",
+        "output_mode": "text"
+      },
+      "sql": "SELECT households.\"reason.lackCapital\" AS lack_capital, households.\"family.hostName\" AS host_name, households.\"family.code\" AS household_id, households.\"administrative.district\" AS district, households.\"administrative.commune\" AS commune, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.hostName\") = 'nông văn thề' AND households.\"administrative.year\" = 2024 AND households.\"reason.lackCapital\" = True GROUP BY lack_capital, host_name, household_id, district, commune",
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [
+        {
+          "code": "EMPTY_RESULT",
+          "message": "Truy vấn trả về kết quả rỗng."
+        }
+      ],
+      "errors": [],
+      "rewritten_question": "Gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu điểm thiếu vốn năm 2024"
+    }
+  }
+}

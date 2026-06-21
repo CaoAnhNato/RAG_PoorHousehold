@@ -32,7 +32,7 @@ def main():
     print("=" * 60)
     
     # 1. Đường dẫn các tệp cấu hình
-    processed_dir = PROJECT_ROOT / "Processed"
+    processed_dir = PROJECT_ROOT / "data" / "Processed"
     metadata_dir = processed_dir / "metadata" / "query_control"
     
     schema_graph_path = metadata_dir / "schema_graph.json"
@@ -182,7 +182,7 @@ def main():
     
     # CASE 7: Kiểm tra Observability logs
     print("\n--- TEST CASE 7: Kiểm tra nhật ký giám sát Observability ---")
-    events_log_path = PROJECT_ROOT / "Runtime" / "logs" / "query_events.jsonl"
+    events_log_path = PROJECT_ROOT / "data" / "Processed" / "logs" / "query_events.jsonl"
     print(f"Đường dẫn file events log: {events_log_path}")
     assert events_log_path.exists(), "Lỗi: Tệp query_events.jsonl không được tạo!"
     

@@ -1,0 +1,208 @@
+{
+  "trace_id": "c83f2c54-0ef5-42fb-98a5-4b738aa1ae5b",
+  "timestamp": "2026-06-19 15:50:27",
+  "user_question": "gia đình ông/bà NÔNG VĂN THỀ có thiếu nước sạch không?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [
+      "clean_water"
+    ],
+    "filters": [
+      {
+        "field": "host_name",
+        "operator": "=",
+        "value": "NÔNG VĂN THỀ"
+      },
+      {
+        "field": "poverty_status",
+        "operator": "=",
+        "value": "Hộ nghèo"
+      },
+      {
+        "field": "clean_water",
+        "operator": "=",
+        "value": "Thiếu"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": 100,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu hộ nghèo thiếu nước sạch",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"deprivation.cleanWater\" AS clean_water, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE LOWER(\"family.hostName\") = 'nông văn thề' AND LOWER(\"classify\") = 'hộ nghèo' AND \"deprivation.cleanWater\" = True AND \"administrative.year\" = 2024 GROUP BY clean_water, host_name, household_id, district, commune LIMIT 100",
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 2313.719600000695,
+  "status": "success",
+  "errors": [],
+  "warnings": [
+    {
+      "code": "EMPTY_RESULT",
+      "message": "Truy vấn trả về kết quả rỗng."
+    }
+  ],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 6.667300000117393
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà NÔNG VĂN THỀ có thiếu nước sạch không?",
+      "rewritten_question": "Gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu hộ nghèo thiếu nước sạch",
+      "latency_ms": 899.0787000002456
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.06129999928816687
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 297.15780000151426
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1101.6517000007298
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "clean_water"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "NÔNG VĂN THỀ"
+          },
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ nghèo"
+          },
+          {
+            "field": "clean_water",
+            "operator": "=",
+            "value": "Thiếu"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": 100,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu hộ nghèo thiếu nước sạch",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "b72838091590493d73298c88812ef22f",
+      "latency_ms": 0.088099999629776
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"deprivation.cleanWater\" AS clean_water, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE LOWER(\"family.hostName\") = 'nông văn thề' AND LOWER(\"classify\") = 'hộ nghèo' AND \"deprivation.cleanWater\" = True AND \"administrative.year\" = 2024 GROUP BY clean_water, host_name, household_id, district, commune LIMIT 100",
+      "latency_ms": 0.06990000110818073
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"deprivation.cleanWater\" AS clean_water, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE LOWER(\"family.hostName\") = 'nông văn thề' AND LOWER(\"classify\") = 'hộ nghèo' AND \"deprivation.cleanWater\" = True AND \"administrative.year\" = 2024 GROUP BY clean_water, host_name, household_id, district, commune LIMIT 100",
+      "latency_ms": 1.8608999998832587
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 0.011699999959091656
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.6560999993089354
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Không tìm thấy số liệu phù hợp với yêu cầu của bạn trong cơ sở dữ liệu.",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "clean_water"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "NÔNG VĂN THỀ"
+          },
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ nghèo"
+          },
+          {
+            "field": "clean_water",
+            "operator": "=",
+            "value": "Thiếu"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": 100,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu hộ nghèo thiếu nước sạch",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"deprivation.cleanWater\" AS clean_water, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE LOWER(\"family.hostName\") = 'nông văn thề' AND LOWER(\"classify\") = 'hộ nghèo' AND \"deprivation.cleanWater\" = True AND \"administrative.year\" = 2024 GROUP BY clean_water, host_name, household_id, district, commune LIMIT 100",
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [
+        {
+          "code": "EMPTY_RESULT",
+          "message": "Truy vấn trả về kết quả rỗng."
+        }
+      ],
+      "errors": [],
+      "rewritten_question": "Gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu hộ nghèo thiếu nước sạch"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+# ==========================================
+# HƯỚNG DẪN CHẠY TRỰC TIẾP TRÊN MÁY THUÊ GPU
+# ==========================================
+# Copy và dán lần lượt các lệnh dưới đây vào Terminal của máy thuê.
+
+# 1. Khai báo Token Hugging Face của bạn
+export HF_TOKEN="ĐIỀN_TOKEN_HUGGINGFACE_CỦA_BẠN_VÀO_ĐÂY"
+
+# 2. Cài đặt thư viện tải tốc độ cao từ Hugging Face
+pip install -U "huggingface_hub[cli,hf_transfer]"
+export HF_XET_HIGH_PERFORMANCE=1
+
+# 3. Tải model GGUF (Chỉ tải file cần thiết, lưu vào thư mục models)
+mkdir -p ./models
+hf download google/gemma-4-26B-A4B-it-qat-q4_0-gguf \
+    --include "*.gguf" \
+    --local-dir ./models
+
+# 4. Tải và biên dịch llama.cpp (Trình chạy model)
+# Các máy tính GPU thuê sẵn thường đã có CUDA toolkit, nên chỉ tốn ~1-2 phút
+git clone https://github.com/ggerganov/llama.cpp
+cd llama.cpp
+make GGML_CUDA=1 LLAMA_CUDA=1 -j$(nproc)
+
+# 5. Khởi chạy Server
+# Tự động lấy file model vừa tải và bật server tại port 8080
+MODEL_FILE=$(ls ../models/*.gguf | head -n 1)
+
+./llama-server \
+    -m "$MODEL_FILE" \
+    --host 0.0.0.0 \
+    --port 8080 \
+    -ngl 999 \
+    --flash-attn \
+    -c 16384 \
+    -b 1024
+
+# ---------------------------------------------------------
+# LƯU Ý:
+# - Cờ `-ngl 999` sẽ đẩy toàn bộ layer model lên GPU.
+# - Sau khi lệnh cuối chạy thành công, server sẽ mở tại địa chỉ: 
+#   http://<IP_MÁY_THUÊ>:8080

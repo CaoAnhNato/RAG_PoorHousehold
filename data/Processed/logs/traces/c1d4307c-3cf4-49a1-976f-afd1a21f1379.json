@@ -1,0 +1,178 @@
+{
+  "trace_id": "c1d4307c-3cf4-49a1-976f-afd1a21f1379",
+  "timestamp": "2026-06-19 15:50:32",
+  "user_question": "gia đình ông/bà NÔNG VĂN THỀ có phải là hộ dân tộc thiểu số không?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [],
+    "dimensions": [
+      "ethnicity"
+    ],
+    "filters": [
+      {
+        "field": "household_id",
+        "operator": "LIKE",
+        "value": "%NÔNG VĂN THỀ%"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": 100,
+    "output_type": "text",
+    "ambiguities": [
+      "Câu hỏi yêu cầu kiểm tra thuộc tính của một cá nhân/hộ cụ thể nhưng không cung cấp mã hộ gia đình (household_id), chỉ cung cấp tên."
+    ],
+    "original_question": "Gia đình ông/bà NÔNG VĂN THỀ có phải là hộ dân tộc thiểu số không",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"family.ethnicity\" AS ethnicity FROM households WHERE LOWER(\"family.code\") LIKE '%%nông văn thề%%' AND \"administrative.year\" = 2024 LIMIT 100",
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 2216.248500000802,
+  "status": "success",
+  "errors": [],
+  "warnings": [
+    {
+      "code": "EMPTY_RESULT",
+      "message": "Truy vấn trả về kết quả rỗng."
+    }
+  ],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 7.369200000539422
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà NÔNG VĂN THỀ có phải là hộ dân tộc thiểu số không?",
+      "rewritten_question": "Gia đình ông/bà NÔNG VĂN THỀ có phải là hộ dân tộc thiểu số không",
+      "latency_ms": 863.7376999995467
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.049700000090524554
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 248.96930000068096
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1088.781200000085
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [],
+        "dimensions": [
+          "ethnicity"
+        ],
+        "filters": [
+          {
+            "field": "household_id",
+            "operator": "LIKE",
+            "value": "%NÔNG VĂN THỀ%"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": 100,
+        "output_type": "text",
+        "ambiguities": [
+          "Câu hỏi yêu cầu kiểm tra thuộc tính của một cá nhân/hộ cụ thể nhưng không cung cấp mã hộ gia đình (household_id), chỉ cung cấp tên."
+        ],
+        "original_question": "Gia đình ông/bà NÔNG VĂN THỀ có phải là hộ dân tộc thiểu số không",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "3dc38ad0c8853afe4619d95e7c8ca312",
+      "latency_ms": 0.07030000051599927
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"family.ethnicity\" AS ethnicity FROM households WHERE LOWER(\"family.code\") LIKE '%%nông văn thề%%' AND \"administrative.year\" = 2024 LIMIT 100",
+      "latency_ms": 0.04579999949783087
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"family.ethnicity\" AS ethnicity FROM households WHERE LOWER(\"family.code\") LIKE '%%nông văn thề%%' AND \"administrative.year\" = 2024 LIMIT 100",
+      "latency_ms": 0.9699999991426012
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 0.010999998266925104
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.0521999993216014
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Không tìm thấy số liệu phù hợp với yêu cầu của bạn trong cơ sở dữ liệu.",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [],
+        "dimensions": [
+          "ethnicity"
+        ],
+        "filters": [
+          {
+            "field": "household_id",
+            "operator": "LIKE",
+            "value": "%NÔNG VĂN THỀ%"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": 100,
+        "output_type": "text",
+        "ambiguities": [
+          "Câu hỏi yêu cầu kiểm tra thuộc tính của một cá nhân/hộ cụ thể nhưng không cung cấp mã hộ gia đình (household_id), chỉ cung cấp tên."
+        ],
+        "original_question": "Gia đình ông/bà NÔNG VĂN THỀ có phải là hộ dân tộc thiểu số không",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"family.ethnicity\" AS ethnicity FROM households WHERE LOWER(\"family.code\") LIKE '%%nông văn thề%%' AND \"administrative.year\" = 2024 LIMIT 100",
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [
+        {
+          "code": "EMPTY_RESULT",
+          "message": "Truy vấn trả về kết quả rỗng."
+        }
+      ],
+      "errors": [],
+      "rewritten_question": "Gia đình ông/bà NÔNG VĂN THỀ có phải là hộ dân tộc thiểu số không"
+    }
+  }
+}

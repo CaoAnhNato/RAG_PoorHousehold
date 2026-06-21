@@ -11,12 +11,14 @@ from pathlib import Path
 import datetime as dt
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-PROCESSED_DIR = PROJECT_ROOT / "Processed"
+PROCESSED_DIR = PROJECT_ROOT / "data" / "Processed"
 METADATA_DIR = PROCESSED_DIR / "metadata"
 QUERY_CONTROL_METADATA_DIR = METADATA_DIR / "query_control"
 REPORT_PATH = QUERY_CONTROL_METADATA_DIR / "metadata_build_report.md"
 
 def main() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     errors = []
     successes = []
     

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Module Answer Engine điều phối luồng Q&A từ phân loại, lập kế hoạch,
 truy vấn dữ liệu qua DuckDB, quản lý cache, ghi vết observability và sinh câu trả lời.
@@ -14,13 +14,14 @@ from typing import Any
 import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-PROCESSED_DIR = PROJECT_ROOT / "Processed"
+PROCESSED_DIR = PROJECT_ROOT / "data" / "Processed"
 METADATA_DIR = PROCESSED_DIR / "metadata"
 QUERY_CONTROL_METADATA_DIR = METADATA_DIR / "query_control"
 
 sys.path.append(str(PROJECT_ROOT))
 from typing import Any
 from src.query_control.llm_helper import call_llm, clean_json_response
+from src.query_control.query_rewriter import QueryRewriter
 
 class ChatbotAnswerEngine:
     def __init__(
@@ -33,7 +34,10 @@ class ChatbotAnswerEngine:
         observability_logger: Any,
         clarification_engine: Any,
         conversation_memory: Any,
-        general_answer_engine: Any = None
+        general_answer_engine: Any = None,
+        visualization_planner: Any = None,
+        chart_validator: Any = None,
+        chart_renderer: Any = None
     ):
         """Khởi tạo Chatbot Answer Engine với đầy đủ các thành phần bổ trợ."""
         self.domain_gate = domain_gate
@@ -45,6 +49,10 @@ class ChatbotAnswerEngine:
         self.clarification_engine = clarification_engine
         self.conversation_memory = conversation_memory
         self.general_answer_engine = general_answer_engine
+        self.visualization_planner = visualization_planner
+        self.chart_validator = chart_validator
+        self.chart_renderer = chart_renderer
+        self.query_rewriter = QueryRewriter()
         
         # Tải cấu hình prompt giải thích kiến thức chung
         self.general_prompt_path = QUERY_CONTROL_METADATA_DIR / "general_answer_prompt.md"
@@ -52,7 +60,22 @@ class ChatbotAnswerEngine:
             self.general_prompt_tmpl = f.read()
 
     def answer(self, user_question: str) -> dict[str, Any]:
-        """Xử lý câu hỏi của người dùng theo luồng MVP hoàn chỉnh."""
+        """
+        Xử lý câu hỏi của người dùng theo luồng MVP hoàn chỉnh kết hợp Query Rewriter.
+
+        Args:
+            user_question (str): Câu hỏi thô bằng tiếng Việt từ người dùng.
+
+        Returns:
+            dict[str, Any]: Kết quả phản hồi hoàn chỉnh của chatbot bao gồm câu trả lời, SQL, query plan.
+
+        Lưu ý nghiệp vụ:
+            Phương thức điều phối tuần tự qua các bước:
+            1. Gọi QueryRewriter để viết lại/chuẩn hóa câu hỏi.
+            2. Tra cứu Cache dựa trên câu hỏi đã viết lại để tránh lập kế hoạch trùng lặp.
+            3. Định tuyến câu hỏi qua Domain Gate.
+            4. Lập kế hoạch truy vấn nếu miss cache, biên dịch SQL, thực thi DuckDB và định dạng câu trả lời.
+        """
         # 1. Khởi tạo trace ghi vết
         trace_id = self.observability_logger.start_trace(user_question)
         start_time = time.perf_counter()
@@ -65,12 +88,25 @@ class ChatbotAnswerEngine:
             mem_latency = (time.perf_counter() - mem_start) * 1000.0
             self.observability_logger.log_latency(trace_id, "conversation_memory_load", mem_latency)
             
-            # 3. Rút trích đặc trưng dựa trên luật, giải quyết câu hỏi kế thừa và đo thời gian
+            # Viết lại/chuẩn hóa câu hỏi bằng LLM (Query Rewriting)
+            rewrite_start = time.perf_counter()
+            self.observability_logger.log_event(trace_id, "query_rewriter", {"status": "rewriting"})
+            history_turns = memory_context.get("turns", [])
+            rewritten_question = self.query_rewriter.rewrite(user_question, history_turns)
+            self.observability_logger.log_event(trace_id, "query_rewriter", {
+                "original_question": user_question,
+                "rewritten_question": rewritten_question
+            })
+            rewrite_latency = (time.perf_counter() - rewrite_start) * 1000.0
+            self.observability_logger.log_latency(trace_id, "query_rewriter", rewrite_latency)
+            
+            # 3. Rút trích đặc trưng dựa trên luật và giải quyết câu hỏi kế thừa bằng câu hỏi đã được viết lại
             rule_start = time.perf_counter()
-            rule_output = self.query_planner.apply_rule_extraction(user_question)
+            rule_output = self.query_planner.apply_rule_extraction(rewritten_question)
             self.observability_logger.log_event(trace_id, "rule_extractor", rule_output)
             
-            follow_up_context = self.conversation_memory.resolve_follow_up(user_question, rule_output)
+            # QueryRewriter đã tự động giải quyết tham chiếu lịch sử (follow-up), chúng ta vẫn chạy để tương thích ngược tối đa
+            follow_up_context = self.conversation_memory.resolve_follow_up(rewritten_question, rule_output)
             if follow_up_context:
                 self.observability_logger.log_event(trace_id, "conversation_memory", {"follow_up_context": follow_up_context})
             rule_latency = (time.perf_counter() - rule_start) * 1000.0
@@ -86,7 +122,7 @@ class ChatbotAnswerEngine:
                     "reason": "Kế thừa định tuyến từ câu hỏi trước (Follow-up)"
                 })
             else:
-                gate_res = self.domain_gate.classify(user_question)
+                gate_res = self.domain_gate.classify(rewritten_question)
                 route = gate_res.get("route", "OUT_OF_SCOPE")
                 self.observability_logger.log_event(trace_id, "domain_gate", {
                     "route": route,
@@ -133,7 +169,7 @@ class ChatbotAnswerEngine:
                 # Gọi general answer engine nếu có
                 if self.general_answer_engine:
                     try:
-                        gk_answer = self.general_answer_engine.answer(user_question)
+                        gk_answer = self.general_answer_engine.answer(rewritten_question)
                     except Exception as e:
                         errors_list.append({"code": "GK_ENGINE_FAILED", "message": str(e)})
                         
@@ -143,7 +179,7 @@ class ChatbotAnswerEngine:
                         system_prompt = self.general_prompt_tmpl
                         raw_res = call_llm(
                             system_prompt=system_prompt,
-                            user_prompt=f"Câu hỏi: {user_question}",
+                            user_prompt=f"Câu hỏi: {rewritten_question}",
                             temperature=0.2,
                             response_json=True
                         )
@@ -184,16 +220,16 @@ class ChatbotAnswerEngine:
                 planner_start = time.perf_counter()
                 self.observability_logger.log_event(trace_id, "planner", {"status": "generating"})
                 
-                query_plan = self.query_cache.get_query_plan(user_question)
+                query_plan = self.query_cache.get_query_plan(rewritten_question)
                 cache_plan_hit = False
                 
                 if query_plan:
                     cache_plan_hit = True
                     self.observability_logger.log_event(trace_id, "planner", {"cache_hit": True, "query_plan": query_plan})
                 else:
-                    query_plan = self.query_planner.plan(user_question)
+                    query_plan = self.query_planner.plan(rewritten_question, original_question=user_question)
                     if query_plan and query_plan.get("task_type") != "unknown":
-                        self.query_cache.set_query_plan(user_question, query_plan)
+                        self.query_cache.set_query_plan(rewritten_question, query_plan)
                 
                 # Áp dụng kế thừa follow-up nếu phát hiện
                 if follow_up_context:
@@ -213,6 +249,9 @@ class ChatbotAnswerEngine:
                 
                 # Chuyển tiếp sang Clarification Engine nếu có lỗi nghiêm trọng
                 if has_severe_error or query_plan.get("task_type") == "unknown":
+                    print(f"DEBUG: has_severe_error={has_severe_error}, task_type={query_plan.get('task_type')}")
+                    print(f"DEBUG: errors={errors}")
+                    print(f"DEBUG: query_plan={json.dumps(query_plan, ensure_ascii=False)}")
                     errs_to_clarify = errors if errors else [{"code": "LOW_RETRIEVAL_CONFIDENCE", "message": "Độ tin cậy thấp"}]
                     clarification = self.clarification_engine.build_clarification(errs_to_clarify, {"query_plan": query_plan})
                     clarification["route"] = "CLARIFICATION_NEEDED"
@@ -315,19 +354,43 @@ class ChatbotAnswerEngine:
                     # Ghi nhận kết quả vào cache
                     self.query_cache.set_sql_result(query_plan, result)
                     
+                # Chart Planning & Validation
+                data = result.get("data", [])
+                chart_spec = None
+                chart_fig = None
+                if data and query_plan.get("output_mode") == "chart":
+                    if self.visualization_planner and self.chart_validator and self.chart_renderer:
+                        schema = result.get("schema", {})
+                        spec = self.visualization_planner.plan_chart(query_plan, schema)
+                        is_valid, err_msg = self.chart_validator.validate(spec, data)
+                        
+                        if not is_valid:
+                            self.observability_logger.log_event(trace_id, "chart_validation", {"status": "failed", "fallback": "None", "reason": err_msg})
+                            # Nếu validation thất bại, không cố ép render biểu đồ mặc định nữa để tránh lỗi rỗng
+                            chart_spec = None
+                            chart_fig = None
+                        else:
+                            chart_spec = spec
+                            chart_fig = self.chart_renderer.render(spec, data)
+
                 # 6. Định dạng câu trả lời tự nhiên và đo thời gian
                 format_start = time.perf_counter()
                 self.observability_logger.log_event(trace_id, "answer_formatting", {"status": "formatting"})
                 cache_meta = result.get("cache_metadata") if cache_hit else None
                 
                 final_answer = format_dataset_answer(
-                    user_question=user_question,
+                    user_question=rewritten_question,
                     query_plan=query_plan,
                     sql=sql,
                     result=result,
                     cache_metadata=cache_meta
                 )
                 final_answer["route"] = route
+                final_answer["rewritten_question"] = rewritten_question
+                if chart_spec:
+                    final_answer["chart_spec"] = chart_spec
+                if chart_fig:
+                    final_answer["chart_fig"] = chart_fig
                 format_latency = (time.perf_counter() - format_start) * 1000.0
                 self.observability_logger.log_latency(trace_id, "answer_formatting", format_latency)
                 
@@ -478,6 +541,13 @@ def format_dataset_answer(
         output["warnings"].append({"code": "EMPTY_RESULT", "message": "Truy vấn trả về kết quả rỗng."})
         return output
         
+    # Kiểm tra trường hợp kết quả trả về từ hàm tổng hợp (SUM, AVG) rỗng (toàn NULL)
+    is_empty_agg = len(data) == 1 and all(v is None or pd.isna(v) for v in data[0].values())
+    if is_empty_agg:
+        output["answer"] = "Hiện tại không có dữ liệu phù hợp với yêu cầu của bạn."
+        output["warnings"].append({"code": "EMPTY_RESULT", "message": "Truy vấn trả về kết quả rỗng (NULL)."})
+        return output
+        
     # 3. Tạo bảng kết quả dưới dạng Markdown String
     df = pd.DataFrame(data)
     try:
@@ -500,6 +570,7 @@ def format_dataset_answer(
         "2. Trả lời ngắn gọn, chính xác, trực diện câu hỏi.\n"
         "3. Trình bày rõ ràng, dễ hiểu. Dùng bảng markdown hoặc liệt kê gạch đầu dòng khi có nhiều đơn vị.\n"
         "4. Không đưa ra nhận định chủ quan ngoài phạm vi dữ liệu cung cấp.\n"
+        "5. BẮT BUỘC phải đưa các con số, giá trị, điểm số quan trọng từ kết quả truy vấn vào câu trả lời. Tuyệt đối không được bỏ sót con số/chỉ số mà người dùng đang hỏi (ví dụ: điểm b1, điểm b2, số lượng hộ...).\n"
     )
     
     # Gắn thông tin cache nếu hit

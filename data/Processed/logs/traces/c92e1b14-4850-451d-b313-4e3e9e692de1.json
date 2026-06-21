@@ -1,0 +1,178 @@
+{
+  "trace_id": "c92e1b14-4850-451d-b313-4e3e9e692de1",
+  "timestamp": "2026-06-19 15:50:41",
+  "user_question": "gia đình ông/bà PHẠM VĂN LONG có bị nghèo do thiếu vốn không?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [],
+    "dimensions": [
+      "lack_capital"
+    ],
+    "filters": [
+      {
+        "field": "host_name",
+        "operator": "=",
+        "value": "PHẠM VĂN LONG"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [
+      "Metric 'số lượng điểm thiếu vốn' không có trong danh sách Metric candidates, đang chuyển sang dạng detail_query dựa trên dimension 'lack_capital'"
+    ],
+    "original_question": "Gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm thiếu vốn năm 2024",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2721.4640000001964,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 10.185499999352032
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà PHẠM VĂN LONG có bị nghèo do thiếu vốn không?",
+      "rewritten_question": "Gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm thiếu vốn năm 2024",
+      "latency_ms": 947.1448000003875
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.06539999958476983
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 254.5765000013489
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1072.327400001086
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [],
+        "dimensions": [
+          "lack_capital"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "PHẠM VĂN LONG"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Metric 'số lượng điểm thiếu vốn' không có trong danh sách Metric candidates, đang chuyển sang dạng detail_query dựa trên dimension 'lack_capital'"
+        ],
+        "original_question": "Gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm thiếu vốn năm 2024",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "69165b5244fd0dfb3e836ac0835e5e0c",
+      "latency_ms": 0.07310000000870787
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024",
+      "latency_ms": 0.05400000009103678
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024",
+      "latency_ms": 2.0653000010497635
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 427.83310000049823
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.4722000014444347
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Gia đình ông PHẠM VĂN LONG không có điểm thiếu vốn trong năm 2024 (giá trị `lack_capital` là False).",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [],
+        "dimensions": [
+          "lack_capital"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "PHẠM VĂN LONG"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Metric 'số lượng điểm thiếu vốn' không có trong danh sách Metric candidates, đang chuyển sang dạng detail_query dựa trên dimension 'lack_capital'"
+        ],
+        "original_question": "Gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm thiếu vốn năm 2024",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024",
+      "result_preview": [
+        {
+          "lack_capital": false,
+          "host_name": "PHẠM VĂN LONG",
+          "household_id": "74",
+          "district": "Huyện Cư Jút",
+          "commune": "Xã Trúc Sơn"
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm thiếu vốn năm 2024"
+    }
+  }
+}

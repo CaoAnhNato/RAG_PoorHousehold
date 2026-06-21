@@ -1,0 +1,51 @@
+{
+  "rules": [
+    {
+      "condition": {
+        "time_dimension": true,
+        "max_dimensions": 1,
+        "metrics": 1
+      },
+      "chart_type": "line"
+    },
+    {
+      "condition": {
+        "dimensions": 1,
+        "metrics": 1,
+        "is_top_k": true
+      },
+      "chart_type": "horizontal_bar"
+    },
+    {
+      "condition": {
+        "dimensions": 1,
+        "metrics": 1,
+        "is_percentage": true
+      },
+      "chart_type": "pie"
+    },
+    {
+      "condition": {
+        "dimensions": 1,
+        "metrics": 1
+      },
+      "chart_type": "bar"
+    },
+    {
+      "condition": {
+        "dimensions": 2,
+        "metrics": 1
+      },
+      "chart_type": "grouped_bar"
+    },
+    {
+      "condition": {
+        "dimensions": 2,
+        "metrics": 1,
+        "is_percentage": true
+      },
+      "chart_type": "stacked_bar"
+    }
+  ],
+  "default_chart_type": "bar"
+}

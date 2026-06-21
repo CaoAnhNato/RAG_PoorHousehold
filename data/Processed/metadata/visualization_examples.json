@@ -1,0 +1,35 @@
+[
+  {
+    "query": "Vẽ biểu đồ tỷ lệ hộ nghèo theo huyện năm 2024",
+    "query_plan": {
+      "intent": "aggregate_query",
+      "dimensions": ["district"],
+      "metrics": ["poor_rate"],
+      "filters": {"year": 2024},
+      "output_mode": "chart"
+    },
+    "expected_specification": {
+      "chart_type": "bar",
+      "title": "Tỷ lệ hộ nghèo theo huyện năm 2024",
+      "x": "district",
+      "y": "poor_rate",
+      "unit": "%"
+    }
+  },
+  {
+    "query": "Biểu đồ hộ nghèo qua các năm",
+    "query_plan": {
+      "intent": "aggregate_query",
+      "dimensions": ["year"],
+      "metrics": ["count"],
+      "output_mode": "chart"
+    },
+    "expected_specification": {
+      "chart_type": "line",
+      "title": "Số lượng hộ nghèo qua các năm",
+      "x": "year",
+      "y": "count",
+      "unit": "hộ"
+    }
+  }
+]

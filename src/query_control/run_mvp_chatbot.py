@@ -38,7 +38,7 @@ def print_welcome_message() -> None:
     print("=" * 70)
 
 def main() -> None:
-    processed_dir = PROJECT_ROOT / "Processed"
+    processed_dir = PROJECT_ROOT / "data" / "Processed"
     metadata_dir = processed_dir / "metadata" / "query_control"
     
     schema_graph_path = metadata_dir / "schema_graph.json"
@@ -186,6 +186,13 @@ def main() -> None:
                 pending_options = response.get("options", [])
                 for i, opt in enumerate(pending_options, 1):
                     print(f"  [{i}] {opt['label']}")
+                    
+                if debug_mode:
+                    print("\n" + "-" * 40)
+                    print("[DEBUG INFO - CLARIFICATION]")
+                    print(f"- Error codes: {response.get('error_codes')}")
+                    print(f"- Reason: {response.get('reason')}")
+                    print("-" * 40)
                 continue
                 
             # Hiển thị kết quả bình thường

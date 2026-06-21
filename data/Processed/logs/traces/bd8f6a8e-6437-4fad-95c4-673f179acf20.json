@@ -1,0 +1,183 @@
+{
+  "trace_id": "bd8f6a8e-6437-4fad-95c4-673f179acf20",
+  "timestamp": "2026-06-19 15:49:04",
+  "user_question": "Đắk Mil năm 2024 có bao nhiêu hộ cận nghèo?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "near_poor_household_count"
+    ],
+    "dimensions": [],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      },
+      {
+        "field": "district",
+        "operator": "=",
+        "value": "Huyện Đắk Mil"
+      },
+      {
+        "field": "poverty_status",
+        "operator": "=",
+        "value": "Hộ cận nghèo"
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Năm 2024, Huyện Đắk Mil có bao nhiêu hộ cận nghèo",
+    "output_mode": "text"
+  },
+  "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") = 'huyện đắk mil' AND LOWER(\"classify\") = 'hộ cận nghèo' ORDER BY near_poor_household_count DESC",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2569.3948000007367,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.6181999999389518
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Đắk Mil năm 2024 có bao nhiêu hộ cận nghèo?",
+      "rewritten_question": "Năm 2024, Huyện Đắk Mil có bao nhiêu hộ cận nghèo",
+      "latency_ms": 866.8484999998327
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": "Huyện Đắk Mil",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.06769999890821055
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 297.0230000009906
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1023.929599999974
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "near_poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Đắk Mil"
+          },
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ cận nghèo"
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2024, Huyện Đắk Mil có bao nhiêu hộ cận nghèo",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "62aac6d90b368b747de7362c9a950e22",
+      "latency_ms": 0.17209999896294903
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") = 'huyện đắk mil' AND LOWER(\"classify\") = 'hộ cận nghèo' ORDER BY near_poor_household_count DESC",
+      "latency_ms": 0.26900000011664815
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") = 'huyện đắk mil' AND LOWER(\"classify\") = 'hộ cận nghèo' ORDER BY near_poor_household_count DESC",
+      "latency_ms": 4.409400000440655
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 357.1109999993496
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 2.639299998918432
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Năm 2024, huyện Đắk Mil có 466 hộ cận nghèo.",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "near_poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Đắk Mil"
+          },
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ cận nghèo"
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2024, Huyện Đắk Mil có bao nhiêu hộ cận nghèo",
+        "output_mode": "text"
+      },
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") = 'huyện đắk mil' AND LOWER(\"classify\") = 'hộ cận nghèo' ORDER BY near_poor_household_count DESC",
+      "result_preview": [
+        {
+          "near_poor_household_count": 466
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Năm 2024, Huyện Đắk Mil có bao nhiêu hộ cận nghèo"
+    }
+  }
+}

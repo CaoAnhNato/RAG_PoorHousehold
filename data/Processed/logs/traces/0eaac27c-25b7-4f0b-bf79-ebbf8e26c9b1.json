@@ -1,0 +1,144 @@
+{
+  "trace_id": "0eaac27c-25b7-4f0b-bf79-ebbf8e26c9b1",
+  "timestamp": "2026-06-19 15:49:26",
+  "user_question": "Trong nhóm hộ nghèo ở Đắk RLấp năm 2024, số hộ không có BHYT là bao nhiêu?",
+  "route": "CLARIFICATION_NEEDED",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 2609.50849999972,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 2.171299998735776
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Trong nhóm hộ nghèo ở Đắk RLấp năm 2024, số hộ không có BHYT là bao nhiêu?",
+      "rewritten_question": "Năm 2024, Huyện Đắk RLấp có bao nhiêu hộ nghèo thiếu bảo hiểm y tế",
+      "latency_ms": 1039.3786000004184
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": "Huyện Đắk RLấp",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.055500000598840415
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 311.36680000054184
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1251.8923999996332
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "unknown",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Đắk RLấp"
+          },
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ nghèo"
+          },
+          {
+            "field": "has_health_insurance",
+            "operator": "=",
+            "value": false
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Metric 'poor_household_count' không có sẵn trong Metric candidates nhưng được suy luận từ Business term 'hộ nghèo'.",
+          "Điều kiện 'thiếu bảo hiểm y tế' chưa có trong Metric/Dimension candidates.",
+          "Trường lọc 'has_health_insurance' không hợp lệ (không thuộc dimensions, measures hay metrics)."
+        ],
+        "original_question": "Năm 2024, Huyện Đắk RLấp có bao nhiêu hộ nghèo thiếu bảo hiểm y tế",
+        "output_mode": "text"
+      }
+    },
+    "final": {
+      "needs_clarification": true,
+      "message": "Câu hỏi của bạn cần thêm một số thông tin để mình có thể truy vấn chính xác. Vui lòng chọn một trong các gợi ý dưới đây:",
+      "options": [
+        {
+          "label": "Thống kê số lượng hộ nghèo theo huyện năm 2024",
+          "value": {
+            "metrics": [
+              "poor_household_count"
+            ],
+            "dimensions": [
+              "district"
+            ],
+            "filters": [
+              {
+                "field": "year",
+                "operator": "=",
+                "value": 2024
+              }
+            ]
+          }
+        },
+        {
+          "label": "Thống kê số lượng hộ cận nghèo theo huyện năm 2024",
+          "value": {
+            "metrics": [
+              "near_poor_household_count"
+            ],
+            "dimensions": [
+              "district"
+            ],
+            "filters": [
+              {
+                "field": "year",
+                "operator": "=",
+                "value": 2024
+              }
+            ]
+          }
+        },
+        {
+          "label": "Hỏi đáp kiến thức chung về hộ nghèo",
+          "value": {
+            "route_override": "GENERAL_KNOWLEDGE"
+          }
+        }
+      ],
+      "reason": "Câu hỏi chưa rõ ràng hoặc lỗi kiểm định kế hoạch",
+      "error_codes": [
+        "UNKNOWN_TASK_TYPE"
+      ],
+      "route": "CLARIFICATION_NEEDED"
+    }
+  }
+}

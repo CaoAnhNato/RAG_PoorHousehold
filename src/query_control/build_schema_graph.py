@@ -13,8 +13,8 @@ import datetime as dt
 from typing import Any
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
-PROCESSED_DIR = PROJECT_ROOT / "Intern" / "Processed"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROCESSED_DIR = PROJECT_ROOT / "data" / "Processed"
 METADATA_DIR = PROCESSED_DIR / "metadata"
 QUERY_CONTROL_METADATA_DIR = METADATA_DIR / "query_control"
 REPORT_PATH = QUERY_CONTROL_METADATA_DIR / "metadata_build_report.md"
@@ -197,7 +197,7 @@ def main() -> None:
     # 5. Xây dựng Schema Graph cấu trúc JSON
     schema_graph = {
         "version": "1.0",
-        "root_path": "Intern/Processed",
+        "root_path": "data/Processed",
         "generated_at": dt.datetime.now().isoformat(),
         "nodes": {
             "households": {

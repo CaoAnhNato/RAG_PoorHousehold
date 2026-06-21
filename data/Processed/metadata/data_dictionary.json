@@ -1,0 +1,642 @@
+{
+  "date": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Ngày rà soát theo định dạng dd/mm/yyyy"
+  },
+  "family.hostName": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Chủ hộ"
+  },
+  "family.code": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Mã hộ sau khi xử lý duplicate"
+  },
+  "family.coDanTocTaiCho": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Có/Không về dân tộc tại chỗ"
+  },
+  "family.hostGender": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Giới tính chủ hộ"
+  },
+  "family.numberOfMembers": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Số nhân khẩu"
+  },
+  "quickReview.result": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Kết quả phiếu rà soát nhanh"
+  },
+  "b1Point": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Điểm phiếu B1"
+  },
+  "b2Point": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Điểm phiếu B2"
+  },
+  "classify": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Phân loại hộ"
+  },
+  "reviewer": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Người rà soát"
+  },
+  "processing.duplicate_core_removed": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Dòng thuộc nhóm có duplicate lõi đã bị loại bớt"
+  },
+  "processing.original_family_code": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Mã hộ gốc trước khi thêm hậu tố"
+  },
+  "processing.family_code_was_changed": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Mã hộ có được đổi hậu tố hay không"
+  },
+  "processing.duplicate_code_group_size": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Kích thước nhóm mã hộ trùng"
+  },
+  "processing.note": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Ghi chú xử lý"
+  },
+  "processing.original_date": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Giá trị date gốc"
+  },
+  "processing.source.date": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.source.date"
+  },
+  "processing.date_was_filled": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "processing.date_was_filled"
+  },
+  "processing.date_was_normalized": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Đã chuẩn hóa ngày hay chưa"
+  },
+  "administrative.year": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Năm dữ liệu"
+  },
+  "family.isDTTC": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Có dân tộc tại chỗ"
+  },
+  "administrative.province": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Tỉnh"
+  },
+  "administrative.district": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Huyện/thành phố"
+  },
+  "administrative.commune": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Xã/phường/thị trấn"
+  },
+  "administrative.village_or_group": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Thôn/bon/tổ dân phố"
+  },
+  "classify.original": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "classify.original"
+  },
+  "administrative.areaType": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "administrative.areaType"
+  },
+  "administrative.areaTypeSource": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "administrative.areaTypeSource"
+  },
+  "administrative.areaTypeConfidence": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "administrative.areaTypeConfidence"
+  },
+  "reviewer.role": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "reviewer.role"
+  },
+  "reviewer.source": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "reviewer.source"
+  },
+  "review.reviewType": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "review.reviewType"
+  },
+  "review.reviewPeriod": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "review.reviewPeriod"
+  },
+  "family.ethnicity": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Dân tộc chủ hộ"
+  },
+  "family.isKinh": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hộ Kinh"
+  },
+  "family.isDTTS": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hộ DTTS"
+  },
+  "processing.original_family_hostName": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.original_family_hostName"
+  },
+  "processing.source.family.hostName": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.source.family.hostName"
+  },
+  "processing.family_hostName_was_filled": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "processing.family_hostName_was_filled"
+  },
+  "processing.family_hostName_rule": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.family_hostName_rule"
+  },
+  "processing.original_family_hostGender": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.original_family_hostGender"
+  },
+  "processing.source.family.hostGender": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.source.family.hostGender"
+  },
+  "processing.family_hostGender_was_filled": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "processing.family_hostGender_was_filled"
+  },
+  "processing.family_hostGender_rule": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.family_hostGender_rule"
+  },
+  "processing.original_family_coDanTocTaiCho": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.original_family_coDanTocTaiCho"
+  },
+  "processing.source.family.coDanTocTaiCho": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.source.family.coDanTocTaiCho"
+  },
+  "processing.family_coDanTocTaiCho_was_filled": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "processing.family_coDanTocTaiCho_was_filled"
+  },
+  "processing.family_coDanTocTaiCho_rule": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.family_coDanTocTaiCho_rule"
+  },
+  "family.isPoorNearPoorDTTS": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "family.isPoorNearPoorDTTS"
+  },
+  "processing.original_family_numberOfMembers": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "processing.original_family_numberOfMembers"
+  },
+  "processing.source.family.numberOfMembers": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.source.family.numberOfMembers"
+  },
+  "processing.family_numberOfMembers_was_filled": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "processing.family_numberOfMembers_was_filled"
+  },
+  "processing.family_numberOfMembers_rule": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.family_numberOfMembers_rule"
+  },
+  "classify.legalRecomputed": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "classify.legalRecomputed"
+  },
+  "classify.final": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "classify.final"
+  },
+  "classify.consistencyStatus": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "classify.consistencyStatus"
+  },
+  "classify.consistencyReason": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "classify.consistencyReason"
+  },
+  "deprivation.totalCount": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Tổng số chỉ số thiếu hụt"
+  },
+  "processing.original_b1Point": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.original_b1Point"
+  },
+  "processing.source.b1Point": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.source.b1Point"
+  },
+  "processing.b1Point_was_filled": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "processing.b1Point_was_filled"
+  },
+  "processing.b1Point_rule": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.b1Point_rule"
+  },
+  "processing.original_b2Point": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.original_b2Point"
+  },
+  "processing.source.b2Point": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.source.b2Point"
+  },
+  "processing.source.deprivation.totalCount": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.source.deprivation.totalCount"
+  },
+  "processing.b2Point_was_filled": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "processing.b2Point_was_filled"
+  },
+  "processing.b2Point_rule": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.b2Point_rule"
+  },
+  "family.hostBirthDate": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Ngày sinh chủ hộ"
+  },
+  "family.hostBirthYear": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Năm sinh chủ hộ"
+  },
+  "family.povertyStatusDetail": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Trạng thái nghèo chi tiết"
+  },
+  "family.nearPovertyStatusDetail": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Trạng thái cận nghèo chi tiết"
+  },
+  "family.isAgricultureForestryFisherySaltMediumLivingStandard": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hộ có mức sống trung bình"
+  },
+  "family.hasNoLaborCapacity": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hộ không có khả năng lao động"
+  },
+  "family.hasRevolutionMeritPolicy": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hộ có chính sách người có công"
+  },
+  "children.totalCount": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Tổng số trẻ em"
+  },
+  "children.lackHealthInsuranceCount": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Số trẻ thiếu BHYT"
+  },
+  "children.nutritionDeprivedCount": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Số trẻ thiếu dinh dưỡng"
+  },
+  "children.schoolAttendanceDeprivedCount": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "Số trẻ thiếu đi học"
+  },
+  "deprivation.employment": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.dependentPerson": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.nutrition": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.healthInsurance": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.adultEducation": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.childSchoolAttendance": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.housingQuality": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.housingArea": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.cleanWater": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.hygienicToilet": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.telecommunication": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "deprivation.informationAccessAssets": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Chỉ số thiếu hụt"
+  },
+  "reason.lackProductionLand": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.lackCapital": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.lackLabor": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.lackProductionTools": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.lackProductionKnowledge": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.lackLaborSkill": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.illnessOrAccident": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "reason.other": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Nguyên nhân nghèo/cận nghèo"
+  },
+  "support.health": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hỗ trợ y tế"
+  },
+  "support.education": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hỗ trợ giáo dục"
+  },
+  "support.production": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hỗ trợ sản xuất"
+  },
+  "support.credit": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hỗ trợ tín dụng"
+  },
+  "support.housing": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hỗ trợ nhà ở"
+  },
+  "support.other": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Hỗ trợ khác"
+  },
+  "transition.beginningClassify": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Phân loại đầu kỳ"
+  },
+  "transition.endingClassify": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Phân loại cuối kỳ"
+  },
+  "transition.poorChangeType": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Kiểu biến động hộ nghèo"
+  },
+  "transition.nearPoorChangeType": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Kiểu biến động hộ cận nghèo"
+  },
+  "transition.isEscapedPoverty": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "transition.isEscapedPoverty"
+  },
+  "family.membersGenerated": {
+    "table": "fact_household",
+    "dtype": "boolean",
+    "description": "Đã sinh member file"
+  },
+  "family.membersFile": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "Đường dẫn file member"
+  },
+  "family.membersJson": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "JSON danh sách thành viên"
+  },
+  "member.householdOrder": {
+    "table": "fact_household",
+    "dtype": "integer",
+    "description": "member.householdOrder"
+  },
+  "processing.source.family.code": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.source.family.code"
+  },
+  "processing.family_code_rule": {
+    "table": "fact_household",
+    "dtype": "str",
+    "description": "processing.family_code_rule"
+  },
+  "member.orderInHousehold": {
+    "table": "fact_member",
+    "dtype": "integer",
+    "description": "member.orderInHousehold"
+  },
+  "member.fullName": {
+    "table": "fact_member",
+    "dtype": "str",
+    "description": "member.fullName"
+  },
+  "member.gender": {
+    "table": "fact_member",
+    "dtype": "str",
+    "description": "member.gender"
+  },
+  "member.birthDate": {
+    "table": "fact_member",
+    "dtype": "str",
+    "description": "member.birthDate"
+  },
+  "member.birthYear": {
+    "table": "fact_member",
+    "dtype": "integer",
+    "description": "member.birthYear"
+  },
+  "member.ethnicity": {
+    "table": "fact_member",
+    "dtype": "str",
+    "description": "member.ethnicity"
+  },
+  "member.relationshipToHost": {
+    "table": "fact_member",
+    "dtype": "str",
+    "description": "member.relationshipToHost"
+  },
+  "member.isHost": {
+    "table": "fact_member",
+    "dtype": "boolean",
+    "description": "member.isHost"
+  },
+  "member.isChild": {
+    "table": "fact_member",
+    "dtype": "boolean",
+    "description": "member.isChild"
+  },
+  "member.hasHealthInsurance": {
+    "table": "fact_member",
+    "dtype": "boolean",
+    "description": "member.hasHealthInsurance"
+  },
+  "member.nutritionDeprived": {
+    "table": "fact_member",
+    "dtype": "boolean",
+    "description": "member.nutritionDeprived"
+  },
+  "member.schoolAttendanceDeprived": {
+    "table": "fact_member",
+    "dtype": "boolean",
+    "description": "member.schoolAttendanceDeprived"
+  }
+}

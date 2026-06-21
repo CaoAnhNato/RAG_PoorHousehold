@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Module Query Planner thực thi Rule Extraction, gọi ngữ nghĩa để lấy candidates,
 dựng prompt tinh gọn cho LLM Planner, sinh và kiểm định Canonical Query Plan.
@@ -14,7 +14,7 @@ from typing import Any
 from jsonschema import validate as json_validate
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-PROCESSED_DIR = PROJECT_ROOT / "Processed"
+PROCESSED_DIR = PROJECT_ROOT / "data" / "Processed"
 METADATA_DIR = PROCESSED_DIR / "metadata"
 QUERY_CONTROL_METADATA_DIR = METADATA_DIR / "query_control"
 
@@ -186,10 +186,22 @@ class QueryPlanner:
             "warnings": ret.get("warnings", [])
         }
         
-    def plan(self, user_question: str) -> dict[str, Any]:
+    def plan(self, user_question: str, canonical_slots: dict[str, Any] = None, original_question: str = None) -> dict[str, Any]:
         """Điều phối toàn bộ quá trình lập kế hoạch truy vấn và kiểm định kế hoạch."""
         # 1. Rút trích luật
         rule_output = self.apply_rule_extraction(user_question)
+        
+        # Ghi đè bằng canonical_slots từ pipeline v2.3 nếu có
+        if canonical_slots:
+            if canonical_slots.get("time_context"):
+                rule_output["years"] = canonical_slots["time_context"]
+            
+            location_ctx = canonical_slots.get("location_context", {})
+            if location_ctx.get("district"):
+                rule_output["detected_district"] = location_ctx["district"][0]
+            
+            rule_output["extracted_metrics"] = canonical_slots.get("metrics", [])
+            rule_output["logical_conditions"] = canonical_slots.get("logical_conditions", [])
         
         # 2. Truy xuất ngữ nghĩa từ Qdrant
         ret_context = self.build_planner_context(user_question, rule_output)
@@ -224,7 +236,7 @@ class QueryPlanner:
                 system_prompt=system_prompt,
                 user_prompt=f"Câu hỏi: {user_question}",
                 temperature=0.1,
-                max_tokens=250, # Giới hạn tối ưu max_tokens sinh
+                max_tokens=800, # Giới hạn tối ưu max_tokens sinh (đã tăng để tránh cắt cụt JSON)
                 response_json=True
             )
             llm_plan = clean_json_response(raw_res)
@@ -242,6 +254,7 @@ class QueryPlanner:
             
         # 4. Chuẩn hoá và sửa chữa kế hoạch tự động
         ret_context["user_question"] = user_question
+        ret_context["original_question"] = original_question or user_question
         normalized_plan = self.normalize_llm_output(llm_plan, rule_output, ret_context)
         
         # 5. Kiểm định kế hoạch
@@ -284,6 +297,8 @@ class QueryPlanner:
             "near_poor_household_rate": "near_poor_rate",
             "avg_age": "avg_age",
             "avg_member_age": "avg_age",
+            "household_member_count": "household_member_count",
+            "member_count": "member_count",
         }
 
         DIM_NORM_MAP = {
@@ -294,23 +309,123 @@ class QueryPlanner:
             "household_type": "poverty_status",
             "district": "district",
             "district_name": "district",
+            "administrative.district": "district",
             "commune": "commune",
             "commune_name": "commune",
+            "administrative.commune": "commune",
             "year": "year",
+            "administrative.year": "year",
             "host_name": "host_name",
-            "household_id": "household_id"
+            "household_name": "host_name",
+            "household_owner_name": "host_name",
+            "household_head_name": "host_name",
+            "head_of_household_name": "host_name",
+            "chủ hộ": "host_name",
+            "family.hostname": "host_name",
+            "household_id": "household_id",
+            "full_name": "full_name",
+            "member.fullName": "full_name",
+            "family.ethnicity": "ethnicity",
+            "ethnicity": "ethnicity",
+            "family.isdtts": "is_dtts",
+            "isdtts": "is_dtts",
+            "is_dtts": "is_dtts",
+            "family.hostbirthyear": "age_group",
+            "hostbirthyear": "age_group",
+            "family.povertystatusdetail": "poverty_detail",
+            "povertystatusdetail": "poverty_detail",
+            "family.nearpovertystatusdetail": "near_poverty_detail",
+            "nearpovertystatusdetail": "near_poverty_detail",
+            "family.isagricultureforestryfisherysaltmediumlivingstandard": "medium_living_standard",
+            "isagricultureforestryfisherysaltmediumlivingstandard": "medium_living_standard",
+            "deprivation.cleanwater": "clean_water",
+            "cleanwater": "clean_water",
+            "clean_water": "clean_water",
+            "deprivation.hygienictoilet": "hygienic_toilet",
+            "hygienictoilet": "hygienic_toilet",
+            "hygienic_toilet": "hygienic_toilet",
+            "reason.lackproductionland": "lack_production_land",
+            "lackproductionland": "lack_production_land",
+            "lack_production_land": "lack_production_land",
+            "reason.lackcapital": "lack_capital",
+            "lackcapital": "lack_capital",
+            "lack_capital": "lack_capital",
+            "reason.lacklabor": "lack_labor",
+            "lacklabor": "lack_labor",
+            "lack_labor": "lack_labor",
+            "reason.illnessoraccident": "illness_accident",
+            "illnessoraccident": "illness_accident",
+            "illness_accident": "illness_accident",
+            "family.hasnolaborcapacity": "has_no_labor",
+            "hasnolaborcapacity": "has_no_labor",
+            "has_no_labor": "has_no_labor",
+            "family.hasrevolutionmeritpolicy": "has_revolution_merit",
+            "hasrevolutionmeritpolicy": "has_revolution_merit",
+            "has_revolution_merit": "has_revolution_merit"
         }
 
         # Nhận diện đặc biệt cho câu hỏi gộp cả nghèo + cận nghèo
         if rule_output.get("has_both_poverty_types"):
-            plan["metrics"] = ["household_count"]
+            plan["metrics"] = ["poor_household_count", "near_poor_household_count"]
+            
+            # Đảm bảo có bộ lọc cho cả 2 loại hộ (đặc biệt quan trọng cho detail_query)
+            existing_filters = plan.get("filters", [])
+            has_poverty_filter = False
+            for f in existing_filters:
+                if isinstance(f, dict) and f.get("field") in ["poverty_status", "classify", "classification_status"]:
+                    f["field"] = "poverty_status"
+                    f["operator"] = "IN"
+                    f["value"] = ["Hộ nghèo", "Hộ cận nghèo"]
+                    has_poverty_filter = True
+                    
+            if not has_poverty_filter:
+                existing_filters.append({
+                    "field": "poverty_status",
+                    "operator": "IN",
+                    "value": ["Hộ nghèo", "Hộ cận nghèo"]
+                })
+            plan["filters"] = existing_filters
         
         # Nếu rule_extractor tin cậy phát hiện là detail_query (qua từ khóa danh sách, liệt kê) thì ghi đè task_type của LLM
-        if rule_output.get("task_type") == "detail_query" or any(w in user_question.lower() for w in ["danh sách", "liệt kê", "chi tiết"]):
+        # Trừ khi đây là topk_query (có chứa limit hoặc từ khoá top) hoặc rõ ràng mang ý nghĩa tập hợp (tổng, tỉ lệ, trung bình, v.v.)
+        user_question_lower = user_question.lower()
+        is_topk = rule_output.get("task_type") == "topk_query" or plan.get("task_type") == "topk_query" or "top" in user_question_lower
+        is_aggregate_intent = any(w in user_question_lower for w in ["tổng", "tỉ lệ", "tỷ lệ", "trung bình", "số lượng", "bao nhiêu"])
+        
+        if not is_topk and not is_aggregate_intent and (rule_output.get("task_type") == "detail_query" or any(w in user_question_lower for w in ["danh sách", "liệt kê", "chi tiết"])):
             plan["task_type"] = "detail_query"
             if not plan.get("dimensions"):
                 plan["dimensions"] = ["household_id", "host_name"]
-            plan["metrics"] = []
+            
+            # Giữ lại các measures/metrics mà user muốn xem chi tiết bằng cách đẩy vào dimensions
+            raw_measures_to_add = []
+            metrics_to_keep = []
+            for m in plan.get("metrics", []):
+                if m in ["avg_b1_score", "avg_b1", "b1_score"]:
+                    raw_measures_to_add.append("b1_score")
+                elif m in ["avg_b2_score", "avg_b2", "b2_score"]:
+                    raw_measures_to_add.append("b2_score")
+                elif m in ["avg_age", "age_group"]:
+                    raw_measures_to_add.append("age_group")
+                elif m in ["poor_household_count", "near_poor_household_count"]:
+                    # Nếu user hỏi về liệt kê hộ nghèo, cần hiển thị poverty_status
+                    raw_measures_to_add.append("poverty_status")
+                else:
+                    metrics_to_keep.append(m)
+            
+            for m in raw_measures_to_add:
+                if m not in plan["dimensions"]:
+                    plan["dimensions"].append(m)
+                    
+            plan["metrics"] = metrics_to_keep
+
+            
+        # Determine output_mode for visualization
+        original_question_lower = ret_context.get("original_question", user_question).lower()
+        if any(w in original_question_lower for w in ["biểu đồ", "đồ thị", "vẽ", "chart", "graph", "trực quan"]):
+            plan["output_mode"] = "chart"
+        else:
+            plan["output_mode"] = plan.get("output_mode", "text")
         
         # Tự động điều chỉnh metrics cho các câu hỏi tỷ lệ (ratio_query)
         if "tỷ lệ" in user_question.lower() or "tỉ lệ" in user_question.lower():
@@ -330,6 +445,24 @@ class QueryPlanner:
         if plan.get("task_type") == "unknown" or not plan.get("task_type"):
             plan["task_type"] = rule_output.get("task_type", "aggregate_query")
             
+        # Bổ sung thông tin từ canonical_slots (extracted_metrics) đúng chỗ
+        current_metrics = plan.get("metrics") or []
+        current_dims = plan.get("dimensions") or []
+        extracted_metrics = rule_output.get("extracted_metrics", [])
+        for em in extracted_metrics:
+            em_lower = em.lower()
+            if em_lower in METRIC_NORM_MAP:
+                mapped_m = METRIC_NORM_MAP[em_lower]
+                if mapped_m not in current_metrics:
+                    current_metrics.append(mapped_m)
+            elif em_lower in DIM_NORM_MAP:
+                mapped_d = DIM_NORM_MAP[em_lower]
+                if mapped_d not in current_dims:
+                    current_dims.append(mapped_d)
+                    
+        plan["metrics"] = current_metrics
+        plan["dimensions"] = current_dims
+
         # Chuẩn hóa metrics
         norm_metrics = []
         for m in plan.get("metrics", []):
@@ -344,6 +477,14 @@ class QueryPlanner:
             mapped_d = DIM_NORM_MAP.get(d.lower(), d)
             if mapped_d not in norm_dims:
                 norm_dims.append(mapped_d)
+        
+        # Loại bỏ poverty_status nếu có metric đặc thù về nghèo/cận nghèo để tránh lỗi GROUP BY thừa
+        if "poverty_status" in norm_dims:
+            has_specific_poverty_metric = any(m in ["poor_household_count", "near_poor_household_count", "poor_rate", "near_poor_rate"] for m in plan.get("metrics", []))
+            has_explicit_status_grouping = any(w in user_question.lower() for w in ["theo loại hộ", "theo phân loại", "mỗi loại hộ", "trạng thái nghèo", "từng phân loại", "từng loại"])
+            if has_specific_poverty_metric and not has_explicit_status_grouping:
+                norm_dims.remove("poverty_status")
+                
         plan["dimensions"] = norm_dims
 
         # Điền các filter tự động từ Rule Extractor (như Năm) nếu LLM bỏ sót
@@ -358,6 +499,13 @@ class QueryPlanner:
                 continue
             field = f.get("field", "")
             mapped_field = DIM_NORM_MAP.get(field.lower(), field)
+            
+            # Sửa lỗi LLM nhận nhầm chủ hộ thành thành viên chung khi có từ khóa gia đình
+            if mapped_field == "full_name":
+                q_low = user_question.lower()
+                if "gia đình" in q_low or "nhà ông" in q_low or "nhà bà" in q_low or "hộ" in q_low or "ông" in q_low or "bà" in q_low:
+                    mapped_field = "host_name"
+            
             f["field"] = mapped_field
             
             # Chuẩn hóa value của bộ lọc
@@ -458,17 +606,24 @@ class QueryPlanner:
         # 4. Kiểm định sự tồn tại và sẵn sàng của Dimensions
         dimensions = query_plan["dimensions"]
         semantic_dims = self.semantic_layer.get("dimensions", {})
+        semantic_measures = self.semantic_layer.get("measures", {})
         for d in dimensions:
-            if d not in semantic_dims:
+            if d not in semantic_dims and d not in semantic_measures:
                 errors.append({"code": "DIMENSION_NOT_FOUND", "message": f"Dimension '{d}' không tồn tại trong Semantic Layer."})
-            elif semantic_dims[d].get("status") != "ready":
+            elif d in semantic_dims and semantic_dims[d].get("status") != "ready":
                 errors.append({"code": "DIMENSION_NOT_READY", "message": f"Dimension '{d}' đang ở trạng thái chưa sẵn sàng: {semantic_dims[d].get('reason')}"})
+            elif d in semantic_measures and semantic_measures[d].get("status") != "ready":
+                errors.append({"code": "DIMENSION_NOT_READY", "message": f"Measure '{d}' đang ở trạng thái chưa sẵn sàng: {semantic_measures[d].get('reason')}"})
                 
         # 5. Kiểm tra tính hợp lệ của trường lọc
         for f in query_plan["filters"]:
             f_field = f.get("field")
-            if f_field not in semantic_dims and f_field not in self.semantic_layer.get("measures", {}):
-                errors.append({"code": "INVALID_FILTER_FIELD", "message": f"Trường lọc '{f_field}' không thuộc dimensions hay measures hợp lệ."})
+            is_valid_dim = f_field in semantic_dims
+            is_valid_measure = f_field in self.semantic_layer.get("measures", {})
+            is_valid_metric = f_field in self.semantic_layer.get("metrics", {})
+            
+            if not is_valid_dim and not is_valid_measure and not is_valid_metric:
+                errors.append({"code": "INVALID_FILTER_FIELD", "message": f"Trường lọc '{f_field}' không hợp lệ (không thuộc dimensions, measures hay metrics)."})
                 
         # 6. Kiểm định ràng buộc Top-K
         if task_type == "topk_query":
@@ -515,5 +670,18 @@ class QueryPlanner:
             # Thêm limit mặc định cho detail_query
             if repaired["task_type"] == "detail_query" and not repaired.get("limit"):
                 repaired["limit"] = 100
+                
+            # Thêm mặc định năm 2024 khi bị thiếu time filter
+            if code == "MISSING_TIME_FILTER":
+                if "filters" not in repaired or not isinstance(repaired["filters"], list):
+                    repaired["filters"] = []
+                # Check if year is already filtered to avoid duplication
+                has_year = any(f.get("field") == "year" for f in repaired["filters"] if isinstance(f, dict))
+                if not has_year:
+                    repaired["filters"].append({
+                        "field": "year",
+                        "operator": "=",
+                        "value": 2024
+                    })
                 
         return repaired

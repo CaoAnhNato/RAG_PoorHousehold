@@ -24,7 +24,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 dotenv_path = PROJECT_ROOT / ".env"
 load_dotenv(dotenv_path=dotenv_path)
 
-PROCESSED_DIR = PROJECT_ROOT / "Processed"
+PROCESSED_DIR = PROJECT_ROOT / "data" / "Processed"
 METADATA_DIR = PROCESSED_DIR / "metadata"
 QUERY_CONTROL_METADATA_DIR = METADATA_DIR / "query_control"
 SEMANTIC_LAYER_PATH = QUERY_CONTROL_METADATA_DIR / "semantic_layer.json"
@@ -32,20 +32,20 @@ QDRANT_CONFIG_PATH = QUERY_CONTROL_METADATA_DIR / "qdrant_index_config.json"
 REPORT_PATH = QUERY_CONTROL_METADATA_DIR / "metadata_build_report.md"
 
 class EmbeddingClient:
-    """Client sinh Vector Embedding, hỗ trợ cả FPT Embedding API và SentenceTransformers cục bộ."""
+    """Client sinh Vector Embedding, hỗ trợ cả API (như ShopAPI) và SentenceTransformers cục bộ."""
     def __init__(self, model_name: str):
         self.model_name = model_name
-        self.fpt_api_key = os.environ.get("FPT_EMBEDDING_API_KEY", "").strip()
-        self.fpt_base_url = os.environ.get("FPT_BASE_URL", "").strip()
+        self.shopapi_api_key = os.environ.get("SHOPAPI_LLM_API_KEY", "").strip()
+        self.shopapi_base_url = os.environ.get("SHOPAPI_BASE_URL", "").strip()
         
-        self.use_fpt = False
-        # Nếu cấu hình FPT đầy đủ và model không phải local, sử dụng FPT API
-        if self.fpt_api_key and self.fpt_base_url:
-            if model_name == "Vietnamese_Embedding" or ("intfloat" not in model_name and "BAAI" not in model_name):
-                self.use_fpt = True
+        self.use_shopapi = False
+        # Nếu cấu hình ShopAPI đầy đủ và model không phải local, sử dụng API
+        if self.shopapi_api_key and self.shopapi_base_url:
+            if "text-embedding" in model_name or ("intfloat" not in model_name and "BAAI" not in model_name):
+                self.use_shopapi = True
                 
         self.local_model = None
-        if not self.use_fpt:
+        if not self.use_shopapi:
             print(f"Khởi tạo mô hình local SentenceTransformer: {model_name}...")
             try:
                 from sentence_transformers import SentenceTransformer
@@ -56,14 +56,14 @@ class EmbeddingClient:
                 
     def get_dimension(self) -> int:
         """Lấy kích thước vector embedding động từ mô hình."""
-        if self.use_fpt:
+        if self.use_shopapi:
             try:
                 # Gửi thử một từ để lấy kích thước vector trả về
                 test_emb = self.embed_text("test")
                 return len(test_emb)
             except Exception as e:
-                print(f"Lỗi: Không thể gọi FPT Embedding API để lấy kích thước vector. Chi tiết: {e}")
-                print("Vui lòng kiểm tra lại FPT_EMBEDDING_API_KEY và FPT_BASE_URL trong tệp .env.")
+                print(f"Lỗi: Không thể gọi API Embedding để lấy kích thước vector. Chi tiết: {e}")
+                print("Vui lòng kiểm tra lại SHOPAPI_LLM_API_KEY và SHOPAPI_BASE_URL trong tệp .env.")
                 sys.exit(1)
         else:
             return self.local_model.get_sentence_embedding_dimension()
@@ -74,10 +74,11 @@ class EmbeddingClient:
     def embed_batch(self, texts: list[str]) -> list[list[float]]:
         if not texts:
             return []
-        if self.use_fpt:
-            url = f"{self.fpt_base_url}/v1/embeddings"
+        if self.use_shopapi:
+            base = self.shopapi_base_url.rstrip("/")
+            url = f"{base}/embeddings" if base.endswith("/v1") else f"{base}/v1/embeddings"
             headers = {
-                "Authorization": f"Bearer {self.fpt_api_key}",
+                "Authorization": f"Bearer {self.shopapi_api_key}",
                 "Content-Type": "application/json"
             }
             payload = {
@@ -92,7 +93,7 @@ class EmbeddingClient:
                 # Định dạng chuẩn OpenAI: data['data'] = [{'embedding': [...]}, ...]
                 return [item["embedding"] for item in data["data"]]
             except Exception as e:
-                print(f"Lỗi khi gọi FPT Embedding API: {e}")
+                print(f"Lỗi khi gọi API Embedding: {e}")
                 sys.exit(1)
         else:
             embeddings = self.local_model.encode(texts, show_progress_bar=False)
@@ -238,7 +239,7 @@ def main() -> None:
     # Đọc model cấu hình từ biến môi trường nếu có, nếu không lấy từ file config hoặc .env
     embedding_model = os.environ.get("EMBEDDING_MODEL")
     if not embedding_model:
-        embedding_model = os.environ.get("FPT_EMBEDDING_MODEL_NAME", qdrant_config.get("embedding_model"))
+        embedding_model = os.environ.get("SHOPAPI_EMBEDDING", qdrant_config.get("embedding_model"))
         
     qdrant_url = qdrant_config.get("qdrant_url", "http://localhost:6333")
     collection_name = qdrant_config.get("collection_name", "query_control_semantic")

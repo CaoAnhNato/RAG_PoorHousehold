@@ -6,6 +6,8 @@ tabulate
 pyarrow
 requests
 jsonschema
+rapidfuzz
+flashtext
 
 # --- Lưu trữ dữ liệu và Vector Search (Database & Vector Store) ---
 duckdb                     # Cơ sở dữ liệu phân tích nhúng cho các truy vấn SQL hiệu năng cao
@@ -25,3 +27,8 @@ sentence-transformers      # Tạo embeddings cục bộ bằng các mô hình H
 
 # --- Đánh giá hệ thống RAG (RAG Evaluation) ---
 ragas                      # Thư viện đánh giá hệ thống RAG (Faithfulness, Answer Relevance, Context Recall, v.v.)
+
+# --- Giao diện và Biểu đồ ---
+streamlit
+plotly
+

@@ -116,6 +116,17 @@ class ClarificationEngine:
             ]
             return output
 
+        # 6. CHART_VALIDATION_FAILED
+        if "CHART_VALIDATION_FAILED" in codes:
+            output["reason"] = "Dữ liệu không đủ điều kiện để vẽ biểu đồ"
+            output["message"] = self.default_questions.get("chart_validation_failed", "Dữ liệu hiện tại không phù hợp để vẽ biểu đồ. Bạn muốn đổi cách hiển thị hoặc bổ sung chiều dữ liệu không?")
+            output["options"] = [
+                {"label": "Chuyển sang dạng Bảng (Table)", "value": {"output_mode": "text"}},
+                {"label": "Thêm chiều cấp Huyện", "value": {"dimensions": ["district"]}},
+                {"label": "Thêm chiều cấp Xã", "value": {"dimensions": ["commune"]}}
+            ]
+            return output
+
         # Default Fallback
         output["reason"] = "Câu hỏi chưa rõ ràng hoặc lỗi kiểm định kế hoạch"
         output["message"] = "Câu hỏi của bạn cần thêm một số thông tin để mình có thể truy vấn chính xác. Vui lòng chọn một trong các gợi ý dưới đây:"
@@ -135,6 +146,10 @@ class ClarificationEngine:
         # Override route nếu được yêu cầu
         if "route_override" in selection:
             updated_plan["route_override"] = selection["route_override"]
+            
+        # Cập nhật output_mode
+        if "output_mode" in selection:
+            updated_plan["output_mode"] = selection["output_mode"]
             
         # Hợp nhất các metrics
         if "metrics" in selection:

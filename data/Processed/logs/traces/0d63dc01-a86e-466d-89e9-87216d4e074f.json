@@ -1,0 +1,172 @@
+{
+  "trace_id": "0d63dc01-a86e-466d-89e9-87216d4e074f",
+  "timestamp": "2026-06-19 15:50:34",
+  "user_question": "gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm b1 năm 2024",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [
+      "avg_b1_score"
+    ],
+    "dimensions": [],
+    "filters": [
+      {
+        "field": "host_name",
+        "operator": "=",
+        "value": "PHẠM VĂN LONG"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm b1 năm 2024",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024 GROUP BY host_name, household_id, district, commune",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2639.466300001004,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 6.671799999821815
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm b1 năm 2024",
+      "rewritten_question": "Gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm b1 năm 2024",
+      "latency_ms": 927.2330000003421
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.05500000042957254
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 334.58819999941625
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 985.5900999991718
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "avg_b1_score"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "PHẠM VĂN LONG"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm b1 năm 2024",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "a82c2c93818a2e55e9a93511a53c648b",
+      "latency_ms": 0.06609999945794698
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024 GROUP BY host_name, household_id, district, commune",
+      "latency_ms": 0.05839999903400894
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024 GROUP BY host_name, household_id, district, commune",
+      "latency_ms": 3.288700001576217
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 374.55859999863605
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.1766000006900867
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Gia đình ông PHẠM VĂN LONG có điểm b1 năm 2024 là **155**.",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "avg_b1_score"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "PHẠM VĂN LONG"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm b1 năm 2024",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024 GROUP BY host_name, household_id, district, commune",
+      "result_preview": [
+        {
+          "host_name": "PHẠM VĂN LONG",
+          "household_id": "74",
+          "district": "Huyện Cư Jút",
+          "commune": "Xã Trúc Sơn",
+          "avg_b1": 155.0
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Gia đình ông/bà PHẠM VĂN LONG có bao nhiêu điểm b1 năm 2024"
+    }
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "trace_id": "09ba8752-4ad2-4de1-9625-619f3848c232",
+  "timestamp": "2026-06-19 15:49:34",
+  "user_question": "Số hộ nghèo ở Đắk Song thay đổi như thế nào từ 2023 đến 2024?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "comparison_query",
+    "metrics": [
+      "poor_rate"
+    ],
+    "dimensions": [
+      "year"
+    ],
+    "filters": [
+      {
+        "field": "district",
+        "operator": "=",
+        "value": "Huyện Đắk Song"
+      },
+      {
+        "field": "year",
+        "operator": "IN",
+        "value": [
+          2023,
+          2024
+        ]
+      }
+    ],
+    "sort": {
+      "field": "year",
+      "direction": "asc"
+    },
+    "limit": null,
+    "output_type": "table",
+    "ambiguities": [],
+    "original_question": "So sánh số hộ nghèo ở Huyện Đắk Song giữa năm 2023 và năm 2024",
+    "output_mode": "text"
+  },
+  "sql": "WITH base_by_year AS (\n  SELECT \"administrative.year\" AS year, \"administrative.year\" AS year, ROUND(100.0 * SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 2) AS val FROM households WHERE LOWER(\"administrative.district\") = 'huyện đắk song' AND \"administrative.year\" IN (2023, 2024) GROUP BY year, year\n)\nSELECT year,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_rate_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_rate_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_rate\nFROM base_by_year\nGROUP BY year\nORDER BY diff_poor_rate ASC",
+  "cache_hit": false,
+  "row_count": 2,
+  "latency_total_ms": 2765.2548999994906,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.7752000003383728
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Số hộ nghèo ở Đắk Song thay đổi như thế nào từ 2023 đến 2024?",
+      "rewritten_question": "So sánh số hộ nghèo ở Huyện Đắk Song giữa năm 2023 và năm 2024",
+      "latency_ms": 833.83799999865
+    },
+    "rule_extractor": {
+      "task_type": "comparison_query",
+      "years": [
+        2023,
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": true,
+      "is_aggregate": false,
+      "detected_district": "Huyện Đắk Song",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.047399998948094435
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 236.49709999881452
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1111.724200000026
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "comparison_query",
+        "metrics": [
+          "poor_rate"
+        ],
+        "dimensions": [
+          "year"
+        ],
+        "filters": [
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Đắk Song"
+          },
+          {
+            "field": "year",
+            "operator": "IN",
+            "value": [
+              2023,
+              2024
+            ]
+          }
+        ],
+        "sort": {
+          "field": "year",
+          "direction": "asc"
+        },
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "So sánh số hộ nghèo ở Huyện Đắk Song giữa năm 2023 và năm 2024",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "c7878aec8cc0e8fdd3f099a76f175139",
+      "latency_ms": 0.09080000018002465
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "WITH base_by_year AS (\n  SELECT \"administrative.year\" AS year, \"administrative.year\" AS year, ROUND(100.0 * SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 2) AS val FROM households WHERE LOWER(\"administrative.district\") = 'huyện đắk song' AND \"administrative.year\" IN (2023, 2024) GROUP BY year, year\n)\nSELECT year,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_rate_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_rate_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_rate\nFROM base_by_year\nGROUP BY year\nORDER BY diff_poor_rate ASC",
+      "latency_ms": 0.058000001445179805
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "WITH base_by_year AS (\n  SELECT \"administrative.year\" AS year, \"administrative.year\" AS year, ROUND(100.0 * SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 2) AS val FROM households WHERE LOWER(\"administrative.district\") = 'huyện đắk song' AND \"administrative.year\" IN (2023, 2024) GROUP BY year, year\n)\nSELECT year,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_rate_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_rate_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_rate\nFROM base_by_year\nGROUP BY year\nORDER BY diff_poor_rate ASC",
+      "latency_ms": 3.879399999277666
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 568.4726999988925
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.1169999997946434
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Dựa trên dữ liệu truy vấn, sự so sánh về tỷ lệ hộ nghèo tại huyện Đắk Song giữa năm 2023 và năm 2024 như sau:\n\n*   **Năm 2023:** Tỷ lệ hộ nghèo là **33.9%**.\n*   **Năm 2024:** Tỷ lệ hộ nghèo là **30%**.\n\nNhư vậy, tỷ lệ hộ nghèo tại huyện Đắk Song năm 2024 đã giảm so với năm 2023.",
+      "query_plan": {
+        "task_type": "comparison_query",
+        "metrics": [
+          "poor_rate"
+        ],
+        "dimensions": [
+          "year"
+        ],
+        "filters": [
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Đắk Song"
+          },
+          {
+            "field": "year",
+            "operator": "IN",
+            "value": [
+              2023,
+              2024
+            ]
+          }
+        ],
+        "sort": {
+          "field": "year",
+          "direction": "asc"
+        },
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "So sánh số hộ nghèo ở Huyện Đắk Song giữa năm 2023 và năm 2024",
+        "output_mode": "text"
+      },
+      "sql": "WITH base_by_year AS (\n  SELECT \"administrative.year\" AS year, \"administrative.year\" AS year, ROUND(100.0 * SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 2) AS val FROM households WHERE LOWER(\"administrative.district\") = 'huyện đắk song' AND \"administrative.year\" IN (2023, 2024) GROUP BY year, year\n)\nSELECT year,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_rate_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_rate_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_rate\nFROM base_by_year\nGROUP BY year\nORDER BY diff_poor_rate ASC",
+      "result_preview": [
+        {
+          "year": 2023,
+          "poor_rate_2023": 33.9,
+          "poor_rate_2024": 0.0,
+          "diff_poor_rate": -33.9
+        },
+        {
+          "year": 2024,
+          "poor_rate_2023": 0.0,
+          "poor_rate_2024": 30.0,
+          "diff_poor_rate": 30.0
+        }
+      ],
+      "row_count": 2,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "So sánh số hộ nghèo ở Huyện Đắk Song giữa năm 2023 và năm 2024"
+    }
+  }
+}

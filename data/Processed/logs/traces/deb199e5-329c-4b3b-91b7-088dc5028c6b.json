@@ -1,0 +1,178 @@
+{
+  "trace_id": "deb199e5-329c-4b3b-91b7-088dc5028c6b",
+  "timestamp": "2026-06-19 15:50:17",
+  "user_question": "gia đình ông/bà ĐỊCH THỊ LAN có bị nghèo do thiếu vốn không?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [],
+    "dimensions": [
+      "lack_capital"
+    ],
+    "filters": [
+      {
+        "field": "host_name",
+        "operator": "=",
+        "value": "ĐỊCH THỊ LAN"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "table",
+    "ambiguities": [
+      "Metric 'số lượng điểm thiếu vốn' không có trong danh sách Metric candidates. Đang chuyển sang detail_query dựa trên dimension 'lack_capital'."
+    ],
+    "original_question": "Gia đình ông/bà ĐỊCH THỊ LAN có bao nhiêu điểm thiếu vốn năm 2024",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'địch thị lan' AND \"administrative.year\" = 2024",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 3129.3032000012317,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 7.981300001119962
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà ĐỊCH THỊ LAN có bị nghèo do thiếu vốn không?",
+      "rewritten_question": "Gia đình ông/bà ĐỊCH THỊ LAN có bao nhiêu điểm thiếu vốn năm 2024",
+      "latency_ms": 889.64390000001
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.062200000684242696
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 267.8102999998373
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1028.561000000991
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [],
+        "dimensions": [
+          "lack_capital"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "ĐỊCH THỊ LAN"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [
+          "Metric 'số lượng điểm thiếu vốn' không có trong danh sách Metric candidates. Đang chuyển sang detail_query dựa trên dimension 'lack_capital'."
+        ],
+        "original_question": "Gia đình ông/bà ĐỊCH THỊ LAN có bao nhiêu điểm thiếu vốn năm 2024",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "0c0317fe22f03fe26c2654faf8c5d6d8",
+      "latency_ms": 0.07569999979750719
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'địch thị lan' AND \"administrative.year\" = 2024",
+      "latency_ms": 0.06209999992279336
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'địch thị lan' AND \"administrative.year\" = 2024",
+      "latency_ms": 2.258500000607455
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 926.007899999604
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.2585999993461883
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Gia đình ông/bà ĐỊCH THỊ LAN không có điểm thiếu vốn trong năm 2024 (giá trị `lack_capital` là False).",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [],
+        "dimensions": [
+          "lack_capital"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "ĐỊCH THỊ LAN"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [
+          "Metric 'số lượng điểm thiếu vốn' không có trong danh sách Metric candidates. Đang chuyển sang detail_query dựa trên dimension 'lack_capital'."
+        ],
+        "original_question": "Gia đình ông/bà ĐỊCH THỊ LAN có bao nhiêu điểm thiếu vốn năm 2024",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'địch thị lan' AND \"administrative.year\" = 2024",
+      "result_preview": [
+        {
+          "lack_capital": false,
+          "host_name": "ĐỊCH THỊ LAN",
+          "household_id": "38_DUP003",
+          "district": "Huyện Cư Jút",
+          "commune": "Xã Trúc Sơn"
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Gia đình ông/bà ĐỊCH THỊ LAN có bao nhiêu điểm thiếu vốn năm 2024"
+    }
+  }
+}

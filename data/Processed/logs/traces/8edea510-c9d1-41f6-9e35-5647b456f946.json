@@ -1,0 +1,168 @@
+{
+  "trace_id": "8edea510-c9d1-41f6-9e35-5647b456f946",
+  "timestamp": "2026-06-19 15:49:01",
+  "user_question": "Số hộ thuộc diện nghèo ở Tuy Đức trong năm 2023 là bao nhiêu?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2023
+      },
+      {
+        "field": "district",
+        "operator": "=",
+        "value": "Huyện Tuy Đức"
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Năm 2023, Huyện Tuy Đức có bao nhiêu hộ nghèo",
+    "output_mode": "text"
+  },
+  "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 AND LOWER(\"administrative.district\") = 'huyện tuy đức' ORDER BY poor_household_count DESC",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2456.540799999857,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.7311999999947147
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Số hộ thuộc diện nghèo ở Tuy Đức trong năm 2023 là bao nhiêu?",
+      "rewritten_question": "Năm 2023, Huyện Tuy Đức có bao nhiêu hộ nghèo",
+      "latency_ms": 873.1953999995312
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2023
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": "Huyện Tuy Đức",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.046999999540275894
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 311.34430000020075
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 935.4763999999705
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2023
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Tuy Đức"
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2023, Huyện Tuy Đức có bao nhiêu hộ nghèo",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "dbcf8641120650c680d508b46aba9f4c",
+      "latency_ms": 0.08460000026389025
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 AND LOWER(\"administrative.district\") = 'huyện tuy đức' ORDER BY poor_household_count DESC",
+      "latency_ms": 0.137400000312482
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 AND LOWER(\"administrative.district\") = 'huyện tuy đức' ORDER BY poor_household_count DESC",
+      "latency_ms": 1.4824000008957228
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 325.3751000011107
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.8646999995107763
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Năm 2023, huyện Tuy Đức có 1674 hộ nghèo.",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2023
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Tuy Đức"
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2023, Huyện Tuy Đức có bao nhiêu hộ nghèo",
+        "output_mode": "text"
+      },
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 AND LOWER(\"administrative.district\") = 'huyện tuy đức' ORDER BY poor_household_count DESC",
+      "result_preview": [
+        {
+          "poor_household_count": 1674
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Năm 2023, Huyện Tuy Đức có bao nhiêu hộ nghèo"
+    }
+  }
+}

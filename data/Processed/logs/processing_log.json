@@ -1,0 +1,334 @@
+{
+  "input_root": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern",
+  "output_root": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed",
+  "seed": 42,
+  "legal_period": "2021_2025",
+  "fill_missing_values": "true",
+  "no_null_output": "true",
+  "template_warnings": [],
+  "warnings": [
+    {
+      "warning_type": "file_processed",
+      "year": 2023,
+      "district": "Huyện Cư Jút",
+      "message": "input_rows=2103, removed_headers=1, core_duplicates_removed=988, duplicate_family_codes_fixed=872, output_rows=1114",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2023,
+      "district": "Huyện Krông Nô",
+      "message": "input_rows=3029, removed_headers=1, core_duplicates_removed=1004, duplicate_family_codes_fixed=1617, output_rows=2024",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2023,
+      "district": "Huyện Tuy Đức",
+      "message": "input_rows=5268, removed_headers=1, core_duplicates_removed=1927, duplicate_family_codes_fixed=2469, output_rows=3340",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2023,
+      "district": "Huyện Đăk Glong",
+      "message": "input_rows=4726, removed_headers=1, core_duplicates_removed=1371, duplicate_family_codes_fixed=2547, output_rows=3354",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2023,
+      "district": "Huyện Đắk Mil",
+      "message": "input_rows=1413, removed_headers=1, core_duplicates_removed=404, duplicate_family_codes_fixed=841, output_rows=1008",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2023,
+      "district": "Huyện Đắk RLấp",
+      "message": "input_rows=1192, removed_headers=1, core_duplicates_removed=191, duplicate_family_codes_fixed=892, output_rows=1000",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2023,
+      "district": "Huyện Đắk Song",
+      "message": "input_rows=1831, removed_headers=1, core_duplicates_removed=479, duplicate_family_codes_fixed=1146, output_rows=1351",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2023,
+      "district": "Thành phố Gia Nghĩa",
+      "message": "input_rows=256, removed_headers=1, core_duplicates_removed=0, duplicate_family_codes_fixed=164, output_rows=255",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2024,
+      "district": "Huyện Cư Jút",
+      "message": "input_rows=600, removed_headers=1, core_duplicates_removed=1, duplicate_family_codes_fixed=385, output_rows=598",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2024,
+      "district": "Huyện Krông Nô",
+      "message": "input_rows=1396, removed_headers=1, core_duplicates_removed=375, duplicate_family_codes_fixed=668, output_rows=1020",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2024,
+      "district": "Huyện Tuy Đức",
+      "message": "input_rows=2955, removed_headers=1, core_duplicates_removed=1037, duplicate_family_codes_fixed=1399, output_rows=1917",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2024,
+      "district": "Huyện Đăk Glong",
+      "message": "input_rows=2606, removed_headers=1, core_duplicates_removed=1059, duplicate_family_codes_fixed=1073, output_rows=1546",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2024,
+      "district": "Huyện Đắk Mil",
+      "message": "input_rows=769, removed_headers=1, core_duplicates_removed=7, duplicate_family_codes_fixed=622, output_rows=761",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2024,
+      "district": "Huyện Đắk RLấp",
+      "message": "input_rows=491, removed_headers=1, core_duplicates_removed=1, duplicate_family_codes_fixed=409, output_rows=489",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2024,
+      "district": "Huyện Đắk Song",
+      "message": "input_rows=931, removed_headers=1, core_duplicates_removed=0, duplicate_family_codes_fixed=745, output_rows=930",
+      "severity": "info"
+    },
+    {
+      "warning_type": "file_processed",
+      "year": 2024,
+      "district": "Thành phố Gia Nghĩa",
+      "message": "input_rows=212, removed_headers=1, core_duplicates_removed=0, duplicate_family_codes_fixed=112, output_rows=211",
+      "severity": "info"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2023,
+      "district": "Huyện Cư Jút",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=512, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2023,
+      "district": "Huyện Krông Nô",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=1107, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2023,
+      "district": "Huyện Tuy Đức",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=1698, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2023,
+      "district": "Huyện Đăk Glong",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=1794, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2023,
+      "district": "Huyện Đắk Mil",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=537, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2023,
+      "district": "Huyện Đắk RLấp",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=459, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2023,
+      "district": "Huyện Đắk Song",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=671, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2023,
+      "district": "Thành phố Gia Nghĩa",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=110, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2024,
+      "district": "Huyện Cư Jút",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=255, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2024,
+      "district": "Huyện Krông Nô",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=414, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2024,
+      "district": "Huyện Tuy Đức",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=899, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2024,
+      "district": "Huyện Đăk Glong",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=554, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2024,
+      "district": "Huyện Đắk Mil",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=345, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2024,
+      "district": "Huyện Đắk RLấp",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=181, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2024,
+      "district": "Huyện Đắk Song",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=390, transition_bad=0",
+      "severity": "high"
+    },
+    {
+      "warning_type": "validation_check",
+      "year": 2024,
+      "district": "Thành phố Gia Nghĩa",
+      "message": "core_dup=0, code_dup=0, date_year_bad=0, date_filled_bad=0, commune_outside=0, area_null=0, b1_null=0, b2_null=0, dep_total_bad=0, classification_bad=0, member_total_bad=0, host_bad=0, reason_required_bad=0, support_bad=94, transition_bad=0",
+      "severity": "high"
+    }
+  ],
+  "file_counts": {
+    "2023": 8,
+    "2024": 8
+  },
+  "processed_files": [
+    {
+      "year": 2023,
+      "district": "Huyện Cư Jút",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2023\\Huyện Cư Jút.xlsx"
+    },
+    {
+      "year": 2023,
+      "district": "Huyện Krông Nô",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2023\\Huyện Krông Nô.xlsx"
+    },
+    {
+      "year": 2023,
+      "district": "Huyện Tuy Đức",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2023\\Huyện Tuy Đức.xlsx"
+    },
+    {
+      "year": 2023,
+      "district": "Huyện Đăk Glong",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2023\\Huyện Đăk Glong.xlsx"
+    },
+    {
+      "year": 2023,
+      "district": "Huyện Đắk Mil",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2023\\Huyện Đắk Mil.xlsx"
+    },
+    {
+      "year": 2023,
+      "district": "Huyện Đắk RLấp",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2023\\Huyện Đắk RLấp.xlsx"
+    },
+    {
+      "year": 2023,
+      "district": "Huyện Đắk Song",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2023\\Huyện Đắk Song.xlsx"
+    },
+    {
+      "year": 2023,
+      "district": "Thành phố Gia Nghĩa",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2023\\Thành phố Gia Nghĩa.xlsx"
+    },
+    {
+      "year": 2024,
+      "district": "Huyện Cư Jút",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2024\\Huyện Cư Jút.xlsx"
+    },
+    {
+      "year": 2024,
+      "district": "Huyện Krông Nô",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2024\\Huyện Krông Nô.xlsx"
+    },
+    {
+      "year": 2024,
+      "district": "Huyện Tuy Đức",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2024\\Huyện Tuy Đức.xlsx"
+    },
+    {
+      "year": 2024,
+      "district": "Huyện Đăk Glong",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2024\\Huyện Đăk Glong.xlsx"
+    },
+    {
+      "year": 2024,
+      "district": "Huyện Đắk Mil",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2024\\Huyện Đắk Mil.xlsx"
+    },
+    {
+      "year": 2024,
+      "district": "Huyện Đắk RLấp",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2024\\Huyện Đắk RLấp.xlsx"
+    },
+    {
+      "year": 2024,
+      "district": "Huyện Đắk Song",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2024\\Huyện Đắk Song.xlsx"
+    },
+    {
+      "year": 2024,
+      "district": "Thành phố Gia Nghĩa",
+      "output_file": "C:\\Users\\Admin\\HUIT - Học Tập\\Năm 3\\Intern\\Processed\\2024\\Thành phố Gia Nghĩa.xlsx"
+    }
+  ],
+  "summary": {
+    "input_files": 16,
+    "output_files": 16,
+    "input_rows": 29778,
+    "output_rows": 20918,
+    "duplicate_core_removed": 8844,
+    "family_codes_fixed": 15961,
+    "date_filled": 14364,
+    "b1_filled": 13751,
+    "b2_filled": 20918,
+    "ethnicity_generated": 0,
+    "member_records_generated": 97329
+  }
+}

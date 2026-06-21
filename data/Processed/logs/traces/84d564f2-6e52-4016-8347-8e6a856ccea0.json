@@ -1,0 +1,188 @@
+{
+  "trace_id": "84d564f2-6e52-4016-8347-8e6a856ccea0",
+  "timestamp": "2026-06-19 15:49:14",
+  "user_question": "So sánh số hộ nghèo giữa Krông Nô và Đắk Song năm 2024.",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "comparison_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [
+      "district"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      },
+      {
+        "field": "district",
+        "operator": "IN",
+        "value": [
+          "Huyện Krông Nô",
+          "Huyện Đắk Song"
+        ]
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "So sánh số hộ nghèo năm 2024 giữa Huyện Krông Nô và Huyện Đắk Song",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") IN ('huyện krông nô', 'huyện đắk song') GROUP BY district ORDER BY poor_household_count DESC",
+  "cache_hit": false,
+  "row_count": 2,
+  "latency_total_ms": 2493.3345999997982,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.6400000004068715
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "So sánh số hộ nghèo giữa Krông Nô và Đắk Song năm 2024.",
+      "rewritten_question": "So sánh số hộ nghèo năm 2024 giữa Huyện Krông Nô và Huyện Đắk Song",
+      "latency_ms": 816.8703000010282
+    },
+    "rule_extractor": {
+      "task_type": "comparison_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": true,
+      "is_aggregate": false,
+      "detected_district": "Huyện Krông Nô",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.053199999456410296
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 251.002699998935
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 969.003000000157
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "comparison_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "district",
+            "operator": "IN",
+            "value": [
+              "Huyện Krông Nô",
+              "Huyện Đắk Song"
+            ]
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "So sánh số hộ nghèo năm 2024 giữa Huyện Krông Nô và Huyện Đắk Song",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "ead6653b7801a7c45ec0f704223afece",
+      "latency_ms": 0.0698000003467314
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") IN ('huyện krông nô', 'huyện đắk song') GROUP BY district ORDER BY poor_household_count DESC",
+      "latency_ms": 0.07510000068577938
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") IN ('huyện krông nô', 'huyện đắk song') GROUP BY district ORDER BY poor_household_count DESC",
+      "latency_ms": 5.821099999593571
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 442.06210000083956
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.9773999991011806
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Số lượng hộ nghèo năm 2024 giữa hai huyện như sau:\n\n* **Huyện Đắk Song:** 279 hộ.\n* **Huyện Krông Nô:** 189 hộ.\n\nNhư vậy, số hộ nghèo của huyện Đắk Song cao hơn huyện Krông Nô là 90 hộ.",
+      "query_plan": {
+        "task_type": "comparison_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "district",
+            "operator": "IN",
+            "value": [
+              "Huyện Krông Nô",
+              "Huyện Đắk Song"
+            ]
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "So sánh số hộ nghèo năm 2024 giữa Huyện Krông Nô và Huyện Đắk Song",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") IN ('huyện krông nô', 'huyện đắk song') GROUP BY district ORDER BY poor_household_count DESC",
+      "result_preview": [
+        {
+          "district": "Huyện Đắk Song",
+          "poor_household_count": 279
+        },
+        {
+          "district": "Huyện Krông Nô",
+          "poor_household_count": 189
+        }
+      ],
+      "row_count": 2,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "So sánh số hộ nghèo năm 2024 giữa Huyện Krông Nô và Huyện Đắk Song"
+    }
+  }
+}

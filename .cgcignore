@@ -1,0 +1,36 @@
+# Dependency directories
+venv/
+.venv/
+node_modules/
+temp_claude_mem/
+
+# Build and git
+.git/
+.grapuco/
+.gemini/
+dist/
+build/
+target/
+
+# Project specific runtime/data directories
+qdrant_storage/
+Runtime/
+Processed/
+DoanTranCaoAnh_BaoCaoTuan01_Chieu_T4/
+EDA/
+Evaluation/
+Format_Report/
+report/
+test/
+scratch/
+artifacts/
+
+# File types
+*.log
+*.duckdb
+*.wal
+*.parquet
+*.docx
+*.xlsx
+*.xls
+*.pdf

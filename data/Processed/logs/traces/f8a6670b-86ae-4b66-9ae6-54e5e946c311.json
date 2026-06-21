@@ -1,0 +1,180 @@
+{
+  "trace_id": "f8a6670b-86ae-4b66-9ae6-54e5e946c311",
+  "timestamp": "2026-06-19 15:50:23",
+  "user_question": "gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu điểm b1 năm 2024",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [
+      "avg_b1_score"
+    ],
+    "dimensions": [
+      "host_name"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      },
+      {
+        "field": "host_name",
+        "operator": "=",
+        "value": "NÔNG VĂN THỀ"
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Năm 2024, hộ gia đình có chủ hộ tên NÔNG VĂN THỀ có bao nhiêu điểm b1",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"family.hostName\") = 'nông văn thề' GROUP BY host_name, household_id, district, commune",
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 2194.824800000788,
+  "status": "success",
+  "errors": [],
+  "warnings": [
+    {
+      "code": "EMPTY_RESULT",
+      "message": "Truy vấn trả về kết quả rỗng."
+    }
+  ],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 6.690600001093117
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà NÔNG VĂN THỀ có bao nhiêu điểm b1 năm 2024",
+      "rewritten_question": "Năm 2024, hộ gia đình có chủ hộ tên NÔNG VĂN THỀ có bao nhiêu điểm b1",
+      "latency_ms": 964.9648000013258
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.05710000004910398
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 241.27099999896018
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 973.066700000345
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "avg_b1_score"
+        ],
+        "dimensions": [
+          "host_name"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "NÔNG VĂN THỀ"
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2024, hộ gia đình có chủ hộ tên NÔNG VĂN THỀ có bao nhiêu điểm b1",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "f47c243907609b7ccd17c420e910afb0",
+      "latency_ms": 0.0774000000092201
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"family.hostName\") = 'nông văn thề' GROUP BY host_name, household_id, district, commune",
+      "latency_ms": 0.05889999920327682
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"family.hostName\") = 'nông văn thề' GROUP BY host_name, household_id, district, commune",
+      "latency_ms": 2.625600000101258
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 0.01089999932446517
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.0054000013042241
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Không tìm thấy số liệu phù hợp với yêu cầu của bạn trong cơ sở dữ liệu.",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "avg_b1_score"
+        ],
+        "dimensions": [
+          "host_name"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "NÔNG VĂN THỀ"
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2024, hộ gia đình có chủ hộ tên NÔNG VĂN THỀ có bao nhiêu điểm b1",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"family.hostName\") = 'nông văn thề' GROUP BY host_name, household_id, district, commune",
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [
+        {
+          "code": "EMPTY_RESULT",
+          "message": "Truy vấn trả về kết quả rỗng."
+        }
+      ],
+      "errors": [],
+      "rewritten_question": "Năm 2024, hộ gia đình có chủ hộ tên NÔNG VĂN THỀ có bao nhiêu điểm b1"
+    }
+  }
+}

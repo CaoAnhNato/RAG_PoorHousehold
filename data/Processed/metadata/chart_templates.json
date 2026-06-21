@@ -1,0 +1,13 @@
+{
+  "base_template": {
+    "chart_type": null,
+    "title": null,
+    "x": null,
+    "y": null,
+    "color": null,
+    "sort": null,
+    "legend": true,
+    "unit": null,
+    "orientation": "v"
+  }
+}

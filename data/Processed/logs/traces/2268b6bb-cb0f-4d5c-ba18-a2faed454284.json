@@ -1,0 +1,164 @@
+{
+  "trace_id": "2268b6bb-cb0f-4d5c-ba18-a2faed454284",
+  "timestamp": "2026-06-19 15:49:47",
+  "user_question": "Trong năm 2024, nhóm dân tộc nào chiếm tỷ lệ hộ nghèo cao nhất?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [
+      "local_ethnicity"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "table",
+    "ambiguities": [],
+    "original_question": "Thống kê số hộ nghèo theo dân tộc năm 2024",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"family.isDTTC\" AS local_ethnicity, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 GROUP BY local_ethnicity ORDER BY poor_household_count DESC",
+  "cache_hit": false,
+  "row_count": 2,
+  "latency_total_ms": 2607.0784000003187,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.0688000002119225
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Trong năm 2024, nhóm dân tộc nào chiếm tỷ lệ hộ nghèo cao nhất?",
+      "rewritten_question": "Thống kê số hộ nghèo theo dân tộc năm 2024",
+      "latency_ms": 915.9010000003036
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.04780000017490238
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 314.06070000048203
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 886.1823000006552
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "local_ethnicity"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Thống kê số hộ nghèo theo dân tộc năm 2024",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "3b760f1e0471548a68b19c8cad18d625",
+      "latency_ms": 0.059699999837903306
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"family.isDTTC\" AS local_ethnicity, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 GROUP BY local_ethnicity ORDER BY poor_household_count DESC",
+      "latency_ms": 0.0486999997519888
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"family.isDTTC\" AS local_ethnicity, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 GROUP BY local_ethnicity ORDER BY poor_household_count DESC",
+      "latency_ms": 2.9470000008586794
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 479.34910000003583
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.7290000012289966
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Thống kê số hộ nghèo theo dân tộc năm 2024 như sau:\n\n* **Hộ không thuộc dân tộc thiểu số (False):** 1655 hộ\n* **Hộ thuộc dân tộc thiểu số (True):** 791 hộ",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "local_ethnicity"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Thống kê số hộ nghèo theo dân tộc năm 2024",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"family.isDTTC\" AS local_ethnicity, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 GROUP BY local_ethnicity ORDER BY poor_household_count DESC",
+      "result_preview": [
+        {
+          "local_ethnicity": false,
+          "poor_household_count": 1655
+        },
+        {
+          "local_ethnicity": true,
+          "poor_household_count": 791
+        }
+      ],
+      "row_count": 2,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Thống kê số hộ nghèo theo dân tộc năm 2024"
+    }
+  }
+}

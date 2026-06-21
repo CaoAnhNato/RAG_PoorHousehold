@@ -1,0 +1,67 @@
+{
+  "trace_id": "5e59b8c1-7df8-4bef-ac35-fe0f8ab26f51",
+  "timestamp": "2026-06-19 15:36:32",
+  "user_question": "nghèo",
+  "route": "CLARIFICATION_NEEDED",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 281.6081999990274,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.3519000003725523
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "nghèo",
+      "rewritten_question": "nghèo",
+      "latency_ms": 0.013799999578623101
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.03440000000409782
+    },
+    "domain_gate": {
+      "route": "CLARIFICATION_NEEDED",
+      "confidence": 0.85,
+      "reason": "Câu hỏi quá ngắn hoặc mơ hồ, thiếu thực thể.",
+      "latency_ms": 276.84399999998277
+    },
+    "final": {
+      "needs_clarification": true,
+      "message": "Bạn muốn truy vấn số liệu trong dataset hay hỏi giải thích kiến thức chung?",
+      "options": [
+        {
+          "label": "Truy vấn số liệu rà soát nghèo trong cơ sở dữ liệu",
+          "value": {
+            "route_override": "DATASET_QA"
+          }
+        },
+        {
+          "label": "Hỏi đáp kiến thức, quy chế, khái niệm chung",
+          "value": {
+            "route_override": "GENERAL_KNOWLEDGE"
+          }
+        }
+      ],
+      "reason": "Không thể phân loại rõ định tuyến câu hỏi",
+      "error_codes": [
+        "ROUTE_UNCERTAIN"
+      ],
+      "route": "CLARIFICATION_NEEDED"
+    }
+  }
+}

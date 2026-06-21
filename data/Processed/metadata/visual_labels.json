@@ -1,0 +1,20 @@
+{
+  "district": "Huyện",
+  "commune": "Xã",
+  "ethnic": "Dân tộc",
+  "year": "Năm",
+  "classification": "Phân loại hộ",
+  "poor_rate": "Tỷ lệ hộ nghèo (%)",
+  "count": "Số lượng hộ",
+  "total": "Tổng số hộ",
+  "percentage": "Tỷ lệ (%)",
+  "hardship_cause": "Nguyên nhân nghèo",
+  "healthInsurance": "Thiếu BHYT",
+  "housingQuality": "Nhà ở kém chất lượng",
+  "housingArea": "Diện tích nhà ở chật hẹp",
+  "water": "Thiếu nước sinh hoạt an toàn",
+  "sanitation": "Thiếu nhà tiêu hợp vệ sinh",
+  "telecom": "Thiếu dịch vụ viễn thông",
+  "income": "Thu nhập bình quân",
+  "education": "Thiếu hụt giáo dục"
+}

@@ -1,0 +1,196 @@
+{
+  "trace_id": "bd354132-9596-46dd-8d3f-bd4302559b56",
+  "timestamp": "2026-06-19 15:49:09",
+  "user_question": "Gia Nghĩa năm 2024 có tổng bao nhiêu hộ nghèo và cận nghèo?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "poor_household_count",
+      "near_poor_household_count"
+    ],
+    "dimensions": [],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      },
+      {
+        "field": "district",
+        "operator": "=",
+        "value": "Thành phố Gia Nghĩa"
+      },
+      {
+        "field": "poverty_status",
+        "operator": "IN",
+        "value": [
+          "Hộ nghèo",
+          "Hộ cận nghèo"
+        ]
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Năm 2024, Thành phố Gia Nghĩa có bao nhiêu hộ nghèo và cận nghèo",
+    "output_mode": "text"
+  },
+  "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") = 'thành phố gia nghĩa' AND LOWER(\"classify\") IN ('hộ nghèo', 'hộ cận nghèo') ORDER BY poor_household_count DESC",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2510.1655999987997,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.521399999546702
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Gia Nghĩa năm 2024 có tổng bao nhiêu hộ nghèo và cận nghèo?",
+      "rewritten_question": "Năm 2024, Thành phố Gia Nghĩa có bao nhiêu hộ nghèo và cận nghèo",
+      "latency_ms": 891.9315000002825
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": "Thành phố Gia Nghĩa",
+      "has_both_poverty_types": true,
+      "latency_ms": 0.11439999980211724
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 235.5920000009064
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 981.6257000002224
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count",
+          "near_poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Thành phố Gia Nghĩa"
+          },
+          {
+            "field": "poverty_status",
+            "operator": "IN",
+            "value": [
+              "Hộ nghèo",
+              "Hộ cận nghèo"
+            ]
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2024, Thành phố Gia Nghĩa có bao nhiêu hộ nghèo và cận nghèo",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "37f2b7df1dbd47e794f228eb334b9fcf",
+      "latency_ms": 0.13190000026952475
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") = 'thành phố gia nghĩa' AND LOWER(\"classify\") IN ('hộ nghèo', 'hộ cận nghèo') ORDER BY poor_household_count DESC",
+      "latency_ms": 0.17209999896294903
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") = 'thành phố gia nghĩa' AND LOWER(\"classify\") IN ('hộ nghèo', 'hộ cận nghèo') ORDER BY poor_household_count DESC",
+      "latency_ms": 2.8698000005533686
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 387.7525000007154
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.6876999996165978
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Năm 2024, Thành phố Gia Nghĩa có số lượng hộ nghèo và cận nghèo cụ thể như sau:\n\n* **Số hộ nghèo:** 51 hộ\n* **Số hộ cận nghèo:** 142 hộ",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count",
+          "near_poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Thành phố Gia Nghĩa"
+          },
+          {
+            "field": "poverty_status",
+            "operator": "IN",
+            "value": [
+              "Hộ nghèo",
+              "Hộ cận nghèo"
+            ]
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2024, Thành phố Gia Nghĩa có bao nhiêu hộ nghèo và cận nghèo",
+        "output_mode": "text"
+      },
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"administrative.district\") = 'thành phố gia nghĩa' AND LOWER(\"classify\") IN ('hộ nghèo', 'hộ cận nghèo') ORDER BY poor_household_count DESC",
+      "result_preview": [
+        {
+          "poor_household_count": 51,
+          "near_poor_household_count": 142
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Năm 2024, Thành phố Gia Nghĩa có bao nhiêu hộ nghèo và cận nghèo"
+    }
+  }
+}

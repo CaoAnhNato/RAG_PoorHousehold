@@ -1,0 +1,163 @@
+{
+  "trace_id": "fa35e8bd-39a5-4aae-9cd8-3a8daf633b56",
+  "timestamp": "2026-06-19 15:49:39",
+  "user_question": "Có bao nhiêu trẻ em thuộc hộ nghèo hoặc cận nghèo trong năm 2024?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "poor_household_count",
+      "near_poor_household_count"
+    ],
+    "dimensions": [],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [
+      "Câu hỏi đề cập đến 'trẻ em', nhưng các metric hiện có chỉ cung cấp số lượng 'hộ' (household_count). Không có metric cụ thể cho số lượng trẻ em."
+    ],
+    "original_question": "Năm 2024, có bao nhiêu trẻ em thuộc hộ nghèo hoặc cận nghèo",
+    "output_mode": "text"
+  },
+  "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 ORDER BY poor_household_count DESC",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2596.745599999849,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.4405000001715962
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Có bao nhiêu trẻ em thuộc hộ nghèo hoặc cận nghèo trong năm 2024?",
+      "rewritten_question": "Năm 2024, có bao nhiêu trẻ em thuộc hộ nghèo hoặc cận nghèo",
+      "latency_ms": 791.9342999994115
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.24300000040966552
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 269.8956999993243
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1078.3503000002383
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count",
+          "near_poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Câu hỏi đề cập đến 'trẻ em', nhưng các metric hiện có chỉ cung cấp số lượng 'hộ' (household_count). Không có metric cụ thể cho số lượng trẻ em."
+        ],
+        "original_question": "Năm 2024, có bao nhiêu trẻ em thuộc hộ nghèo hoặc cận nghèo",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "ef7e4fb161670cdad8e107a4b1536f15",
+      "latency_ms": 0.07030000051599927
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 ORDER BY poor_household_count DESC",
+      "latency_ms": 0.0593999993725447
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 ORDER BY poor_household_count DESC",
+      "latency_ms": 1.4448000001721084
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 444.6499000005133
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.8383000003959751
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Năm 2024, số lượng hộ nghèo và hộ cận nghèo như sau:\n\n*   **Số hộ nghèo:** 2.446 hộ\n*   **Số hộ cận nghèo:** 3.683 hộ",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count",
+          "near_poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Câu hỏi đề cập đến 'trẻ em', nhưng các metric hiện có chỉ cung cấp số lượng 'hộ' (household_count). Không có metric cụ thể cho số lượng trẻ em."
+        ],
+        "original_question": "Năm 2024, có bao nhiêu trẻ em thuộc hộ nghèo hoặc cận nghèo",
+        "output_mode": "text"
+      },
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"administrative.year\" = 2024 ORDER BY poor_household_count DESC",
+      "result_preview": [
+        {
+          "poor_household_count": 2446,
+          "near_poor_household_count": 3683
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Năm 2024, có bao nhiêu trẻ em thuộc hộ nghèo hoặc cận nghèo"
+    }
+  }
+}

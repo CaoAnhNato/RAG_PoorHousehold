@@ -1,0 +1,176 @@
+{
+  "trace_id": "c214b49f-aa37-4a6e-afcd-d7b128a068ff",
+  "timestamp": "2026-06-19 15:50:44",
+  "user_question": "gia đình ông/bà PHẠM VĂN LONG có phải là hộ dân tộc thiểu số không?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [],
+    "dimensions": [
+      "ethnicity"
+    ],
+    "filters": [
+      {
+        "field": "host_name",
+        "operator": "=",
+        "value": "PHẠM VĂN LONG"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": 100,
+    "output_type": "text",
+    "ambiguities": [
+      "Câu hỏi yêu cầu kiểm tra thuộc tính cụ thể của một cá nhân/hộ gia đình dựa trên tên, cần truy vấn chi tiết (detail_query) thay vì tổng hợp (aggregate_query)."
+    ],
+    "original_question": "Gia đình ông/bà PHẠM VĂN LONG có phải là hộ dân tộc thiểu số không",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"family.ethnicity\" AS ethnicity, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024 LIMIT 100",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2749.8599999998987,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 7.045399999697111
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà PHẠM VĂN LONG có phải là hộ dân tộc thiểu số không?",
+      "rewritten_question": "Gia đình ông/bà PHẠM VĂN LONG có phải là hộ dân tộc thiểu số không",
+      "latency_ms": 929.4558999990841
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.05100000089441892
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 369.4900000009511
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1093.7344999983907
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [],
+        "dimensions": [
+          "ethnicity"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "PHẠM VĂN LONG"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": 100,
+        "output_type": "text",
+        "ambiguities": [
+          "Câu hỏi yêu cầu kiểm tra thuộc tính cụ thể của một cá nhân/hộ gia đình dựa trên tên, cần truy vấn chi tiết (detail_query) thay vì tổng hợp (aggregate_query)."
+        ],
+        "original_question": "Gia đình ông/bà PHẠM VĂN LONG có phải là hộ dân tộc thiểu số không",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "cef6b1d5973c87fe0a5501d5a0f122bd",
+      "latency_ms": 0.1360000005661277
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"family.ethnicity\" AS ethnicity, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024 LIMIT 100",
+      "latency_ms": 0.24029999985941686
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"family.ethnicity\" AS ethnicity, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024 LIMIT 100",
+      "latency_ms": 2.8199999997013947
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 338.7585999989824
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.4152000003377907
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Có, gia đình ông PHẠM VĂN LONG là hộ dân tộc thiểu số (dân tộc Thái).",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [],
+        "dimensions": [
+          "ethnicity"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "PHẠM VĂN LONG"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": 100,
+        "output_type": "text",
+        "ambiguities": [
+          "Câu hỏi yêu cầu kiểm tra thuộc tính cụ thể của một cá nhân/hộ gia đình dựa trên tên, cần truy vấn chi tiết (detail_query) thay vì tổng hợp (aggregate_query)."
+        ],
+        "original_question": "Gia đình ông/bà PHẠM VĂN LONG có phải là hộ dân tộc thiểu số không",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"family.ethnicity\" AS ethnicity, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune FROM households WHERE LOWER(\"family.hostName\") = 'phạm văn long' AND \"administrative.year\" = 2024 LIMIT 100",
+      "result_preview": [
+        {
+          "ethnicity": "Thái",
+          "host_name": "PHẠM VĂN LONG",
+          "household_id": "74",
+          "district": "Huyện Cư Jút",
+          "commune": "Xã Trúc Sơn"
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Gia đình ông/bà PHẠM VĂN LONG có phải là hộ dân tộc thiểu số không"
+    }
+  }
+}

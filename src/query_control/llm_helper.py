@@ -18,15 +18,15 @@ load_dotenv(dotenv_path=PROJECT_ROOT / ".env")
 
 def get_llm_config() -> dict[str, str]:
     """Lấy cấu hình kết nối LLM từ tệp .env."""
-    base_url = os.environ.get("FPT_BASE_URL", "").strip()
-    api_key = os.environ.get("FPT_ALL_LLM_API_KEY", "").strip()
-    model = os.environ.get("FPT_LLM_MODEL", "gemma-4-26B-A4B-it").strip()
+    base_url = os.environ.get("SHOPAPI_BASE_URL", "").strip()
+    api_key = os.environ.get("SHOPAPI_LLM_API_KEY", "").strip()
+    model = os.environ.get("SHOPAPI_MODEL_LLM", "gpt-3.5-turbo-1106").strip()
     
     # Nếu người dùng cấu hình sai/thiếu (Quy tắc 6)
     if not api_key:
-        raise RuntimeError("Lỗi: Thiếu khóa API FPT_ALL_LLM_API_KEY trong tệp .env.")
+        raise RuntimeError("Lỗi: Thiếu khóa API SHOPAPI_LLM_API_KEY trong tệp .env.")
     if not base_url:
-        raise RuntimeError("Lỗi: Thiếu địa chỉ FPT_BASE_URL trong tệp .env.")
+        raise RuntimeError("Lỗi: Thiếu địa chỉ SHOPAPI_BASE_URL trong tệp .env.")
         
     return {
         "base_url": base_url.rstrip("/"),
@@ -41,11 +41,15 @@ def call_llm(
     max_tokens: int = 1500,
     response_json: bool = False
 ) -> str:
-    """Gọi LLM FPT với cơ chế retry và xử lý lỗi chuyên sâu."""
+    """Gọi LLM với cơ chế retry và xử lý lỗi chuyên sâu."""
     config = get_llm_config()
     
     # Chuẩn hoá URL completion
-    url = f"{config['base_url']}/v1/chat/completions"
+    base = config['base_url']
+    if base.endswith('/v1'):
+        url = f"{base}/chat/completions"
+    else:
+        url = f"{base}/v1/chat/completions"
     
     headers = {
         "Authorization": f"Bearer {config['api_key']}",

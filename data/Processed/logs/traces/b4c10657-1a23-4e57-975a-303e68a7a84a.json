@@ -1,0 +1,178 @@
+{
+  "trace_id": "b4c10657-1a23-4e57-975a-303e68a7a84a",
+  "timestamp": "2026-06-19 15:50:10",
+  "user_question": "gia đình ông/bà ĐỊCH THỊ LAN có bao nhiêu điểm b1 năm 2024",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "avg_b1_score"
+    ],
+    "dimensions": [
+      "host_name"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      },
+      {
+        "field": "host_name",
+        "operator": "LIKE",
+        "value": "%ĐỊCH THỊ LAN%"
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Năm 2024, hộ gia đình có chủ hộ chứa ĐỊCH THỊ LAN có bao nhiêu điểm b1",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"family.hostName\") LIKE '%%địch thị lan%%' GROUP BY host_name, household_id, district, commune ORDER BY avg_b1 DESC",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2719.153500000175,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 0.5988000011711847
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà ĐỊCH THỊ LAN có bao nhiêu điểm b1 năm 2024",
+      "rewritten_question": "Năm 2024, hộ gia đình có chủ hộ chứa ĐỊCH THỊ LAN có bao nhiêu điểm b1",
+      "latency_ms": 1037.7220999998826
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.5219000013312325
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 281.89969999948516
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 992.7520000001095
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "avg_b1_score"
+        ],
+        "dimensions": [
+          "host_name"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "host_name",
+            "operator": "LIKE",
+            "value": "%ĐỊCH THỊ LAN%"
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2024, hộ gia đình có chủ hộ chứa ĐỊCH THỊ LAN có bao nhiêu điểm b1",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "68c208c9b58346a5748457668fa4393e",
+      "latency_ms": 0.08990000060293823
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"family.hostName\") LIKE '%%địch thị lan%%' GROUP BY host_name, household_id, district, commune ORDER BY avg_b1 DESC",
+      "latency_ms": 0.07199999890872277
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"family.hostName\") LIKE '%%địch thị lan%%' GROUP BY host_name, household_id, district, commune ORDER BY avg_b1 DESC",
+      "latency_ms": 4.951700000674464
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 393.2505000011588
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.0844000007637078
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Năm 2024, hộ gia đình có chủ hộ là ĐỊCH THỊ LAN có **155** điểm b1.",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "avg_b1_score"
+        ],
+        "dimensions": [
+          "host_name"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          },
+          {
+            "field": "host_name",
+            "operator": "LIKE",
+            "value": "%ĐỊCH THỊ LAN%"
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2024, hộ gia đình có chủ hộ chứa ĐỊCH THỊ LAN có bao nhiêu điểm b1",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(AVG(b1Point), 2) AS avg_b1 FROM households WHERE \"administrative.year\" = 2024 AND LOWER(\"family.hostName\") LIKE '%%địch thị lan%%' GROUP BY host_name, household_id, district, commune ORDER BY avg_b1 DESC",
+      "result_preview": [
+        {
+          "host_name": "ĐỊCH THỊ LAN",
+          "household_id": "38_DUP003",
+          "district": "Huyện Cư Jút",
+          "commune": "Xã Trúc Sơn",
+          "avg_b1": 155.0
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Năm 2024, hộ gia đình có chủ hộ chứa ĐỊCH THỊ LAN có bao nhiêu điểm b1"
+    }
+  }
+}

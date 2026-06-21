@@ -53,7 +53,9 @@ class DomainGate:
         qa_keywords = [
             "bao nhiêu", "số lượng", "tổng số", "tổng cộng", "thống kê", "danh sách", "liệt kê",
             "trung bình", "cao nhất", "ít nhất", "nhiều nhất", "so sánh", "chênh lệch", "tăng", "giảm",
-            "tỉ lệ", "tỷ lệ", "phần trăm", "ở đâu", "huyện nào", "xã nào", "năm 2023", "năm 2024"
+            "tỉ lệ", "tỷ lệ", "phần trăm", "ở đâu", "huyện nào", "xã nào", "năm 2023", "năm 2024",
+            "có thiếu", "có bị", "có phải", "có nghèo", "bị nghèo", "thiếu nước", "thiếu vốn", "dân tộc", "nguyên nhân",
+            "bao người", "nước sạch", "nhà tiêu", "thiếu đất", "ốm đau", "tai nạn"
         ]
 
         # 2. Từ khoá dành cho General Knowledge (định nghĩa, giải thích)
@@ -91,7 +93,8 @@ class DomainGate:
         # 5. Kiểm tra nội dung có liên quan đến nghiệp vụ hộ nghèo không
         poverty_related = [
             "nghèo", "cận nghèo", "b1", "b2", "hộ", "nhân khẩu", "đắk nông", "thiếu hụt",
-            "dân tộc", "tại chỗ", "kinh", "nam", "nữ", "dân số", "gia đình", "tài sản", "thu nhập"
+            "dân tộc", "tại chỗ", "kinh", "nam", "nữ", "dân số", "gia đình", "tài sản", "thu nhập",
+            "nước sạch", "nhà tiêu", "đất sản xuất", "ốm đau", "tai nạn", "vốn", "lao động"
         ]
         is_related = any(w in question_lower for w in poverty_related) or len(matched_terms) > 0
 

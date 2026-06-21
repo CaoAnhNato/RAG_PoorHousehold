@@ -29,7 +29,7 @@ class SemanticRetriever:
         elif "e5" in embedding_model.lower():
             self.score_threshold = 0.35
         else:
-            self.score_threshold = 0.18  # Ngưỡng thấp hơn cho các model khác như Vietnamese_Embedding
+            self.score_threshold = 0.15  # Ngưỡng thấp hơn cho các model khác như Vietnamese_Embedding
         
     def retrieve(self, user_question: str, top_k: int = 8, rule_output: dict[str, Any] | None = None) -> dict[str, Any]:
         """

@@ -23,7 +23,7 @@ logging.basicConfig(
 logger = logging.getLogger("duckdb_loader")
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-CONFIG_PATH = PROJECT_ROOT / "Processed" / "metadata" / "query_control" / "duckdb_config.json"
+CONFIG_PATH = PROJECT_ROOT / "data" / "Processed" / "metadata" / "query_control" / "duckdb_config.json"
 
 def load_config() -> dict:
     """Tải tệp cấu hình duckdb_config.json."""
@@ -49,7 +49,7 @@ def check_needs_rebuild(config: dict) -> bool:
             
     # Lấy thời điểm thay đổi lớn nhất của các tệp nguồn Excel
     max_source_mtime = 0.0
-    source_root = PROJECT_ROOT / config.get("source_root", "Processed")
+    source_root = PROJECT_ROOT / config.get("source_root", "data/Processed")
     
     for table_name, table_cfg in config.get("tables", {}).items():
         for s_dir in table_cfg.get("source_dirs", []):
@@ -127,7 +127,7 @@ def build_runtime_database(config: dict, rebuild: bool = False):
     """Xây dựng Parquet và DuckDB database từ nguồn Excel."""
     duckdb_path = PROJECT_ROOT / config.get("duckdb_path", "Runtime/duckdb/intern_chatbot.duckdb")
     parquet_dir = PROJECT_ROOT / config.get("parquet_dir", "Runtime/parquet")
-    source_root = PROJECT_ROOT / config.get("source_root", "Processed")
+    source_root = PROJECT_ROOT / config.get("source_root", "data/Processed")
     
     # Tạo các thư mục Runtime cần thiết
     duckdb_path.parent.mkdir(parents=True, exist_ok=True)

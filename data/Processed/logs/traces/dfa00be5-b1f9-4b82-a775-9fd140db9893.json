@@ -1,0 +1,180 @@
+{
+  "trace_id": "dfa00be5-b1f9-4b82-a775-9fd140db9893",
+  "timestamp": "2026-06-19 15:50:25",
+  "user_question": "gia đình ông/bà NÔNG VĂN THỀ năm 2024 có bao người",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [
+      "household_member_count"
+    ],
+    "dimensions": [
+      "host_name"
+    ],
+    "filters": [
+      {
+        "field": "host_name",
+        "operator": "=",
+        "value": "NÔNG VĂN THỀ"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Gia đình ông/bà NÔNG VĂN THỀ năm 2024 có bao nhiêu người",
+    "output_mode": "text"
+  },
+  "sql": "SELECT households.\"family.hostName\" AS host_name, households.\"family.code\" AS household_id, households.\"administrative.district\" AS district, households.\"administrative.commune\" AS commune, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.hostName\") = 'nông văn thề' AND households.\"administrative.year\" = 2024 GROUP BY host_name, household_id, district, commune",
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 2136.5301000005275,
+  "status": "success",
+  "errors": [],
+  "warnings": [
+    {
+      "code": "EMPTY_RESULT",
+      "message": "Truy vấn trả về kết quả rỗng."
+    }
+  ],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 8.65190000149596
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà NÔNG VĂN THỀ năm 2024 có bao người",
+      "rewritten_question": "Gia đình ông/bà NÔNG VĂN THỀ năm 2024 có bao nhiêu người",
+      "latency_ms": 933.7080000004789
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.05609999971056823
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 225.1999000000069
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 959.1811000009329
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "household_member_count"
+        ],
+        "dimensions": [
+          "host_name"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "NÔNG VĂN THỀ"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Gia đình ông/bà NÔNG VĂN THỀ năm 2024 có bao nhiêu người",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "ba90989910c4a244373f19370be26ed7",
+      "latency_ms": 0.17660000048635993
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT households.\"family.hostName\" AS host_name, households.\"family.code\" AS household_id, households.\"administrative.district\" AS district, households.\"administrative.commune\" AS commune, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.hostName\") = 'nông văn thề' AND households.\"administrative.year\" = 2024 GROUP BY host_name, household_id, district, commune",
+      "latency_ms": 0.06800000119255856
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT households.\"family.hostName\" AS host_name, households.\"family.code\" AS household_id, households.\"administrative.district\" AS district, households.\"administrative.commune\" AS commune, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.hostName\") = 'nông văn thề' AND households.\"administrative.year\" = 2024 GROUP BY host_name, household_id, district, commune",
+      "latency_ms": 2.957500000775326
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 0.008600000001024455
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.996599999780301
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Không tìm thấy số liệu phù hợp với yêu cầu của bạn trong cơ sở dữ liệu.",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "household_member_count"
+        ],
+        "dimensions": [
+          "host_name"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "NÔNG VĂN THỀ"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Gia đình ông/bà NÔNG VĂN THỀ năm 2024 có bao nhiêu người",
+        "output_mode": "text"
+      },
+      "sql": "SELECT households.\"family.hostName\" AS host_name, households.\"family.code\" AS household_id, households.\"administrative.district\" AS district, households.\"administrative.commune\" AS commune, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.hostName\") = 'nông văn thề' AND households.\"administrative.year\" = 2024 GROUP BY host_name, household_id, district, commune",
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [
+        {
+          "code": "EMPTY_RESULT",
+          "message": "Truy vấn trả về kết quả rỗng."
+        }
+      ],
+      "errors": [],
+      "rewritten_question": "Gia đình ông/bà NÔNG VĂN THỀ năm 2024 có bao nhiêu người"
+    }
+  }
+}

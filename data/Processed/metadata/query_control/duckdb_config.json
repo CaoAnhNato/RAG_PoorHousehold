@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "duckdb_path": "data/Processed/intern_chatbot.duckdb",
+  "parquet_dir": "Runtime/parquet",
+  "source_root": "data/Processed",
+  "tables": {
+    "households": {
+      "source_dirs": [
+        "data/Processed/2023",
+        "data/Processed/2024"
+      ],
+      "output_parquet": "Runtime/parquet/households.parquet",
+      "duckdb_table": "households",
+      "grain": "1 row = 1 household in one review year"
+    },
+    "members": {
+      "source_dirs": [
+        "data/Processed/2023/_members",
+        "data/Processed/2024/_members"
+      ],
+      "output_parquet": "Runtime/parquet/members.parquet",
+      "duckdb_table": "members",
+      "grain": "1 row = 1 household member",
+      "optional": true
+    }
+  },
+  "execution": {
+    "read_only": true,
+    "default_limit": 100,
+    "max_result_rows": 5000,
+    "query_timeout_seconds": 30
+  }
+}

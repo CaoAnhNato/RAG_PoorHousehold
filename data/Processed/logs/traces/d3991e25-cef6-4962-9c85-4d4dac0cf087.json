@@ -1,0 +1,58 @@
+{
+  "trace_id": "d3991e25-cef6-4962-9c85-4d4dac0cf087",
+  "timestamp": "2026-06-19 15:36:35",
+  "user_question": "Dự báo thời tiết Gia Nghĩa hôm nay thế nào?",
+  "route": "OUT_OF_SCOPE",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 1529.7914999991917,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 7.018000000243774
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Dự báo thời tiết Gia Nghĩa hôm nay thế nào?",
+      "rewritten_question": "Dự báo thời tiết Thành phố Gia Nghĩa hôm nay thế nào",
+      "latency_ms": 792.0243999997183
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": "Thành phố Gia Nghĩa",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.07569999979750719
+    },
+    "domain_gate": {
+      "route": "OUT_OF_SCOPE",
+      "confidence": 1.0,
+      "reason": "Câu hỏi về dự báo thời tiết không liên quan đến dữ liệu hộ nghèo, nhân khẩu hay các vấn đề chính sách xã hội của tỉnh Đắk Nông.",
+      "latency_ms": 726.7914000003657
+    },
+    "final": {
+      "route": "OUT_OF_SCOPE",
+      "answer": "Xin lỗi, tôi chỉ hỗ trợ trả lời các câu hỏi nghiệp vụ và truy vấn số liệu liên quan đến rà soát hộ nghèo, hộ cận nghèo tỉnh Đắk Nông năm 2023 - 2024. Vui lòng đặt câu hỏi khác phù hợp hơn.",
+      "query_plan": null,
+      "sql": null,
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": []
+    }
+  }
+}

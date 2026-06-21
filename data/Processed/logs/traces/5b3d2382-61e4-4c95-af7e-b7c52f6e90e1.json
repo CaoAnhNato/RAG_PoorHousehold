@@ -1,0 +1,155 @@
+{
+  "trace_id": "5b3d2382-61e4-4c95-af7e-b7c52f6e90e1",
+  "timestamp": "2026-06-19 15:45:39",
+  "user_question": "Tổng số hộ rà soát theo từng năm là bao nhiêu?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "household_count"
+    ],
+    "dimensions": [
+      "year"
+    ],
+    "filters": [],
+    "sort": {
+      "field": "year",
+      "direction": "asc"
+    },
+    "limit": null,
+    "output_type": "table",
+    "ambiguities": [],
+    "original_question": "Tổng số hộ rà soát theo từng năm là bao nhiêu",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"administrative.year\" AS year, COUNT(*) AS household_count FROM households GROUP BY year ORDER BY year ASC",
+  "cache_hit": false,
+  "row_count": 2,
+  "latency_total_ms": 2670.792500000971,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 2.616199999465607
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Tổng số hộ rà soát theo từng năm là bao nhiêu?",
+      "rewritten_question": "Tổng số hộ rà soát theo từng năm là bao nhiêu",
+      "latency_ms": 1080.465600000025
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [
+        "year"
+      ],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.16830000095069408
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 257.0298000009643
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 842.6287999991473
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "household_count"
+        ],
+        "dimensions": [
+          "year"
+        ],
+        "filters": [],
+        "sort": {
+          "field": "year",
+          "direction": "asc"
+        },
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Tổng số hộ rà soát theo từng năm là bao nhiêu",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "3c30b387a81958cdd1851cc67b787e21",
+      "latency_ms": 0.10099999963131268
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"administrative.year\" AS year, COUNT(*) AS household_count FROM households GROUP BY year ORDER BY year ASC",
+      "latency_ms": 0.09929999941959977
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"administrative.year\" AS year, COUNT(*) AS household_count FROM households GROUP BY year ORDER BY year ASC",
+      "latency_ms": 20.31429999988177
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 459.9653000004764
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.666300000375486
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Tổng số hộ rà soát theo từng năm như sau:\n\n* **Năm 2023:** 13.446 hộ\n* **Năm 2024:** 7.472 hộ",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "household_count"
+        ],
+        "dimensions": [
+          "year"
+        ],
+        "filters": [],
+        "sort": {
+          "field": "year",
+          "direction": "asc"
+        },
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Tổng số hộ rà soát theo từng năm là bao nhiêu",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"administrative.year\" AS year, COUNT(*) AS household_count FROM households GROUP BY year ORDER BY year ASC",
+      "result_preview": [
+        {
+          "year": 2023,
+          "household_count": 13446
+        },
+        {
+          "year": 2024,
+          "household_count": 7472
+        }
+      ],
+      "row_count": 2,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Tổng số hộ rà soát theo từng năm là bao nhiêu"
+    }
+  }
+}

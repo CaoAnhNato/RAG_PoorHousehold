@@ -28,7 +28,7 @@ def main() -> None:
     args = parser.parse_args()
     
     # 1. Định nghĩa các đường dẫn metadata
-    processed_dir = PROJECT_ROOT / "Processed"
+    processed_dir = PROJECT_ROOT / "data" / "Processed"
     metadata_dir = processed_dir / "metadata" / "query_control"
     
     schema_graph_path = metadata_dir / "schema_graph.json"

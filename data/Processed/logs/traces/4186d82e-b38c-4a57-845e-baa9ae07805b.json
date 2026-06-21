@@ -1,0 +1,171 @@
+{
+  "trace_id": "4186d82e-b38c-4a57-845e-baa9ae07805b",
+  "timestamp": "2026-06-19 15:49:19",
+  "user_question": "Huyện nào có số hộ nghèo cao nhất năm 2023?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "topk_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [
+      "district"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2023
+      }
+    ],
+    "sort": {
+      "field": "poor_household_count",
+      "direction": "desc"
+    },
+    "limit": 1,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Huyện nào có số hộ nghèo nhiều nhất năm 2023",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 GROUP BY district ORDER BY poor_household_count DESC LIMIT 1",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2315.361799999664,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 2.0087000011699274
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Huyện nào có số hộ nghèo cao nhất năm 2023?",
+      "rewritten_question": "Huyện nào có số hộ nghèo nhiều nhất năm 2023",
+      "latency_ms": 765.0770000000193
+    },
+    "rule_extractor": {
+      "task_type": "topk_query",
+      "years": [
+        2023
+      ],
+      "group_by": [
+        "district"
+      ],
+      "is_topk": true,
+      "direction": "desc",
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.0669999990350334
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 258.7872000003699
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 895.5792999986443
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "topk_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2023
+          }
+        ],
+        "sort": {
+          "field": "poor_household_count",
+          "direction": "desc"
+        },
+        "limit": 1,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Huyện nào có số hộ nghèo nhiều nhất năm 2023",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "cb89258e4ed1e4ff59ddec0361c026eb",
+      "latency_ms": 0.06380000013450626
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 GROUP BY district ORDER BY poor_household_count DESC LIMIT 1",
+      "latency_ms": 0.04909999915980734
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 GROUP BY district ORDER BY poor_household_count DESC LIMIT 1",
+      "latency_ms": 5.261800000880612
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 378.8604999990639
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.7336000000796048
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Trong năm 2023, huyện có số hộ nghèo nhiều nhất là **Huyện Tuy Đức** với **1674** hộ.",
+      "query_plan": {
+        "task_type": "topk_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2023
+          }
+        ],
+        "sort": {
+          "field": "poor_household_count",
+          "direction": "desc"
+        },
+        "limit": 1,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Huyện nào có số hộ nghèo nhiều nhất năm 2023",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 GROUP BY district ORDER BY poor_household_count DESC LIMIT 1",
+      "result_preview": [
+        {
+          "district": "Huyện Tuy Đức",
+          "poor_household_count": 1674
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Huyện nào có số hộ nghèo nhiều nhất năm 2023"
+    }
+  }
+}

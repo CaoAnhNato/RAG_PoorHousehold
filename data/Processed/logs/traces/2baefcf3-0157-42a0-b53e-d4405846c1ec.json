@@ -1,0 +1,203 @@
+{
+  "trace_id": "2baefcf3-0157-42a0-b53e-d4405846c1ec",
+  "timestamp": "2026-06-19 15:36:23",
+  "user_question": "Thống kê số lượng hộ nghèo năm 2024 theo huyện",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [
+      "district"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "table",
+    "ambiguities": [],
+    "original_question": "Thống kê số hộ nghèo năm 2024 theo huyện",
+    "output_mode": "text"
+  },
+  "sql": "",
+  "cache_hit": true,
+  "row_count": 8,
+  "latency_total_ms": 3399.617200000648,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 6.156199999168166
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Thống kê số lượng hộ nghèo năm 2024 theo huyện",
+      "rewritten_question": "Thống kê số hộ nghèo năm 2024 theo huyện",
+      "latency_ms": 2523.8387000008515
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [
+        "district"
+      ],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.7114999989425996
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 276.7053000006854
+    },
+    "planner": {
+      "status": "generating",
+      "cache_hit": true,
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Thống kê số hộ nghèo năm 2024 theo huyện",
+        "output_mode": "text"
+      },
+      "latency_ms": 11.37419999940903
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Thống kê số hộ nghèo năm 2024 theo huyện",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": true,
+      "cache_key": "d1abd023f9b26048f1af7b72695eea57",
+      "latency_ms": 0.7146999996621162
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 572.4378999984765
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.7373999999108491
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Thống kê số hộ nghèo năm 2024 theo huyện tại tỉnh Đắk Nông như sau:\n\n* **Huyện Tuy Đức:** 829 hộ\n* **Huyện Đăk Glong:** 538 hộ\n* **Huyện Đắk Song:** 279 hộ\n* **Huyện Đắk Mil:** 221 hộ\n* **Huyện Cư Jút:** 204 hộ\n* **Huyện Krông Nô:** 189 hộ\n* **Huyện Đắk RLấp:** 135 hộ\n* **Thành phố Gia Nghĩa:** 51 hộ",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Thống kê số hộ nghèo năm 2024 theo huyện",
+        "output_mode": "text"
+      },
+      "sql": "",
+      "result_preview": [
+        {
+          "district": "Huyện Tuy Đức",
+          "poor_household_count": 829
+        },
+        {
+          "district": "Huyện Đăk Glong",
+          "poor_household_count": 538
+        },
+        {
+          "district": "Huyện Đắk Song",
+          "poor_household_count": 279
+        },
+        {
+          "district": "Huyện Đắk Mil",
+          "poor_household_count": 221
+        },
+        {
+          "district": "Huyện Cư Jút",
+          "poor_household_count": 204
+        },
+        {
+          "district": "Huyện Krông Nô",
+          "poor_household_count": 189
+        },
+        {
+          "district": "Huyện Đắk RLấp",
+          "poor_household_count": 135
+        },
+        {
+          "district": "Thành phố Gia Nghĩa",
+          "poor_household_count": 51
+        }
+      ],
+      "row_count": 8,
+      "cache": {
+        "hit": true,
+        "key": "d1abd023f9b26048f1af7b72695eea57"
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Thống kê số hộ nghèo năm 2024 theo huyện"
+    }
+  }
+}

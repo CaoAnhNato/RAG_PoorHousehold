@@ -1,0 +1,642 @@
+{
+  "date": {
+    "cardinality": 4,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.hostName": {
+    "cardinality": 1089,
+    "type": "identifier",
+    "table": "fact_household"
+  },
+  "family.code": {
+    "cardinality": 1114,
+    "type": "identifier",
+    "table": "fact_household"
+  },
+  "family.coDanTocTaiCho": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.hostGender": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.numberOfMembers": {
+    "cardinality": 16,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "quickReview.result": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "b1Point": {
+    "cardinality": 111,
+    "type": "identifier",
+    "table": "fact_household"
+  },
+  "b2Point": {
+    "cardinality": 9,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "classify": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reviewer": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.duplicate_core_removed": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.original_family_code": {
+    "cardinality": 242,
+    "type": "identifier",
+    "table": "fact_household"
+  },
+  "processing.family_code_was_changed": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.duplicate_code_group_size": {
+    "cardinality": 11,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.note": {
+    "cardinality": 3,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.original_date": {
+    "cardinality": 4,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.source.date": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.date_was_filled": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.date_was_normalized": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "administrative.year": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.isDTTC": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "administrative.province": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "administrative.district": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "administrative.commune": {
+    "cardinality": 8,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "administrative.village_or_group": {
+    "cardinality": 7,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "classify.original": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "administrative.areaType": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "administrative.areaTypeSource": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "administrative.areaTypeConfidence": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reviewer.role": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reviewer.source": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "review.reviewType": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "review.reviewPeriod": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.ethnicity": {
+    "cardinality": 9,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.isKinh": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.isDTTS": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.original_family_hostName": {
+    "cardinality": 1089,
+    "type": "identifier",
+    "table": "fact_household"
+  },
+  "processing.source.family.hostName": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.family_hostName_was_filled": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.family_hostName_rule": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.original_family_hostGender": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.source.family.hostGender": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.family_hostGender_was_filled": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.family_hostGender_rule": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.original_family_coDanTocTaiCho": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.source.family.coDanTocTaiCho": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.family_coDanTocTaiCho_was_filled": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.family_coDanTocTaiCho_rule": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.isPoorNearPoorDTTS": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.original_family_numberOfMembers": {
+    "cardinality": 16,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.source.family.numberOfMembers": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.family_numberOfMembers_was_filled": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.family_numberOfMembers_rule": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "classify.legalRecomputed": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "classify.final": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "classify.consistencyStatus": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "classify.consistencyReason": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.totalCount": {
+    "cardinality": 9,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.original_b1Point": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.source.b1Point": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.b1Point_was_filled": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.b1Point_rule": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.original_b2Point": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.source.b2Point": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.source.deprivation.totalCount": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.b2Point_was_filled": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.b2Point_rule": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.hostBirthDate": {
+    "cardinality": 1086,
+    "type": "identifier",
+    "table": "fact_household"
+  },
+  "family.hostBirthYear": {
+    "cardinality": 57,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.povertyStatusDetail": {
+    "cardinality": 4,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.nearPovertyStatusDetail": {
+    "cardinality": 4,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.isAgricultureForestryFisherySaltMediumLivingStandard": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.hasNoLaborCapacity": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.hasRevolutionMeritPolicy": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "children.totalCount": {
+    "cardinality": 9,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "children.lackHealthInsuranceCount": {
+    "cardinality": 5,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "children.nutritionDeprivedCount": {
+    "cardinality": 5,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "children.schoolAttendanceDeprivedCount": {
+    "cardinality": 5,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.employment": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.dependentPerson": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.nutrition": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.healthInsurance": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.adultEducation": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.childSchoolAttendance": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.housingQuality": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.housingArea": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.cleanWater": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.hygienicToilet": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.telecommunication": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "deprivation.informationAccessAssets": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reason.lackProductionLand": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reason.lackCapital": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reason.lackLabor": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reason.lackProductionTools": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reason.lackProductionKnowledge": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reason.lackLaborSkill": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reason.illnessOrAccident": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "reason.other": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "support.health": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "support.education": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "support.production": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "support.credit": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "support.housing": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "support.other": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "transition.beginningClassify": {
+    "cardinality": 3,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "transition.endingClassify": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "transition.poorChangeType": {
+    "cardinality": 5,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "transition.nearPoorChangeType": {
+    "cardinality": 5,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "transition.isEscapedPoverty": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.membersGenerated": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.membersFile": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "family.membersJson": {
+    "cardinality": 1114,
+    "type": "identifier",
+    "table": "fact_household"
+  },
+  "member.householdOrder": {
+    "cardinality": 1114,
+    "type": "identifier",
+    "table": "fact_household"
+  },
+  "processing.source.family.code": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "processing.family_code_rule": {
+    "cardinality": 1,
+    "type": "dimension",
+    "table": "fact_household"
+  },
+  "member.orderInHousehold": {
+    "cardinality": 16,
+    "type": "dimension",
+    "table": "fact_member"
+  },
+  "member.fullName": {
+    "cardinality": 1133,
+    "type": "identifier",
+    "table": "fact_member"
+  },
+  "member.gender": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_member"
+  },
+  "member.birthDate": {
+    "cardinality": 4610,
+    "type": "identifier",
+    "table": "fact_member"
+  },
+  "member.birthYear": {
+    "cardinality": 91,
+    "type": "dimension",
+    "table": "fact_member"
+  },
+  "member.ethnicity": {
+    "cardinality": 11,
+    "type": "dimension",
+    "table": "fact_member"
+  },
+  "member.relationshipToHost": {
+    "cardinality": 8,
+    "type": "dimension",
+    "table": "fact_member"
+  },
+  "member.isHost": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_member"
+  },
+  "member.isChild": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_member"
+  },
+  "member.hasHealthInsurance": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_member"
+  },
+  "member.nutritionDeprived": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_member"
+  },
+  "member.schoolAttendanceDeprived": {
+    "cardinality": 2,
+    "type": "dimension",
+    "table": "fact_member"
+  }
+}

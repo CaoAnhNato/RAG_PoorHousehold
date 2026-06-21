@@ -1,0 +1,153 @@
+{
+  "trace_id": "955e9df3-6321-441d-821e-3b4891416d4f",
+  "timestamp": "2026-06-19 15:45:42",
+  "user_question": "Năm 2024 có bao nhiêu hộ nghèo?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Năm 2024, tỉnh Đắk Nông có bao nhiêu hộ nghèo",
+    "output_mode": "text"
+  },
+  "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 ORDER BY poor_household_count DESC",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2460.8041000010417,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.3312999999470776
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Năm 2024 có bao nhiêu hộ nghèo?",
+      "rewritten_question": "Năm 2024, tỉnh Đắk Nông có bao nhiêu hộ nghèo",
+      "latency_ms": 879.1799999999057
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.06000000030326191
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 252.03749999855063
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 895.3552999992098
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2024, tỉnh Đắk Nông có bao nhiêu hộ nghèo",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "c605687742440212c5c0a79a73116a5c",
+      "latency_ms": 0.0760000002628658
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 ORDER BY poor_household_count DESC",
+      "latency_ms": 0.061199998526717536
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 ORDER BY poor_household_count DESC",
+      "latency_ms": 2.399300001343363
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 422.6995999997598
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.1986000008619158
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Năm 2024, tỉnh Đắk Nông có 2.446 hộ nghèo.",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Năm 2024, tỉnh Đắk Nông có bao nhiêu hộ nghèo",
+        "output_mode": "text"
+      },
+      "sql": "SELECT SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 ORDER BY poor_household_count DESC",
+      "result_preview": [
+        {
+          "poor_household_count": 2446
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Năm 2024, tỉnh Đắk Nông có bao nhiêu hộ nghèo"
+    }
+  }
+}

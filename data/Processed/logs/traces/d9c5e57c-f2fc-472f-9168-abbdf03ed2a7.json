@@ -1,0 +1,180 @@
+{
+  "trace_id": "d9c5e57c-f2fc-472f-9168-abbdf03ed2a7",
+  "timestamp": "2026-06-19 15:50:37",
+  "user_question": "gia đình ông/bà PHẠM VĂN LONG năm 2024 có bao người",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [
+      "household_member_count"
+    ],
+    "dimensions": [
+      "household_id"
+    ],
+    "filters": [
+      {
+        "field": "household_id",
+        "operator": "LIKE",
+        "value": "%PHẠM VĂN LONG%"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Gia đình ông/bà PHẠM VĂN LONG năm 2024 có bao nhiêu người",
+    "output_mode": "text"
+  },
+  "sql": "SELECT households.\"family.code\" AS household_id, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.code\") LIKE '%%phạm văn long%%' AND households.\"administrative.year\" = 2024 GROUP BY household_id",
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 2171.844800001054,
+  "status": "success",
+  "errors": [],
+  "warnings": [
+    {
+      "code": "EMPTY_RESULT",
+      "message": "Truy vấn trả về kết quả rỗng."
+    }
+  ],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 8.172699999704491
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông/bà PHẠM VĂN LONG năm 2024 có bao người",
+      "rewritten_question": "Gia đình ông/bà PHẠM VĂN LONG năm 2024 có bao nhiêu người",
+      "latency_ms": 905.4156000001967
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.05669999882229604
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 260.7774000007339
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 988.7244000001374
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "household_member_count"
+        ],
+        "dimensions": [
+          "household_id"
+        ],
+        "filters": [
+          {
+            "field": "household_id",
+            "operator": "LIKE",
+            "value": "%PHẠM VĂN LONG%"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Gia đình ông/bà PHẠM VĂN LONG năm 2024 có bao nhiêu người",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "5c30a6781ef747af84bc59f8b057601d",
+      "latency_ms": 0.09610000051907264
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT households.\"family.code\" AS household_id, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.code\") LIKE '%%phạm văn long%%' AND households.\"administrative.year\" = 2024 GROUP BY household_id",
+      "latency_ms": 0.050799999371520244
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT households.\"family.code\" AS household_id, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.code\") LIKE '%%phạm văn long%%' AND households.\"administrative.year\" = 2024 GROUP BY household_id",
+      "latency_ms": 1.840700000684592
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 0.012200000128359534
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.3318999990588054
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Không tìm thấy số liệu phù hợp với yêu cầu của bạn trong cơ sở dữ liệu.",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "household_member_count"
+        ],
+        "dimensions": [
+          "household_id"
+        ],
+        "filters": [
+          {
+            "field": "household_id",
+            "operator": "LIKE",
+            "value": "%PHẠM VĂN LONG%"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Gia đình ông/bà PHẠM VĂN LONG năm 2024 có bao nhiêu người",
+        "output_mode": "text"
+      },
+      "sql": "SELECT households.\"family.code\" AS household_id, COUNT(*) AS household_member_count FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\" WHERE LOWER(households.\"family.code\") LIKE '%%phạm văn long%%' AND households.\"administrative.year\" = 2024 GROUP BY household_id",
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [
+        {
+          "code": "EMPTY_RESULT",
+          "message": "Truy vấn trả về kết quả rỗng."
+        }
+      ],
+      "errors": [],
+      "rewritten_question": "Gia đình ông/bà PHẠM VĂN LONG năm 2024 có bao nhiêu người"
+    }
+  }
+}

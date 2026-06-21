@@ -1,0 +1,192 @@
+{
+  "trace_id": "e22b4ae1-36bf-48ca-b24f-41b1f5a385b0",
+  "timestamp": "2026-06-19 15:46:09",
+  "user_question": "gia đình ông HÀ VĂN NAM có bị nghèo do thiếu vốn không?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "detail_query",
+    "metrics": [
+      "poor_rate"
+    ],
+    "dimensions": [
+      "lack_capital"
+    ],
+    "filters": [
+      {
+        "field": "host_name",
+        "operator": "=",
+        "value": "HÀ VĂN NAM"
+      },
+      {
+        "field": "poverty_status",
+        "operator": "=",
+        "value": "Hộ nghèo"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": 100,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Gia đình ông HÀ VĂN NAM có bị nghèo do thiếu vốn không",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(100.0 * SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 2) AS poor_rate FROM households WHERE LOWER(\"family.hostName\") = 'hà văn nam' AND LOWER(\"classify\") = 'hộ nghèo' AND \"administrative.year\" = 2024 GROUP BY lack_capital, host_name, household_id, district, commune LIMIT 100",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 2637.0332000005874,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 5.9108000004926
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "gia đình ông HÀ VĂN NAM có bị nghèo do thiếu vốn không?",
+      "rewritten_question": "Gia đình ông HÀ VĂN NAM có bị nghèo do thiếu vốn không",
+      "latency_ms": 897.9676999988442
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.37259999953676015
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 275.5301999986841
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 956.5901000005397
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "poor_rate"
+        ],
+        "dimensions": [
+          "lack_capital"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "HÀ VĂN NAM"
+          },
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ nghèo"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": 100,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Gia đình ông HÀ VĂN NAM có bị nghèo do thiếu vốn không",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "0c64e95c2457f6d356a72d20ce1f0541",
+      "latency_ms": 0.08410000009462237
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(100.0 * SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 2) AS poor_rate FROM households WHERE LOWER(\"family.hostName\") = 'hà văn nam' AND LOWER(\"classify\") = 'hộ nghèo' AND \"administrative.year\" = 2024 GROUP BY lack_capital, host_name, household_id, district, commune LIMIT 100",
+      "latency_ms": 0.08920000072976109
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(100.0 * SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 2) AS poor_rate FROM households WHERE LOWER(\"family.hostName\") = 'hà văn nam' AND LOWER(\"classify\") = 'hộ nghèo' AND \"administrative.year\" = 2024 GROUP BY lack_capital, host_name, household_id, district, commune LIMIT 100",
+      "latency_ms": 8.016399999178248
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 485.1758000004338
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.0054000013042241
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Có, gia đình ông Hà Văn Nam có bị nghèo do thiếu vốn.\n\nThông tin chi tiết:\n* **Chủ hộ:** Hà Văn Nam\n* **Địa chỉ:** Xã Nâm Nung, Huyện Krông Nô\n* **Tình trạng thiếu vốn (lack_capital):** True (Có)\n* **Tỷ lệ nghèo (poor_rate):** 100%",
+      "query_plan": {
+        "task_type": "detail_query",
+        "metrics": [
+          "poor_rate"
+        ],
+        "dimensions": [
+          "lack_capital"
+        ],
+        "filters": [
+          {
+            "field": "host_name",
+            "operator": "=",
+            "value": "HÀ VĂN NAM"
+          },
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ nghèo"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": 100,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Gia đình ông HÀ VĂN NAM có bị nghèo do thiếu vốn không",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"reason.lackCapital\" AS lack_capital, \"family.hostName\" AS host_name, \"family.code\" AS household_id, \"administrative.district\" AS district, \"administrative.commune\" AS commune, ROUND(100.0 * SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 2) AS poor_rate FROM households WHERE LOWER(\"family.hostName\") = 'hà văn nam' AND LOWER(\"classify\") = 'hộ nghèo' AND \"administrative.year\" = 2024 GROUP BY lack_capital, host_name, household_id, district, commune LIMIT 100",
+      "result_preview": [
+        {
+          "lack_capital": true,
+          "host_name": "Hà Văn Nam",
+          "household_id": "57",
+          "district": "Huyện Krông Nô",
+          "commune": "Xã Nâm Nung",
+          "poor_rate": 100.0
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Gia đình ông HÀ VĂN NAM có bị nghèo do thiếu vốn không"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "pie": {
+    "max_categories": 6
+  },
+  "line": {
+    "require_dimension": "year"
+  },
+  "bar": {
+    "max_categories": 20
+  },
+  "horizontal_bar": {
+    "max_categories": 50
+  }
+}

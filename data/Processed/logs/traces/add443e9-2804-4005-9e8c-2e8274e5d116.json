@@ -1,0 +1,190 @@
+{
+  "trace_id": "add443e9-2804-4005-9e8c-2e8274e5d116",
+  "timestamp": "2026-06-19 15:36:26",
+  "user_question": "Thống kê số lượng hộ cận nghèo theo huyện năm 2024",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "near_poor_household_count"
+    ],
+    "dimensions": [
+      "district"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "table",
+    "ambiguities": [],
+    "original_question": "Thống kê số lượng hộ cận nghèo năm 2024 theo huyện",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"classify\" = 'Hộ cận nghèo' AND \"administrative.year\" = 2024 GROUP BY district ORDER BY near_poor_household_count DESC",
+  "cache_hit": false,
+  "row_count": 8,
+  "latency_total_ms": 3529.0462000011757,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 7.777999999234453
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Thống kê số lượng hộ cận nghèo theo huyện năm 2024",
+      "rewritten_question": "Thống kê số lượng hộ cận nghèo năm 2024 theo huyện",
+      "latency_ms": 884.7559999994701
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [
+        "district"
+      ],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": true,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.16589999904681463
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 256.0183000005054
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 1804.9200999994355
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "near_poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Thống kê số lượng hộ cận nghèo năm 2024 theo huyện",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "5b96a75b66c6df8039508d6bd620abd2",
+      "latency_ms": 0.13039999976172112
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"classify\" = 'Hộ cận nghèo' AND \"administrative.year\" = 2024 GROUP BY district ORDER BY near_poor_household_count DESC",
+      "latency_ms": 0.11720000111381523
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"classify\" = 'Hộ cận nghèo' AND \"administrative.year\" = 2024 GROUP BY district ORDER BY near_poor_household_count DESC",
+      "latency_ms": 7.828499999959604
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 555.9335999987525
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.2900000001536682
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Số lượng hộ cận nghèo năm 2024 theo huyện như sau:\n\n* **Huyện Tuy Đức:** 917 hộ\n* **Huyện Krông Nô:** 588 hộ\n* **Huyện Đắk Song:** 510 hộ\n* **Huyện Đăk Glong:** 485 hộ\n* **Huyện Đắk Mil:** 466 hộ\n* **Huyện Cư Jút:** 304 hộ\n* **Huyện Đắk RLấp:** 271 hộ\n* **Thành phố Gia Nghĩa:** 142 hộ",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "near_poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Thống kê số lượng hộ cận nghèo năm 2024 theo huyện",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"classify\" = 'Hộ cận nghèo' AND \"administrative.year\" = 2024 GROUP BY district ORDER BY near_poor_household_count DESC",
+      "result_preview": [
+        {
+          "district": "Huyện Tuy Đức",
+          "near_poor_household_count": 917
+        },
+        {
+          "district": "Huyện Krông Nô",
+          "near_poor_household_count": 588
+        },
+        {
+          "district": "Huyện Đắk Song",
+          "near_poor_household_count": 510
+        },
+        {
+          "district": "Huyện Đăk Glong",
+          "near_poor_household_count": 485
+        },
+        {
+          "district": "Huyện Đắk Mil",
+          "near_poor_household_count": 466
+        },
+        {
+          "district": "Huyện Cư Jút",
+          "near_poor_household_count": 304
+        },
+        {
+          "district": "Huyện Đắk RLấp",
+          "near_poor_household_count": 271
+        },
+        {
+          "district": "Thành phố Gia Nghĩa",
+          "near_poor_household_count": 142
+        }
+      ],
+      "row_count": 8,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Thống kê số lượng hộ cận nghèo năm 2024 theo huyện"
+    }
+  }
+}

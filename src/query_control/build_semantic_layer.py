@@ -12,8 +12,8 @@ from pathlib import Path
 import datetime as dt
 from typing import Any
 
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
-PROCESSED_DIR = PROJECT_ROOT / "Intern" / "Processed"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROCESSED_DIR = PROJECT_ROOT / "data" / "Processed"
 METADATA_DIR = PROCESSED_DIR / "metadata"
 QUERY_CONTROL_METADATA_DIR = METADATA_DIR / "query_control"
 SCHEMA_GRAPH_PATH = QUERY_CONTROL_METADATA_DIR / "schema_graph.json"
@@ -145,6 +145,126 @@ def main() -> None:
             "allowed_for_group_by": False,
             "allowed_for_filter": True,
             "query_examples": ["tên chủ hộ", "chủ hộ tên là", "tên của chủ hộ"]
+        },
+        "is_dtts": {
+            "name_vi": "Là hộ DTTS",
+            "definition": "Xác định hộ có phải là dân tộc thiểu số không",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["family.isDTTS"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["có phải dân tộc thiểu số", "là hộ dtts"]
+        },
+        "poverty_detail": {
+            "name_vi": "Chi tiết phân loại hộ nghèo",
+            "definition": "Phân loại chi tiết nguyên nhân hộ nghèo",
+            "semantic_type": "category",
+            "base_table": "households",
+            "physical_columns": ["family.povertyStatusDetail"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["chi tiết hộ nghèo", "phân loại nghèo chi tiết"]
+        },
+        "near_poverty_detail": {
+            "name_vi": "Chi tiết phân loại hộ cận nghèo",
+            "definition": "Phân loại chi tiết nguyên nhân hộ cận nghèo",
+            "semantic_type": "category",
+            "base_table": "households",
+            "physical_columns": ["family.nearPovertyStatusDetail"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["chi tiết hộ cận nghèo"]
+        },
+        "medium_living_standard": {
+            "name_vi": "Hộ Nông lâm ngư diêm nghiệp có mức sống trung bình",
+            "definition": "Xác định hộ có mức sống trung bình",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["family.isAgricultureForestryFisherySaltMediumLivingStandard"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["mức sống trung bình", "hộ nông nghiệp mức sống trung bình"]
+        },
+        "has_no_labor": {
+            "name_vi": "Không có khả năng lao động",
+            "definition": "Xác định hộ không có khả năng lao động",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["family.hasNoLaborCapacity"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["không có khả năng lao động", "hộ không có lao động"]
+        },
+        "has_revolution_merit": {
+            "name_vi": "Có công với cách mạng",
+            "definition": "Hộ có chính sách người có công với cách mạng",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["family.hasRevolutionMeritPolicy"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["có công cách mạng", "chính sách có công"]
+        },
+        "clean_water": {
+            "name_vi": "Thiếu hụt nước sinh hoạt",
+            "definition": "Xác định hộ có bị thiếu hụt nước sinh hoạt hợp vệ sinh không",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["deprivation.cleanWater"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["có nước sạch", "thiếu nước sinh hoạt"]
+        },
+        "hygienic_toilet": {
+            "name_vi": "Thiếu hụt nhà tiêu hợp vệ sinh",
+            "definition": "Xác định hộ có thiếu nhà tiêu hợp vệ sinh không",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["deprivation.hygienicToilet"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["có nhà vệ sinh", "thiếu nhà tiêu"]
+        },
+        "lack_production_land": {
+            "name_vi": "Lý do: Thiếu đất sản xuất",
+            "definition": "Xác định nguyên nhân nghèo do thiếu đất sản xuất",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["reason.lackProductionLand"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["thiếu đất sản xuất", "không có đất"]
+        },
+        "lack_capital": {
+            "name_vi": "Lý do: Thiếu vốn",
+            "definition": "Xác định nguyên nhân nghèo do thiếu vốn",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["reason.lackCapital"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["thiếu vốn", "không có vốn"]
+        },
+        "lack_labor": {
+            "name_vi": "Lý do: Thiếu lao động",
+            "definition": "Xác định nguyên nhân nghèo do thiếu lao động",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["reason.lackLabor"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["thiếu lao động"]
+        },
+        "illness_accident": {
+            "name_vi": "Lý do: Ốm đau tai nạn",
+            "definition": "Xác định nguyên nhân nghèo do ốm đau hoặc tai nạn",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["reason.illnessOrAccident"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["bị ốm đau", "tai nạn"]
         }
     }
     
@@ -287,6 +407,16 @@ def main() -> None:
             "allowed_dimensions": ["year", "district", "commune"],
             "required_columns": ["family.code"],
             "query_examples": ["tổng số nhân khẩu", "bao nhiêu thành viên", "số dân theo huyện"]
+        },
+        "household_member_count": {
+            "name_vi": "Số lượng thành viên hộ",
+            "definition": "Đếm số lượng thành viên trong một hộ gia đình cụ thể",
+            "base_table": "members",
+            "expression": "COUNT(*)",
+            "filters": [],
+            "allowed_dimensions": ["year", "district", "commune", "host_name", "household_id"],
+            "required_columns": ["family.code"],
+            "query_examples": ["gia đình ông A có bao nhiêu người", "hộ này có mấy người"]
         },
         "avg_age": {
             "name_vi": "Độ tuổi trung bình",

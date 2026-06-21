@@ -1,0 +1,941 @@
+{
+  "healthInsurance": {
+    "physical_column": "deprivation.healthInsurance",
+    "source_table": "fact_household",
+    "aliases": [
+      "bhyt",
+      "bảo hiểm y tế",
+      "thẻ bhyt"
+    ]
+  },
+  "cleanWater": {
+    "physical_column": "deprivation.cleanWater",
+    "source_table": "fact_household",
+    "aliases": [
+      "nước sạch",
+      "nguồn nước sinh hoạt",
+      "nước sinh hoạt"
+    ]
+  },
+  "hygienicToilet": {
+    "physical_column": "deprivation.hygienicToilet",
+    "source_table": "fact_household",
+    "aliases": [
+      "hố xí",
+      "nhà tiêu hợp vệ sinh",
+      "nhà vệ sinh"
+    ]
+  },
+  "nutrition": {
+    "physical_column": "deprivation.nutrition",
+    "source_table": "fact_household",
+    "aliases": [
+      "dinh dưỡng",
+      "thiếu dinh dưỡng"
+    ]
+  },
+  "housingQuality": {
+    "physical_column": "deprivation.housingQuality",
+    "source_table": "fact_household",
+    "aliases": [
+      "chất lượng nhà ở",
+      "nhà tạm",
+      "nhà dột nát"
+    ]
+  },
+  "housingArea": {
+    "physical_column": "deprivation.housingArea",
+    "source_table": "fact_household",
+    "aliases": [
+      "diện tích nhà ở",
+      "diện tích chật hẹp"
+    ]
+  },
+  "adultEducation": {
+    "physical_column": "deprivation.adultEducation",
+    "source_table": "fact_household",
+    "aliases": [
+      "giáo dục người lớn",
+      "trình độ học vấn người lớn"
+    ]
+  },
+  "childSchoolAttendance": {
+    "physical_column": "deprivation.childSchoolAttendance",
+    "source_table": "fact_household",
+    "aliases": [
+      "trẻ em đi học",
+      "tình trạng đi học của trẻ em"
+    ]
+  },
+  "employment": {
+    "physical_column": "deprivation.employment",
+    "source_table": "fact_household",
+    "aliases": [
+      "việc làm"
+    ]
+  },
+  "dependentPerson": {
+    "physical_column": "deprivation.dependentPerson",
+    "source_table": "fact_household",
+    "aliases": [
+      "người phụ thuộc"
+    ]
+  },
+  "telecommunication": {
+    "physical_column": "deprivation.telecommunication",
+    "source_table": "fact_household",
+    "aliases": [
+      "dịch vụ viễn thông",
+      "điện thoại",
+      "internet"
+    ]
+  },
+  "informationAccessAssets": {
+    "physical_column": "deprivation.informationAccessAssets",
+    "source_table": "fact_household",
+    "aliases": [
+      "tài sản tiếp cận thông tin",
+      "tivi",
+      "radio",
+      "máy tính"
+    ]
+  },
+  "lackProductionLand": {
+    "physical_column": "reason.lackProductionLand",
+    "source_table": "fact_household",
+    "aliases": [
+      "đất sản xuất",
+      "thiếu đất"
+    ]
+  },
+  "lackCapital": {
+    "physical_column": "reason.lackCapital",
+    "source_table": "fact_household",
+    "aliases": [
+      "vốn",
+      "thiếu vốn",
+      "không có vốn"
+    ]
+  },
+  "lackLabor": {
+    "physical_column": "reason.lackLabor",
+    "source_table": "fact_household",
+    "aliases": [
+      "lao động",
+      "thiếu lao động"
+    ]
+  },
+  "lackProductionTools": {
+    "physical_column": "reason.lackProductionTools",
+    "source_table": "fact_household",
+    "aliases": [
+      "công cụ sản xuất",
+      "thiếu phương tiện sản xuất"
+    ]
+  },
+  "lackProductionKnowledge": {
+    "physical_column": "reason.lackProductionKnowledge",
+    "source_table": "fact_household",
+    "aliases": [
+      "kiến thức sản xuất",
+      "thiếu kiến thức"
+    ]
+  },
+  "lackLaborSkill": {
+    "physical_column": "reason.lackLaborSkill",
+    "source_table": "fact_household",
+    "aliases": [
+      "kỹ năng lao động",
+      "tay nghề"
+    ]
+  },
+  "illnessOrAccident": {
+    "physical_column": "reason.illnessOrAccident",
+    "source_table": "fact_household",
+    "aliases": [
+      "ốm đau",
+      "tai nạn",
+      "bệnh tật",
+      "mắc bệnh"
+    ]
+  },
+  "isDTTS": {
+    "physical_column": "family.isDTTS",
+    "source_table": "fact_household",
+    "aliases": [
+      "dtts",
+      "dân tộc thiểu số"
+    ]
+  },
+  "isDTTC": {
+    "physical_column": "family.isDTTC",
+    "source_table": "fact_household",
+    "aliases": [
+      "dân tộc tại chỗ",
+      "dttc"
+    ]
+  },
+  "hasNoLaborCapacity": {
+    "physical_column": "family.hasNoLaborCapacity",
+    "source_table": "fact_household",
+    "aliases": [
+      "không có khả năng lao động",
+      "mất sức lao động"
+    ]
+  },
+  "hasRevolutionMeritPolicy": {
+    "physical_column": "family.hasRevolutionMeritPolicy",
+    "source_table": "fact_household",
+    "aliases": [
+      "người có công",
+      "chính sách có công"
+    ]
+  },
+  "classify": {
+    "physical_column": "classify",
+    "source_table": "fact_household",
+    "aliases": [
+      "hộ nghèo",
+      "hộ cận nghèo",
+      "phân loại hộ"
+    ]
+  },
+  "district": {
+    "physical_column": "administrative.district",
+    "source_table": "fact_household",
+    "aliases": [
+      "huyện",
+      "thành phố",
+      "địa bàn"
+    ]
+  },
+  "commune": {
+    "physical_column": "administrative.commune",
+    "source_table": "fact_household",
+    "aliases": [
+      "xã",
+      "phường",
+      "thị trấn"
+    ]
+  },
+  "year": {
+    "physical_column": "administrative.year",
+    "source_table": "fact_household",
+    "aliases": [
+      "năm",
+      "thời gian"
+    ]
+  },
+  "date": {
+    "physical_column": "date",
+    "source_table": "fact_household",
+    "aliases": [
+      "date",
+      "ngày rà soát theo định dạng dd/mm/yyyy"
+    ]
+  },
+  "hostName": {
+    "physical_column": "family.hostName",
+    "source_table": "fact_household",
+    "aliases": [
+      "hostName",
+      "chủ hộ"
+    ]
+  },
+  "code": {
+    "physical_column": "family.code",
+    "source_table": "fact_household",
+    "aliases": [
+      "code",
+      "mã hộ sau khi xử lý duplicate"
+    ]
+  },
+  "coDanTocTaiCho": {
+    "physical_column": "family.coDanTocTaiCho",
+    "source_table": "fact_household",
+    "aliases": [
+      "coDanTocTaiCho",
+      "có/không về dân tộc tại chỗ"
+    ]
+  },
+  "hostGender": {
+    "physical_column": "family.hostGender",
+    "source_table": "fact_household",
+    "aliases": [
+      "hostGender",
+      "giới tính chủ hộ"
+    ]
+  },
+  "numberOfMembers": {
+    "physical_column": "family.numberOfMembers",
+    "source_table": "fact_household",
+    "aliases": [
+      "numberOfMembers",
+      "số nhân khẩu"
+    ]
+  },
+  "result": {
+    "physical_column": "quickReview.result",
+    "source_table": "fact_household",
+    "aliases": [
+      "result",
+      "kết quả phiếu rà soát nhanh"
+    ]
+  },
+  "b1Point": {
+    "physical_column": "b1Point",
+    "source_table": "fact_household",
+    "aliases": [
+      "b1Point",
+      "điểm phiếu b1"
+    ]
+  },
+  "b2Point": {
+    "physical_column": "b2Point",
+    "source_table": "fact_household",
+    "aliases": [
+      "b2Point",
+      "điểm phiếu b2"
+    ]
+  },
+  "reviewer": {
+    "physical_column": "reviewer",
+    "source_table": "fact_household",
+    "aliases": [
+      "reviewer",
+      "người rà soát"
+    ]
+  },
+  "duplicate_core_removed": {
+    "physical_column": "processing.duplicate_core_removed",
+    "source_table": "fact_household",
+    "aliases": [
+      "duplicate_core_removed",
+      "dòng thuộc nhóm có duplicate lõi đã bị loại bớt"
+    ]
+  },
+  "original_family_code": {
+    "physical_column": "processing.original_family_code",
+    "source_table": "fact_household",
+    "aliases": [
+      "original_family_code",
+      "mã hộ gốc trước khi thêm hậu tố"
+    ]
+  },
+  "family_code_was_changed": {
+    "physical_column": "processing.family_code_was_changed",
+    "source_table": "fact_household",
+    "aliases": [
+      "family_code_was_changed",
+      "mã hộ có được đổi hậu tố hay không"
+    ]
+  },
+  "duplicate_code_group_size": {
+    "physical_column": "processing.duplicate_code_group_size",
+    "source_table": "fact_household",
+    "aliases": [
+      "duplicate_code_group_size",
+      "kích thước nhóm mã hộ trùng"
+    ]
+  },
+  "note": {
+    "physical_column": "processing.note",
+    "source_table": "fact_household",
+    "aliases": [
+      "note",
+      "ghi chú xử lý"
+    ]
+  },
+  "original_date": {
+    "physical_column": "processing.original_date",
+    "source_table": "fact_household",
+    "aliases": [
+      "original_date",
+      "giá trị date gốc"
+    ]
+  },
+  "date_was_filled": {
+    "physical_column": "processing.date_was_filled",
+    "source_table": "fact_household",
+    "aliases": [
+      "date_was_filled",
+      "processing.date_was_filled"
+    ]
+  },
+  "date_was_normalized": {
+    "physical_column": "processing.date_was_normalized",
+    "source_table": "fact_household",
+    "aliases": [
+      "date_was_normalized",
+      "đã chuẩn hóa ngày hay chưa"
+    ]
+  },
+  "province": {
+    "physical_column": "administrative.province",
+    "source_table": "fact_household",
+    "aliases": [
+      "province",
+      "tỉnh"
+    ]
+  },
+  "village_or_group": {
+    "physical_column": "administrative.village_or_group",
+    "source_table": "fact_household",
+    "aliases": [
+      "village_or_group",
+      "thôn/bon/tổ dân phố"
+    ]
+  },
+  "original": {
+    "physical_column": "classify.original",
+    "source_table": "fact_household",
+    "aliases": [
+      "original",
+      "classify.original"
+    ]
+  },
+  "areaType": {
+    "physical_column": "administrative.areaType",
+    "source_table": "fact_household",
+    "aliases": [
+      "areaType",
+      "administrative.areatype"
+    ]
+  },
+  "areaTypeSource": {
+    "physical_column": "administrative.areaTypeSource",
+    "source_table": "fact_household",
+    "aliases": [
+      "areaTypeSource",
+      "administrative.areatypesource"
+    ]
+  },
+  "areaTypeConfidence": {
+    "physical_column": "administrative.areaTypeConfidence",
+    "source_table": "fact_household",
+    "aliases": [
+      "areaTypeConfidence",
+      "administrative.areatypeconfidence"
+    ]
+  },
+  "role": {
+    "physical_column": "reviewer.role",
+    "source_table": "fact_household",
+    "aliases": [
+      "role",
+      "reviewer.role"
+    ]
+  },
+  "source": {
+    "physical_column": "reviewer.source",
+    "source_table": "fact_household",
+    "aliases": [
+      "source",
+      "reviewer.source"
+    ]
+  },
+  "reviewType": {
+    "physical_column": "review.reviewType",
+    "source_table": "fact_household",
+    "aliases": [
+      "reviewType",
+      "review.reviewtype"
+    ]
+  },
+  "reviewPeriod": {
+    "physical_column": "review.reviewPeriod",
+    "source_table": "fact_household",
+    "aliases": [
+      "reviewPeriod",
+      "review.reviewperiod"
+    ]
+  },
+  "ethnicity": {
+    "physical_column": "family.ethnicity",
+    "source_table": "fact_household",
+    "aliases": [
+      "ethnicity",
+      "dân tộc chủ hộ"
+    ]
+  },
+  "isKinh": {
+    "physical_column": "family.isKinh",
+    "source_table": "fact_household",
+    "aliases": [
+      "isKinh",
+      "hộ kinh"
+    ]
+  },
+  "original_family_hostName": {
+    "physical_column": "processing.original_family_hostName",
+    "source_table": "fact_household",
+    "aliases": [
+      "original_family_hostName",
+      "processing.original_family_hostname"
+    ]
+  },
+  "family_hostName_was_filled": {
+    "physical_column": "processing.family_hostName_was_filled",
+    "source_table": "fact_household",
+    "aliases": [
+      "family_hostName_was_filled",
+      "processing.family_hostname_was_filled"
+    ]
+  },
+  "family_hostName_rule": {
+    "physical_column": "processing.family_hostName_rule",
+    "source_table": "fact_household",
+    "aliases": [
+      "family_hostName_rule",
+      "processing.family_hostname_rule"
+    ]
+  },
+  "original_family_hostGender": {
+    "physical_column": "processing.original_family_hostGender",
+    "source_table": "fact_household",
+    "aliases": [
+      "original_family_hostGender",
+      "processing.original_family_hostgender"
+    ]
+  },
+  "family_hostGender_was_filled": {
+    "physical_column": "processing.family_hostGender_was_filled",
+    "source_table": "fact_household",
+    "aliases": [
+      "family_hostGender_was_filled",
+      "processing.family_hostgender_was_filled"
+    ]
+  },
+  "family_hostGender_rule": {
+    "physical_column": "processing.family_hostGender_rule",
+    "source_table": "fact_household",
+    "aliases": [
+      "family_hostGender_rule",
+      "processing.family_hostgender_rule"
+    ]
+  },
+  "original_family_coDanTocTaiCho": {
+    "physical_column": "processing.original_family_coDanTocTaiCho",
+    "source_table": "fact_household",
+    "aliases": [
+      "original_family_coDanTocTaiCho",
+      "processing.original_family_codantoctaicho"
+    ]
+  },
+  "family_coDanTocTaiCho_was_filled": {
+    "physical_column": "processing.family_coDanTocTaiCho_was_filled",
+    "source_table": "fact_household",
+    "aliases": [
+      "family_coDanTocTaiCho_was_filled",
+      "processing.family_codantoctaicho_was_filled"
+    ]
+  },
+  "family_coDanTocTaiCho_rule": {
+    "physical_column": "processing.family_coDanTocTaiCho_rule",
+    "source_table": "fact_household",
+    "aliases": [
+      "family_coDanTocTaiCho_rule",
+      "processing.family_codantoctaicho_rule"
+    ]
+  },
+  "isPoorNearPoorDTTS": {
+    "physical_column": "family.isPoorNearPoorDTTS",
+    "source_table": "fact_household",
+    "aliases": [
+      "isPoorNearPoorDTTS",
+      "family.ispoornearpoordtts"
+    ]
+  },
+  "original_family_numberOfMembers": {
+    "physical_column": "processing.original_family_numberOfMembers",
+    "source_table": "fact_household",
+    "aliases": [
+      "original_family_numberOfMembers",
+      "processing.original_family_numberofmembers"
+    ]
+  },
+  "family_numberOfMembers_was_filled": {
+    "physical_column": "processing.family_numberOfMembers_was_filled",
+    "source_table": "fact_household",
+    "aliases": [
+      "family_numberOfMembers_was_filled",
+      "processing.family_numberofmembers_was_filled"
+    ]
+  },
+  "family_numberOfMembers_rule": {
+    "physical_column": "processing.family_numberOfMembers_rule",
+    "source_table": "fact_household",
+    "aliases": [
+      "family_numberOfMembers_rule",
+      "processing.family_numberofmembers_rule"
+    ]
+  },
+  "legalRecomputed": {
+    "physical_column": "classify.legalRecomputed",
+    "source_table": "fact_household",
+    "aliases": [
+      "legalRecomputed",
+      "classify.legalrecomputed"
+    ]
+  },
+  "final": {
+    "physical_column": "classify.final",
+    "source_table": "fact_household",
+    "aliases": [
+      "final",
+      "classify.final"
+    ]
+  },
+  "consistencyStatus": {
+    "physical_column": "classify.consistencyStatus",
+    "source_table": "fact_household",
+    "aliases": [
+      "consistencyStatus",
+      "classify.consistencystatus"
+    ]
+  },
+  "consistencyReason": {
+    "physical_column": "classify.consistencyReason",
+    "source_table": "fact_household",
+    "aliases": [
+      "consistencyReason",
+      "classify.consistencyreason"
+    ]
+  },
+  "totalCount": {
+    "physical_column": "deprivation.totalCount",
+    "source_table": "fact_household",
+    "aliases": [
+      "totalCount",
+      "tổng số chỉ số thiếu hụt"
+    ]
+  },
+  "original_b1Point": {
+    "physical_column": "processing.original_b1Point",
+    "source_table": "fact_household",
+    "aliases": [
+      "original_b1Point",
+      "processing.original_b1point"
+    ]
+  },
+  "b1Point_was_filled": {
+    "physical_column": "processing.b1Point_was_filled",
+    "source_table": "fact_household",
+    "aliases": [
+      "b1Point_was_filled",
+      "processing.b1point_was_filled"
+    ]
+  },
+  "b1Point_rule": {
+    "physical_column": "processing.b1Point_rule",
+    "source_table": "fact_household",
+    "aliases": [
+      "b1Point_rule",
+      "processing.b1point_rule"
+    ]
+  },
+  "original_b2Point": {
+    "physical_column": "processing.original_b2Point",
+    "source_table": "fact_household",
+    "aliases": [
+      "original_b2Point",
+      "processing.original_b2point"
+    ]
+  },
+  "b2Point_was_filled": {
+    "physical_column": "processing.b2Point_was_filled",
+    "source_table": "fact_household",
+    "aliases": [
+      "b2Point_was_filled",
+      "processing.b2point_was_filled"
+    ]
+  },
+  "b2Point_rule": {
+    "physical_column": "processing.b2Point_rule",
+    "source_table": "fact_household",
+    "aliases": [
+      "b2Point_rule",
+      "processing.b2point_rule"
+    ]
+  },
+  "hostBirthDate": {
+    "physical_column": "family.hostBirthDate",
+    "source_table": "fact_household",
+    "aliases": [
+      "hostBirthDate",
+      "ngày sinh chủ hộ"
+    ]
+  },
+  "hostBirthYear": {
+    "physical_column": "family.hostBirthYear",
+    "source_table": "fact_household",
+    "aliases": [
+      "hostBirthYear",
+      "năm sinh chủ hộ"
+    ]
+  },
+  "povertyStatusDetail": {
+    "physical_column": "family.povertyStatusDetail",
+    "source_table": "fact_household",
+    "aliases": [
+      "povertyStatusDetail",
+      "trạng thái nghèo chi tiết"
+    ]
+  },
+  "nearPovertyStatusDetail": {
+    "physical_column": "family.nearPovertyStatusDetail",
+    "source_table": "fact_household",
+    "aliases": [
+      "nearPovertyStatusDetail",
+      "trạng thái cận nghèo chi tiết"
+    ]
+  },
+  "isAgricultureForestryFisherySaltMediumLivingStandard": {
+    "physical_column": "family.isAgricultureForestryFisherySaltMediumLivingStandard",
+    "source_table": "fact_household",
+    "aliases": [
+      "isAgricultureForestryFisherySaltMediumLivingStandard",
+      "hộ có mức sống trung bình"
+    ]
+  },
+  "lackHealthInsuranceCount": {
+    "physical_column": "children.lackHealthInsuranceCount",
+    "source_table": "fact_household",
+    "aliases": [
+      "lackHealthInsuranceCount",
+      "số trẻ thiếu bhyt"
+    ]
+  },
+  "nutritionDeprivedCount": {
+    "physical_column": "children.nutritionDeprivedCount",
+    "source_table": "fact_household",
+    "aliases": [
+      "nutritionDeprivedCount",
+      "số trẻ thiếu dinh dưỡng"
+    ]
+  },
+  "schoolAttendanceDeprivedCount": {
+    "physical_column": "children.schoolAttendanceDeprivedCount",
+    "source_table": "fact_household",
+    "aliases": [
+      "schoolAttendanceDeprivedCount",
+      "số trẻ thiếu đi học"
+    ]
+  },
+  "other": {
+    "physical_column": "reason.other",
+    "source_table": "fact_household",
+    "aliases": [
+      "other",
+      "nguyên nhân nghèo/cận nghèo"
+    ]
+  },
+  "health": {
+    "physical_column": "support.health",
+    "source_table": "fact_household",
+    "aliases": [
+      "health",
+      "hỗ trợ y tế"
+    ]
+  },
+  "education": {
+    "physical_column": "support.education",
+    "source_table": "fact_household",
+    "aliases": [
+      "education",
+      "hỗ trợ giáo dục"
+    ]
+  },
+  "production": {
+    "physical_column": "support.production",
+    "source_table": "fact_household",
+    "aliases": [
+      "production",
+      "hỗ trợ sản xuất"
+    ]
+  },
+  "credit": {
+    "physical_column": "support.credit",
+    "source_table": "fact_household",
+    "aliases": [
+      "credit",
+      "hỗ trợ tín dụng"
+    ]
+  },
+  "housing": {
+    "physical_column": "support.housing",
+    "source_table": "fact_household",
+    "aliases": [
+      "housing",
+      "hỗ trợ nhà ở"
+    ]
+  },
+  "beginningClassify": {
+    "physical_column": "transition.beginningClassify",
+    "source_table": "fact_household",
+    "aliases": [
+      "beginningClassify",
+      "phân loại đầu kỳ"
+    ]
+  },
+  "endingClassify": {
+    "physical_column": "transition.endingClassify",
+    "source_table": "fact_household",
+    "aliases": [
+      "endingClassify",
+      "phân loại cuối kỳ"
+    ]
+  },
+  "poorChangeType": {
+    "physical_column": "transition.poorChangeType",
+    "source_table": "fact_household",
+    "aliases": [
+      "poorChangeType",
+      "kiểu biến động hộ nghèo"
+    ]
+  },
+  "nearPoorChangeType": {
+    "physical_column": "transition.nearPoorChangeType",
+    "source_table": "fact_household",
+    "aliases": [
+      "nearPoorChangeType",
+      "kiểu biến động hộ cận nghèo"
+    ]
+  },
+  "isEscapedPoverty": {
+    "physical_column": "transition.isEscapedPoverty",
+    "source_table": "fact_household",
+    "aliases": [
+      "isEscapedPoverty",
+      "transition.isescapedpoverty"
+    ]
+  },
+  "membersGenerated": {
+    "physical_column": "family.membersGenerated",
+    "source_table": "fact_household",
+    "aliases": [
+      "membersGenerated",
+      "đã sinh member file"
+    ]
+  },
+  "membersFile": {
+    "physical_column": "family.membersFile",
+    "source_table": "fact_household",
+    "aliases": [
+      "membersFile",
+      "đường dẫn file member"
+    ]
+  },
+  "membersJson": {
+    "physical_column": "family.membersJson",
+    "source_table": "fact_household",
+    "aliases": [
+      "membersJson",
+      "json danh sách thành viên"
+    ]
+  },
+  "householdOrder": {
+    "physical_column": "member.householdOrder",
+    "source_table": "fact_household",
+    "aliases": [
+      "householdOrder",
+      "member.householdorder"
+    ]
+  },
+  "family_code_rule": {
+    "physical_column": "processing.family_code_rule",
+    "source_table": "fact_household",
+    "aliases": [
+      "family_code_rule",
+      "processing.family_code_rule"
+    ]
+  },
+  "orderInHousehold": {
+    "physical_column": "member.orderInHousehold",
+    "source_table": "fact_member",
+    "aliases": [
+      "orderInHousehold",
+      "member.orderinhousehold"
+    ]
+  },
+  "fullName": {
+    "physical_column": "member.fullName",
+    "source_table": "fact_member",
+    "aliases": [
+      "fullName",
+      "member.fullname"
+    ]
+  },
+  "gender": {
+    "physical_column": "member.gender",
+    "source_table": "fact_member",
+    "aliases": [
+      "gender",
+      "member.gender"
+    ]
+  },
+  "birthDate": {
+    "physical_column": "member.birthDate",
+    "source_table": "fact_member",
+    "aliases": [
+      "birthDate",
+      "member.birthdate"
+    ]
+  },
+  "birthYear": {
+    "physical_column": "member.birthYear",
+    "source_table": "fact_member",
+    "aliases": [
+      "birthYear",
+      "member.birthyear"
+    ]
+  },
+  "relationshipToHost": {
+    "physical_column": "member.relationshipToHost",
+    "source_table": "fact_member",
+    "aliases": [
+      "relationshipToHost",
+      "member.relationshiptohost"
+    ]
+  },
+  "isHost": {
+    "physical_column": "member.isHost",
+    "source_table": "fact_member",
+    "aliases": [
+      "isHost",
+      "member.ishost"
+    ]
+  },
+  "isChild": {
+    "physical_column": "member.isChild",
+    "source_table": "fact_member",
+    "aliases": [
+      "isChild",
+      "member.ischild"
+    ]
+  },
+  "hasHealthInsurance": {
+    "physical_column": "member.hasHealthInsurance",
+    "source_table": "fact_member",
+    "aliases": [
+      "hasHealthInsurance",
+      "member.hashealthinsurance"
+    ]
+  },
+  "nutritionDeprived": {
+    "physical_column": "member.nutritionDeprived",
+    "source_table": "fact_member",
+    "aliases": [
+      "nutritionDeprived",
+      "member.nutritiondeprived"
+    ]
+  },
+  "schoolAttendanceDeprived": {
+    "physical_column": "member.schoolAttendanceDeprived",
+    "source_table": "fact_member",
+    "aliases": [
+      "schoolAttendanceDeprived",
+      "member.schoolattendancedeprived"
+    ]
+  }
+}

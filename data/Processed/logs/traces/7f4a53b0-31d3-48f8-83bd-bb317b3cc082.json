@@ -1,0 +1,62 @@
+{
+  "trace_id": "7f4a53b0-31d3-48f8-83bd-bb317b3cc082",
+  "timestamp": "2026-06-19 15:36:32",
+  "user_question": "Quy trình rà soát hộ nghèo gồm mấy bước?",
+  "route": "GENERAL_KNOWLEDGE",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 2457.439899999372,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 7.165200000599725
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Quy trình rà soát hộ nghèo gồm mấy bước?",
+      "rewritten_question": "Quy trình rà soát hộ nghèo gồm mấy bước",
+      "latency_ms": 883.5784000002604
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.04599999920174014
+    },
+    "domain_gate": {
+      "route": "GENERAL_KNOWLEDGE",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=False, GK=True).",
+      "latency_ms": 299.0855999996711
+    },
+    "general_knowledge": {
+      "status": "processing",
+      "latency_ms": 1263.56560000022
+    },
+    "final": {
+      "route": "GENERAL_KNOWLEDGE",
+      "answer": "Quy trình rà soát hộ nghèo, hộ cận nghèo thường được thực hiện theo các bước cơ bản sau đây (theo quy định chung về rà soát định kỳ):\n\n1. **Chuẩn bị rà soát:** Lập kế hoạch, thành lập các tổ rà soát tại địa phương và chuẩn bị các biểu mẫu, tài liệu cần thiết.\n2. **Thông báo và hướng dẫn:** Thông báo cho các hộ gia đình về thời gian, nội dung và phương pháp rà soát.\n3. **Thực hiện rà soát:** Các tổ rà soát tiến hành thu thập thông tin thông qua việc phỏng vấn, quan sát và kiểm tra thực tế các chỉ số thiếu hụt dịch vụ xã hội cơ bản (theo chuẩn nghèo đa chiều) và mức thu nhập.\n4. **Tổng hợp và lập danh sách:** Tổng hợp kết quả từ các phiếu rà soát, tính toán điểm số (bao gồm các điểm về thu nhập và các điểm về thiếu hụt dịch vụ xã hội như y tế, giáo dục, nhà ở, nước sạch, thông tin).\n5. **Niêm yết công khai:** Danh sách dự kiến hộ nghèo, hộ cận nghèo được niêm yết công khai tại trụ sở UBND xã/phường để người dân kiểm tra, giám sát.\n6. **Phê duyệt và công bố kết quả:** Sau khi tiếp thu ý kiến phản hồi (nếu có), cấp có thẩm quyền sẽ phê duyệt và công bố chính thức danh sách hộ nghèo, hộ cận nghèo.",
+      "query_plan": null,
+      "sql": null,
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": []
+    }
+  }
+}

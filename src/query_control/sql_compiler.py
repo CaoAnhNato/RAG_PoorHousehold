@@ -21,7 +21,20 @@ DIMENSION_PHYSICAL_MAP = {
     "ethnicity": "family.ethnicity",
     "local_ethnicity": "family.isDTTC",
     "age_group": "family.hostBirthYear",
-    "host_name": "family.hostName"
+    "host_name": "family.hostName",
+    "full_name": "member.fullName",
+    "is_dtts": "family.isDTTS",
+    "poverty_detail": "family.povertyStatusDetail",
+    "near_poverty_detail": "family.nearPovertyStatusDetail",
+    "medium_living_standard": "family.isAgricultureForestryFisherySaltMediumLivingStandard",
+    "has_no_labor": "family.hasNoLaborCapacity",
+    "has_revolution_merit": "family.hasRevolutionMeritPolicy",
+    "clean_water": "deprivation.cleanWater",
+    "hygienic_toilet": "deprivation.hygienicToilet",
+    "lack_production_land": "reason.lackProductionLand",
+    "lack_capital": "reason.lackCapital",
+    "lack_labor": "reason.lackLabor",
+    "illness_accident": "reason.illnessOrAccident"
 }
 
 MEASURE_PHYSICAL_MAP = {
@@ -40,10 +53,54 @@ METRIC_EXPR_MAP = {
     "avg_b2": "ROUND(AVG(b2Point), 2)",
     "avg_b2_score": "ROUND(AVG(b2Point), 2)",
     "member_count": "COUNT(*)",
+    "household_member_count": "COUNT(*)",
     "avg_age": "ROUND(AVG(members.\"administrative.year\" - members.\"member.birthYear\"), 2)",
     "poor_rate": "ROUND(100.0 * SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 2)",
     "near_poor_rate": "ROUND(100.0 * SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 2)"
 }
+
+def normalize_district_name(val: Any) -> Any:
+    """
+    Chuẩn hoá tên huyện viết tắt hoặc thiếu tiền tố "Huyện", "Thành phố".
+
+    Args:
+        val (Any): Tên huyện cần chuẩn hoá (có thể là chuỗi ký tự hoặc kiểu dữ liệu khác).
+
+    Returns:
+        Any: Tên huyện đã được chuẩn hoá sang dạng đầy đủ và chính xác (ví dụ: "Huyện Krông Nô"),
+             hoặc giữ nguyên giá trị ban đầu nếu không khớp.
+             
+    Lưu ý nghiệp vụ đặc thù:
+        Dữ liệu hành chính của tỉnh Đắk Nông có các huyện viết tắt như "Krông Nô", "Đắk Song", v.v.
+        Hàm này giúp quy đổi các dạng viết tắt này về dạng chính thức trong database.
+    """
+    if not isinstance(val, str):
+        return val
+    val_clean = val.strip()
+    val_lower = val_clean.lower()
+    for prefix in ["huyện ", "thành phố ", "tp. ", "tp "]:
+        if val_lower.startswith(prefix):
+            val_clean = val_clean[len(prefix):].strip()
+            break
+    val_clean_lower = val_clean.lower()
+    if "gia nghĩa" in val_clean_lower:
+        return "Thành phố Gia Nghĩa"
+    elif "cư jút" in val_clean_lower or "cu jut" in val_clean_lower:
+        return "Huyện Cư Jút"
+    elif "krông nô" in val_clean_lower or "krong no" in val_clean_lower:
+        return "Huyện Krông Nô"
+    elif "tuy đức" in val_clean_lower or "tuy duc" in val_clean_lower:
+        return "Huyện Tuy Đức"
+    elif "đăk glong" in val_clean_lower or "dak glong" in val_clean_lower:
+        return "Huyện Đăk Glong"
+    elif "đắk mil" in val_clean_lower or "dak mil" in val_clean_lower:
+        return "Huyện Đắk Mil"
+    elif "đắk rlấp" in val_clean_lower or "đắk r'lấp" in val_clean_lower or "dak rlap" in val_clean_lower:
+        return "Huyện Đắk RLấp"
+    elif "đắk song" in val_clean_lower or "dak song" in val_clean_lower:
+        return "Huyện Đắk Song"
+    return val
+
 
 class SQLCompiler:
     def __init__(self, schema_graph_path: Path, semantic_layer_path: Path):
@@ -59,7 +116,7 @@ class SQLCompiler:
     def _escape_col(self, col_name: str, has_join: bool = False) -> str:
         """Đóng dấu ngoặc kép cột vật lý để tránh lỗi ký tự "." hoặc ký tự đặc biệt trong SQL."""
         # Nếu đã có bảng chỉ định ở trước
-        if "." in col_name and not col_name.startswith("administrative.") and not col_name.startswith("family.") and not col_name.startswith("deprivation.") and not col_name.startswith("member."):
+        if "." in col_name and not col_name.startswith("administrative.") and not col_name.startswith("family.") and not col_name.startswith("deprivation.") and not col_name.startswith("member.") and not col_name.startswith("reason."):
             parts = col_name.split(".")
             return f"{parts[0]}.\"{'.'.join(parts[1:])}\""
             
@@ -107,9 +164,15 @@ class SQLCompiler:
                 if len(comp_years) >= 2:
                     is_year_comparison = True
 
-        if not is_year_comparison and (task_type in ["comparison_query", "comparison_by_year"] or "so sánh" in orig_question):
-            comp_years = [2023, 2024]
-            is_year_comparison = True
+        # Kiểm tra xem có filter năm cụ thể (1 năm duy nhất) không
+        has_single_year_filter = any(f.get("field") == "year" and f.get("operator") == "=" and isinstance(f.get("value"), int) for f in filters)
+        
+        if not is_year_comparison and not has_single_year_filter and (task_type in ["comparison_query", "comparison_by_year"] or "so sánh" in orig_question):
+            # Nếu đang so sánh giữa nhiều đối tượng (có filter IN district) thì không tự ép thành so sánh năm
+            is_district_comp = any(f.get("field") == "district" and f.get("operator") == "IN" and isinstance(f.get("value"), list) for f in filters)
+            if not is_district_comp:
+                comp_years = [2023, 2024]
+                is_year_comparison = True
 
         if is_year_comparison:
             # Lấy metric và dimension chính
@@ -139,46 +202,33 @@ class SQLCompiler:
                 f_op = f.get("operator", "=")
                 f_val = f.get("value")
                 
-                # Khớp tên huyện viết tắt trong CTE
-                if f_field == "district" and isinstance(f_val, str):
-                    val_clean = f_val.strip()
-                    val_lower = val_clean.lower()
-                    for prefix in ["huyện ", "thành phố ", "tp. ", "tp "]:
-                        if val_lower.startswith(prefix):
-                            val_clean = val_clean[len(prefix):].strip()
-                            break
-                    val_clean_lower = val_clean.lower()
-                    if "gia nghĩa" in val_clean_lower:
-                        f_val = "Thành phố Gia Nghĩa"
-                    elif "cư jút" in val_clean_lower or "cu jut" in val_clean_lower:
-                        f_val = "Huyện Cư Jút"
-                    elif "krông nô" in val_clean_lower or "krong no" in val_clean_lower:
-                        f_val = "Huyện Krông Nô"
-                    elif "tuy đức" in val_clean_lower or "tuy duc" in val_clean_lower:
-                        f_val = "Huyện Tuy Đức"
-                    elif "đăk glong" in val_clean_lower or "dak glong" in val_clean_lower:
-                        f_val = "Huyện Đăk Glong"
-                    elif "đắk mil" in val_clean_lower or "dak mil" in val_clean_lower:
-                        f_val = "Huyện Đắk Mil"
-                    elif "đắk rlấp" in val_clean_lower or "đắk r'lấp" in val_clean_lower or "dak rlap" in val_clean_lower:
-                        f_val = "Huyện Đắk RLấp"
-                    elif "đắk song" in val_clean_lower or "dak song" in val_clean_lower:
-                        f_val = "Huyện Đắk Song"
+                # Khớp tên huyện viết tắt trong CTE (hỗ trợ cả chuỗi và danh sách)
+                if f_field == "district":
+                    if isinstance(f_val, str):
+                        f_val = normalize_district_name(f_val)
+                    elif isinstance(f_val, list):
+                        f_val = [normalize_district_name(v) for v in f_val]
 
                 phys_field = DIMENSION_PHYSICAL_MAP.get(f_field, MEASURE_PHYSICAL_MAP.get(f_field, f_field))
                 escaped_field = self._escape_col(phys_field, has_join)
                 if f_op == "IN":
                     if isinstance(f_val, list):
-                        vals = ", ".join([f"'{v}'" if isinstance(v, str) else str(v) for v in f_val])
-                        base_conditions.append(f"{escaped_field} IN ({vals})")
+                        vals = ", ".join(["'" + v.lower().replace("'", "''") + "'" if isinstance(v, str) else str(v) for v in f_val])
+                        if any(isinstance(v, str) for v in f_val):
+                            base_conditions.append(f"LOWER({escaped_field}) IN ({vals})")
+                        else:
+                            base_conditions.append(f"{escaped_field} IN ({vals})")
                 elif f_op == "BETWEEN":
                     if isinstance(f_val, list) and len(f_val) == 2:
-                        val1 = f"'{f_val[0]}'" if isinstance(f_val[0], str) else str(f_val[0])
-                        val2 = f"'{f_val[1]}'" if isinstance(f_val[1], str) else str(f_val[1])
-                        base_conditions.append(f"{escaped_field} BETWEEN {val1} AND {val2}")
+                        val1 = "'" + f_val[0].lower().replace("'", "''") + "'" if isinstance(f_val[0], str) else str(f_val[0])
+                        val2 = "'" + f_val[1].lower().replace("'", "''") + "'" if isinstance(f_val[1], str) else str(f_val[1])
+                        if isinstance(f_val[0], str) or isinstance(f_val[1], str):
+                            base_conditions.append(f"LOWER({escaped_field}) BETWEEN {val1} AND {val2}")
+                        else:
+                            base_conditions.append(f"{escaped_field} BETWEEN {val1} AND {val2}")
                 else:
                     if isinstance(f_val, str):
-                        base_conditions.append(f"{escaped_field} {f_op} '{f_val}'")
+                        base_conditions.append(f"LOWER({escaped_field}) {f_op} '" + f_val.lower().replace("'", "''") + "'")
                     else:
                         base_conditions.append(f"{escaped_field} {f_op} {f_val}")
 
@@ -189,7 +239,7 @@ class SQLCompiler:
             # Xác định FROM clause cho base query
             base_from = ""
             if "members" in base_tables:
-                base_from = "FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\""
+                base_from = "FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\""
             else:
                 base_from = "FROM households"
 
@@ -252,6 +302,19 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
             dimensions = list(dimensions)
             dimensions.append("district")
 
+        # Tự động thêm household_id, district, commune để tránh gộp trùng tên chủ hộ
+        has_host_name_filter = any(f.get("field") == "host_name" for f in filters)
+        if "host_name" in dimensions or has_host_name_filter:
+            dimensions = list(dimensions)
+            if "host_name" not in dimensions:
+                dimensions.append("host_name")
+            if "household_id" not in dimensions:
+                dimensions.append("household_id")
+            if "district" not in dimensions:
+                dimensions.append("district")
+            if "commune" not in dimensions:
+                dimensions.append("commune")
+
         # Thu thập các bảng vật lý cần dùng
         for m in metrics:
             m_meta = self.semantic_layer.get("metrics", {}).get(m, {})
@@ -280,7 +343,7 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
             join_paths = self.schema_graph.get("join_paths", {})
             if "members_to_households" not in join_paths:
                 raise RuntimeError("JOIN_PATH_NOT_FOUND: Không tìm thấy đường dẫn liên kết giữa bảng members và households.")
-            from_clause = "FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\""
+            from_clause = "FROM members INNER JOIN households ON members.\"family.code\" = households.\"family.code\" AND members.\"administrative.year\" = households.\"administrative.year\" AND members.\"administrative.district\" = households.\"administrative.district\" AND members.\"administrative.commune\" = households.\"administrative.commune\""
             has_join = True
         elif "members" in referenced_tables:
             from_clause = "FROM members"
@@ -289,8 +352,9 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
             
         # Xây dựng SELECT expressions
         select_exprs = []
+        metric_aliases = {}
         for d in dimensions:
-            phys_col = DIMENSION_PHYSICAL_MAP.get(d)
+            phys_col = DIMENSION_PHYSICAL_MAP.get(d, MEASURE_PHYSICAL_MAP.get(d))
             if phys_col:
                 select_exprs.append(f"{self._escape_col(phys_col, has_join)} AS {d}")
                 
@@ -315,6 +379,7 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
                 elif m == "avg_b2_score" or m == "avg_b2":
                     alias = "avg_b2"
                 select_exprs.append(f"{expr} AS {alias}")
+                metric_aliases[m] = alias
                 
         if not select_exprs:
             if task_type == "detail_query":
@@ -324,8 +389,9 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
             else:
                 select_exprs.append("COUNT(*)")
                 
-        # Xây dựng WHERE clause
+        # Xây dựng WHERE và HAVING clause
         where_conditions = []
+        having_conditions = []
         
         # Tự động bổ sung filter classify nếu chỉ truy vấn liên quan đến nghèo/cận nghèo đơn lẻ
         has_poor_metric = any(m in ["poor_household_count", "poor_count"] for m in metrics)
@@ -346,51 +412,69 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
             f_op = f.get("operator", "=")
             f_val = f.get("value")
             
-            # Khớp tên huyện viết tắt hoặc thiếu "Huyện " trong filter district
-            if f_field == "district" and isinstance(f_val, str):
-                val_clean = f_val.strip()
-                val_lower = val_clean.lower()
-                for prefix in ["huyện ", "thành phố ", "tp. ", "tp "]:
-                    if val_lower.startswith(prefix):
-                        val_clean = val_clean[len(prefix):].strip()
-                        break
-                val_clean_lower = val_clean.lower()
-                if "gia nghĩa" in val_clean_lower:
-                    f_val = "Thành phố Gia Nghĩa"
-                elif "cư jút" in val_clean_lower or "cu jut" in val_clean_lower:
-                    f_val = "Huyện Cư Jút"
-                elif "krông nô" in val_clean_lower or "krong no" in val_clean_lower:
-                    f_val = "Huyện Krông Nô"
-                elif "tuy đức" in val_clean_lower or "tuy duc" in val_clean_lower:
-                    f_val = "Huyện Tuy Đức"
-                elif "đăk glong" in val_clean_lower or "dak glong" in val_clean_lower:
-                    f_val = "Huyện Đăk Glong"
-                elif "đắk mil" in val_clean_lower or "dak mil" in val_clean_lower:
-                    f_val = "Huyện Đắk Mil"
-                elif "đắk rlấp" in val_clean_lower or "đắk r'lấp" in val_clean_lower or "dak rlap" in val_clean_lower:
-                    f_val = "Huyện Đắk RLấp"
-                elif "đắk song" in val_clean_lower or "dak song" in val_clean_lower:
-                    f_val = "Huyện Đắk Song"
+            # Phân biệt Metric Filter (sẽ chuyển vào HAVING) và Dimension/Measure Filter (vào WHERE)
+            is_metric_filter = f_field in METRIC_EXPR_MAP or f_field in self.semantic_layer.get("metrics", {})
             
-            phys_field = DIMENSION_PHYSICAL_MAP.get(f_field, MEASURE_PHYSICAL_MAP.get(f_field, f_field))
-            escaped_field = self._escape_col(phys_field, has_join)
+            # Khớp tên huyện viết tắt hoặc thiếu "Huyện " trong filter district (hỗ trợ cả chuỗi và danh sách)
+            if not is_metric_filter and f_field == "district":
+                if isinstance(f_val, str):
+                    f_val = normalize_district_name(f_val)
+                elif isinstance(f_val, list):
+                    f_val = [normalize_district_name(v) for v in f_val]
             
+            if is_metric_filter:
+                # Đối với DuckDB, có thể dùng trực tiếp alias trong HAVING
+                alias_field = metric_aliases.get(f_field, f_field)
+                escaped_field = f'"{alias_field}"'
+            else:
+                phys_field = DIMENSION_PHYSICAL_MAP.get(f_field, MEASURE_PHYSICAL_MAP.get(f_field, f_field))
+                escaped_field = self._escape_col(phys_field, has_join)
+            
+            is_boolean = False
+            dim_info = self.semantic_layer.get("dimensions", {}).get(f_field, {})
+            if dim_info.get("semantic_type") == "boolean":
+                is_boolean = True
+                if isinstance(f_val, str):
+                    f_val_lower = f_val.lower().strip()
+                    if f_val_lower in ['có', 'true', '1', 'yes', 'thiếu', 'bị', 'là', 'đúng']:
+                        f_val = True
+                    elif f_val_lower in ['không', 'false', '0', 'no', 'không thiếu', 'không bị', 'không là', 'sai']:
+                        f_val = False
+
+            cond = ""
             if f_op == "IN":
                 if isinstance(f_val, list):
-                    vals = ", ".join([f"'{v}'" if isinstance(v, str) else str(v) for v in f_val])
-                    where_conditions.append(f"{escaped_field} IN ({vals})")
+                    vals = ", ".join(["'" + v.lower().replace("'", "''") + "'" if isinstance(v, str) else str(v) for v in f_val])
+                    if any(isinstance(v, str) for v in f_val) and not is_metric_filter and not is_boolean:
+                        cond = f"LOWER({escaped_field}) IN ({vals})"
+                    else:
+                        cond = f"{escaped_field} IN ({vals})"
             elif f_op == "BETWEEN":
                 if isinstance(f_val, list) and len(f_val) == 2:
-                    val1 = f"'{f_val[0]}'" if isinstance(f_val[0], str) else str(f_val[0])
-                    val2 = f"'{f_val[1]}'" if isinstance(f_val[1], str) else str(f_val[1])
-                    where_conditions.append(f"{escaped_field} BETWEEN {val1} AND {val2}")
+                    val1 = "'" + f_val[0].lower().replace("'", "''") + "'" if isinstance(f_val[0], str) else str(f_val[0])
+                    val2 = "'" + f_val[1].lower().replace("'", "''") + "'" if isinstance(f_val[1], str) else str(f_val[1])
+                    if (isinstance(f_val[0], str) or isinstance(f_val[1], str)) and not is_metric_filter and not is_boolean:
+                        cond = f"LOWER({escaped_field}) BETWEEN {val1} AND {val2}"
+                    else:
+                        cond = f"{escaped_field} BETWEEN {val1} AND {val2}"
             elif f_op == "LIKE":
-                where_conditions.append(f"{escaped_field} LIKE '%{f_val}%'")
-            else:
-                if isinstance(f_val, str):
-                    where_conditions.append(f"{escaped_field} {f_op} '{f_val}'")
+                if isinstance(f_val, str) and not is_metric_filter and not is_boolean:
+                    cond = f"LOWER({escaped_field}) LIKE '%" + f_val.lower().replace("'", "''") + "%'"
                 else:
-                    where_conditions.append(f"{escaped_field} {f_op} {f_val}")
+                    cond = f"{escaped_field} LIKE '%" + f_val.replace("'", "''") + "%'"
+            else:
+                if isinstance(f_val, str) and not is_metric_filter and not is_boolean:
+                    cond = f"LOWER({escaped_field}) {f_op} '" + f_val.lower().replace("'", "''") + "'"
+                elif isinstance(f_val, str):
+                    cond = f"{escaped_field} {f_op} '" + f_val.replace("'", "''") + "'"
+                else:
+                    cond = f"{escaped_field} {f_op} {f_val}"
+            
+            if cond:
+                if is_metric_filter:
+                    having_conditions.append(cond)
+                else:
+                    where_conditions.append(cond)
                     
         where_clause = ""
         if where_conditions:
@@ -398,13 +482,20 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
             
         # Xây dựng GROUP BY clause
         group_by_clause = ""
-        if dimensions and task_type in ["aggregate_query", "topk_query", "comparison_query"]:
+        has_aggregation = any(m in METRIC_EXPR_MAP or m in self.semantic_layer.get("metrics", {}) for m in metrics)
+        
+        if dimensions and (task_type in ["aggregate_query", "topk_query", "comparison_query"] or has_aggregation):
             group_cols = []
             for d in dimensions:
                 # Group by alias thay vì cột vật lý để khớp thứ tự băm của DuckDB
                 group_cols.append(d)
             if group_cols:
                 group_by_clause = "GROUP BY " + ", ".join(group_cols)
+                
+        # Xây dựng HAVING clause
+        having_clause = ""
+        if having_conditions:
+            having_clause = "HAVING " + " AND ".join(having_conditions)
                 
         # Tự động thêm sắp xếp mặc định nếu kế hoạch không có sort (Đảm bảo khớp Ground Truth)
         if not sort and task_type in ["aggregate_query", "topk_query", "comparison_query"]:
@@ -427,6 +518,9 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
             sort_field = sort.get("field")
             sort_dir = sort.get("direction", "asc")
             
+            # Đảm bảo dùng alias chuẩn hoá cho order by
+            sort_field = metric_aliases.get(sort_field, sort_field)
+            
             # Map physical name to alias
             is_alias = False
             if sort_field in DIMENSION_PHYSICAL_MAP.values():
@@ -435,26 +529,8 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
                         sort_field = alias
                         is_alias = True
                         break
-            if sort_field in metrics or sort_field in dimensions:
+            if sort_field in metric_aliases.values() or sort_field in dimensions or sort_field in metrics:
                 is_alias = True
-                
-            # Đảm bảo dùng alias chuẩn hoá cho order by
-            if sort_field == "poor_household_count":
-                if "poor_count" in select_expr_str:
-                    sort_field = "poor_count"
-                elif "poor_hhs" in select_expr_str:
-                    sort_field = "poor_hhs"
-            elif sort_field == "near_poor_household_count":
-                if "near_poor_count" in select_expr_str:
-                    sort_field = "near_poor_count"
-                elif "near_poor_hhs" in select_expr_str:
-                    sort_field = "near_poor_hhs"
-            elif sort_field == "household_count" and "total_hhs" in select_expr_str:
-                sort_field = "total_hhs"
-            elif sort_field in ["avg_b1_score", "avg_b1"] and "avg_b1" in select_expr_str:
-                sort_field = "avg_b1"
-            elif sort_field in ["avg_b2_score", "avg_b2"] and "avg_b2" in select_expr_str:
-                sort_field = "avg_b2"
                 
             if not is_alias:
                 phys_col = DIMENSION_PHYSICAL_MAP.get(sort_field, MEASURE_PHYSICAL_MAP.get(sort_field, sort_field))
@@ -472,6 +548,7 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
         sql = f"SELECT {select_expr_str} {from_clause}"
         if where_clause: sql += f" {where_clause}"
         if group_by_clause: sql += f" {group_by_clause}"
+        if having_clause: sql += f" {having_clause}"
         if order_by_clause: sql += f" {order_by_clause}"
         if limit_clause: sql += f" {limit_clause}"
         

@@ -1,144 +1,190 @@
-﻿# CẤU TRÚC VÀ QUY TẮC DỰ ÁN (PROJECT STRUCTURE & RULES)
+# Cấu Trúc Dự Án & Hướng Dẫn Vận Hành Tích Hợp (PROJECT STRUCTURE & WORKFLOW)
 
-Dự án này tập trung vào việc xây dựng Chatbot thông minh và hệ thống tự động hóa báo cáo phân tích diễn biến hộ nghèo, hộ cận nghèo (2023-2024) dựa trên dữ liệu khảo sát tại tỉnh Đắk Nông, hỗ trợ xuất báo cáo theo 15 biểu mẫu chuẩn của Chính phủ.
+Dự án này tập trung vào việc xây dựng Chatbot thông minh (RAG) và hệ thống tự động hóa báo cáo phân tích diễn biến hộ nghèo, hộ cận nghèo (2023-2024) dựa trên dữ liệu khảo sát tại tỉnh Đắk Nông, hỗ trợ truy vấn thông tin và xuất báo cáo theo 15 biểu mẫu chuẩn của Chính phủ.
+
+Tài liệu này là **bản đồ hướng dẫn** duy nhất mô tả cấu trúc thư mục, luồng xử lý và cách thức phối hợp công cụ cho nhà phát triển và các AI Agent.
 
 ---
 
-## 1. Cấu Trúc Thư Mục & Vai Trò (Directory Tree & Roles)
+## 1. Cấu Trúc Thư Mục Dự Án (Directory Tree & Roles)
 
-Dưới đây là sơ đồ cấu trúc chi tiết của project để xác định nhanh các tệp tin liên quan:
+Dưới đây là sơ đồ cấu trúc thư mục vật lý thực tế sau khi đã tối ưu hóa, loại bỏ các file trùng lặp và phân nhóm rõ ràng:
 
 ```text
 📁 Intern/ (Thư mục gốc của project)
-├── 📄 PROJECT_STRUCTURE.md              <-- File này (Quản lý ngữ cảnh & Quy tắc dự án)
-├── 📄 requirements.txt                 <-- Khai báo thư viện Python cần thiết (LangChain, DuckDB, Qdrant-Client, v.v.)
-├── 📄 .env                             <-- Lưu trữ API Keys (FPT API, Qdrant, HuggingFace)
-├── 📄 .gitignore                       <-- Bỏ qua các tệp không cần đẩy lên Git (file log, cache, v.v.)
-├── 📄 codebook.docx                    <-- Tài liệu giải thích mã hóa và định dạng biến
-├── 📄 bao_cao_tuan_1_chatbot_ho_ngheo.docx <-- Báo cáo tiến độ tuần 1
-├── 📁 2023/                            <-- Dữ liệu khảo sát thô đầu vào năm 2023 (8 huyện/thành phố)
-├── 📁 2024/                            <-- Dữ liệu khảo sát thô đầu vào năm 2024 (8 huyện/thành phố)
-├── 📁 EDA/                             <-- Phân tích khám phá dữ liệu chuyên sâu
-│   ├── 📓 analyst_2023.ipynb           <-- Notebook phân tích dữ liệu 2023
-│   └── 📓 analyst_2024.ipynb           <-- Notebook phân tích dữ liệu 2024
-├── 📁 Format_Report/                   <-- 15 biểu mẫu Excel template chuẩn để đổ dữ liệu vào
-├── 📁 Processed/                       <-- Dữ liệu đã qua làm sạch, chuẩn hóa và làm giàu bởi pipeline
-│   ├── 📁 2023/                        <-- Dữ liệu hộ gia đình đã xử lý năm 2023 (Có thêm _members/)
-│   ├── 📁 2024/                        <-- Dữ liệu hộ gia đình đã xử lý năm 2024 (Có thêm _members/)
-│   ├── 📁 metadata/                    <-- Metadata do hệ thống tự sinh từ Format_Report và dữ liệu
-│   │   ├── 📄 data_dictionary.json     <-- Từ điển định nghĩa các cột dữ liệu hộ & thành viên
-│   │   ├── 📄 district_commune_mapping.json <-- Mapping danh sách xã phường của từng huyện
-│   │   ├── 📄 report_schema_summary.json <-- Tóm tắt cấu trúc và thông tin của 15 biểu mẫu
-│   │   ├── 📄 required_columns_by_report.json <-- Danh sách cột dữ liệu bắt buộc cho từng báo cáo
-│   │   └── 📁 query_control/           <-- Metadata phục vụ chatbot Q&A (Mới tạo ở Phase 2)
-│   │       ├── 📄 schema_graph.json     <-- Biểu đồ quan hệ dữ liệu
-│   │       ├── 📄 semantic_layer.json   <-- Định nghĩa Dimension, Measure, Metric, Business Term
-│   │       ├── 📄 query_plan_schema.json <-- Schema kiểm định cấu trúc JSON Query Plan
-│   │       ├── 📄 query_templates.json  <-- Mẫu câu truy vấn SQL DuckDB
-│   │       ├── 📄 validation_rules.json <-- Bộ quy tắc kiểm định toàn hệ thống
-│   │       ├── 📄 domain_gate_config.json <-- Cấu hình định tuyến Domain Gate
-│   │       ├── 📄 qdrant_index_config.json <-- Cấu hình chỉ mục Qdrant
-│   │       ├── 📄 planner_prompt.md     <-- Prompt định hướng LLM Planner
-│   │       ├── 📄 general_answer_prompt.md <-- Prompt định hướng LLM giải thích lý thuyết
-│   │       └── 📄 metadata_build_report.md <-- Báo cáo tiến trình xây dựng và kiểm định metadata
-│   └── 📁 logs/
-│       ├── 📄 processing_log.json      <-- Log chi tiết cấu hình và thống kê số dòng xử lý
-│       └── 📊 validation_summary.xlsx  <-- Kết quả kiểm định logic dữ liệu sau khi chạy pipeline
-├── 📁 scripts/                         <-- Mã nguồn tiền xử lý dữ liệu cốt lõi (Phase 1)
-│   ├── 📄 pipeline.py                  <-- Logic lõi (Làm sạch, chuẩn hóa, phân tích template, kiểm định)
-│   ├── 📄 process_all.py               <-- Orchestrator chạy toàn bộ quy trình tiền xử lý
-│   └── 📄 validate_processed_data.py   <-- Công cụ kiểm định dữ liệu đầu ra
-├── 📁 src/                             <-- Mã nguồn triển khai Chatbot Q&A (Phase 2)
-│   └── 📁 query_control/
-│       ├── 📄 build_schema_graph.py     <-- Quét file Excel sinh schema_graph.json
-│       ├── 📄 build_semantic_layer.py   <-- Sinh semantic_layer.json dựa trên schema thực tế
-│       ├── 📄 build_qdrant_semantic_index.py <-- Nạp định nghĩa nghiệp vụ vào Qdrant Vector DB
-│       ├── 📄 semantic_retriever.py     <-- Tìm kiếm ứng viên từ Qdrant & rerank kết hợp
-│       ├── 📄 validate_query_control_metadata.py <-- Tự động kiểm định các file metadata
-│       ├── 📄 domain_gate.py            <-- Phân loại định tuyến câu hỏi người dùng
-│       ├── 📄 query_planner.py          <-- Regex RuleExtractor + LLM Planner sinh Query Plan
-│       ├── 📄 sql_compiler.py           <-- Biên dịch Query Plan sang SQL DuckDB
-│       ├── 📄 duckdb_loader.py          <-- Nạp dữ liệu Excel gộp sang Parquet & DuckDB
-│       ├── 📄 data_engine.py            <-- Lớp điều phối truy vấn DuckDB (an toàn, giới hạn dòng)
-│       ├── 📄 query_cache.py            <-- Bộ đệm cache kết quả theo cấu trúc Canonical Plan
-│       ├── 📄 observability.py          <-- Ghi nhật ký trace log, đo đạc latency của từng stage
-│       ├── 📄 clarification_engine.py   <-- Phát hiện lỗi plan/định tuyến và sinh câu hỏi làm rõ
-│       ├── 📄 conversation_memory.py    <-- Lưu trữ lượt hội thoại và phân tích câu kế thừa (follow-up)
-│       ├── 📄 answer_engine.py          <-- Trực tiếp điều phối luồng Q&A chatbot MVP
-│       ├── 📄 run_mvp_chatbot.py        <-- Giao diện CLI tương tác trực tiếp với Chatbot Q&A
-│       ├── 📄 demo_mvp_runtime.py       <-- Script chạy kiểm thử tự động 7 trường hợp nghiệp vụ
-│       └── 📄 demo_query_control.py     <-- Giao diện CLI chạy thử nghiệm Chatbot Q&A (cũ)
-└── 📁 eval/                            <-- Hệ thống đánh giá mô hình LLM Planner cho Chatbot
-    ├── 📄 run_llm_eval.py              <-- Script chạy đánh giá chất lượng LLM Planner
-    ├── 📄 eval_llm_planning_cases.jsonl <-- File chứa các test cases câu hỏi người dùng & nhãn chuẩn
+├── 📄 requirements.txt                 <-- Khai báo thư viện Python cần thiết (LangChain, DuckDB, Qdrant, v.v.)
+├── 📄 .env                             <-- Lưu trữ thông tin kết nối và API Keys bảo mật
+├── 📄 .gitignore                       <-- Quản lý các file và thư mục bỏ qua không đẩy lên Git
+├── 📄 PROJECT_STRUCTURE.md             <-- File này (Tài liệu cấu trúc, sơ đồ và trạng thái dự án)
+├── 📄 AGENTS.md                        <-- Chỉ dẫn phối hợp công cụ cho AI Agent (GitNexus & Lean-Ctx)
+├── 📄 CLAUDE.md                        <-- Bộ nhớ phiên và chỉ dẫn vận hành cục bộ
+├── 📁 .agents/                         <-- Chứa tài liệu định hướng và cấu hình nội bộ của AI Agent
+│   ├── 📁 rules/                       
+│   │   ├── 📄 project_rules.md         <-- Quy tắc phát triển dự án bắt buộc (10 quy tắc vàng)
+│   │   └── 📄 claude-mem-context.md    <-- Ngữ cảnh bộ nhớ xuyên suốt các session
+│   └── 📁 skills/                      <-- Các bộ kỹ năng hành vi (Skills) tự cấu hình của Agent
+│
+├── 📁 app/                             <-- Thư mục chứa giao diện người dùng
+│   └── 📄 streamlit_chatbot.py         <-- Ứng dụng giao diện Chatbot Q&A bằng Streamlit
+│
+├── 📁 data/                            <-- Thư mục tập trung toàn bộ tài nguyên dữ liệu
+│   ├── 📁 raw/                         <-- Dữ liệu khảo sát thô ban đầu
+│   │   ├── 📁 2023/                    <-- File Excel thô 8 huyện/thị năm 2023
+│   │   └── 📁 2024/                    <-- File Excel thô 8 huyện/thị năm 2024
+│   └── 📁 Processed/                   <-- Dữ liệu đã được làm sạch và chuẩn hóa qua Pipeline
+│       ├── 📁 2023/                    <-- Dữ liệu hộ gia đình và thành viên đã xử lý (năm 2023)
+│       ├── 📁 2024/                    <-- Dữ liệu hộ gia đình và thành viên đã xử lý (năm 2024)
+│       ├── 📁 metadata/                <-- Các file metadata tự sinh phục vụ định tuyến và cấu hình
+│       │   ├── 📄 data_dictionary.json <-- Định nghĩa kiểu dữ liệu và mô tả các cột trong Database
+│       │   ├── 📄 report_schema_summary.json <-- Tóm tắt cấu trúc của 15 mẫu báo cáo Excel
+│       │   └── 📁 query_control/       <-- Metadata cấu hình chi tiết cho chatbot Q&A
+│       │       ├── 📄 semantic_layer.json <-- Khớp cột vật lý với thuật ngữ nghiệp vụ (Dimensions, Measures)
+│       │       ├── 📄 schema_graph.json    <-- Đồ thị liên kết quan hệ thực thể phục vụ sinh SQL JOIN
+│       │       └── ...
+│       ├── 📁 logs/                    <-- Nhật ký xử lý dữ liệu và kiểm định logic
+│       │   ├── 📄 processing_log.json  
+│       │   └── 📊 validation_summary.xlsx <-- Log kết quả kiểm thử logic dữ liệu
+│       └── 📄 intern_chatbot.duckdb    <-- Cơ sở dữ liệu phân tích nhúng DuckDB (Single Source of Truth)
+│
+├── 📁 src/                             <-- Thư mục chứa toàn bộ mã nguồn logic chính của dự án
+│   ├── 📁 scripts/                     <-- Các script xử lý dữ liệu và vận hành hệ thống lõi
+│   │   ├── 📄 pipeline.py              <-- Logic tiền xử lý, chuẩn hóa thô và trích xuất thuộc tính hộ nghèo
+│   │   ├── 📄 process_all.py           <-- Trình điều phối chạy toàn bộ pipeline làm sạch và nạp dữ liệu
+│   │   └── 📄 validate_processed_data.py <-- Script kiểm định tính hợp lệ của dữ liệu đầu ra
+│   └── 📁 query_control/               <-- Các module xử lý truy vấn và điều khiển Chatbot Q&A
+│       ├── 📄 domain_gate.py           <-- Bộ phân loại định tuyến câu hỏi (Dataset QA, Refusal, Clarification)
+│       ├── 📄 query_planner.py         <-- Trình lập kế hoạch truy vấn sinh JSON Query Plan dựa trên LLM + Rules
+│       ├── 📄 sql_compiler.py          <-- Biên dịch JSON Query Plan thành câu truy vấn SQL DuckDB chuẩn
+│       ├── 📄 data_engine.py           <-- Thực thi SQL an toàn trên DuckDB (Giới hạn số dòng, chống SQL Injection)
+│       ├── 📄 query_cache.py           <-- Bộ đệm kết quả truy vấn dựa trên MD5 Hash
+│       ├── 📄 semantic_retriever.py    <-- Truy xuất ngữ nghĩa từ Qdrant Vector DB để gán nhãn thực thể
+│       ├── 📄 build_schema_graph.py    <-- Tự động sinh file schema_graph.json
+│       ├── 📄 build_semantic_layer.py  <-- Tự động sinh file semantic_layer.json
+│       ├── 📄 build_qdrant_semantic_index.py <-- Nạp định nghĩa nghiệp vụ vào Qdrant
+│       ├── 📄 clarification_engine.py  <-- Phát hiện thiếu thông tin và sinh câu hỏi phản hồi làm rõ
+│       └── 📄 observability.py         <-- Nhật ký trace log, đo đạc latency của từng stage
+│
+├── 📁 run_server/                      <-- Cấu hình và hướng dẫn triển khai Gemma Server chạy local/Docker
+│   ├── 📄 entrypoint.sh                
+│   ├── 📄 quick_setup.txt              
+│   └── 📄 walkthrough.md               
+│
+└── 📁 test/                            <-- Thư mục tập trung các kịch bản kiểm thử, kiểm định dữ liệu và gỡ lỗi
+    ├── 📁 debug/                       <-- Các script phục vụ debug nhanh và phân tích log
+    │   ├── 📄 watch_gitnexus.py        <-- Script tự động quét thay đổi và chạy re-ingest Graph
+    │   ├── 📄 check_db_values.py       
+    │   ├── 📄 inspect_schema.py        
+    │   └── ...
+    ├── 📁 golden_questions/            <-- Bộ câu hỏi kiểm thử chuẩn (Golden Questions) và báo cáo đánh giá
+    │   ├── 📄 golden_questions_30.csv  
+    │   └── 📄 evaluation_report.md     
+    ├── 📁 planning_eval/               <-- Đánh giá hiệu quả của LLM Planner
+    │   ├── 📄 run_llm_eval.py          
+    │   └── 📁 results/                 
+    ├── 📁 scripts/                     <-- Mã nguồn hỗ trợ quá trình kiểm thử
+    │   ├── 📄 generate_golden_questions.py 
+    │   └── 📄 evaluate_chatbot_against_golden.py
+    └── 📓 query.ipynb                  <-- Notebook chứa 5 câu truy vấn phân tích DuckDB mẫu
 ```
 
 ---
 
-## 2. Bản Đồ File & Xác Định Nhanh File/Hàm Cần Chỉnh Sửa
+## 2. Thiết Lập Workflow Tích Hợp (GitNexus + CodeGraphContext + Lean-Ctx)
 
-Khi nhận được yêu cầu từ người dùng, chatbot có thể đối chiếu ngay với bảng sau để biết cần đọc và sửa đổi file/hàm nào:
+Dự án áp dụng mô hình phân chia trách nhiệm rõ ràng cho AI Agent để tối ưu hóa token và đảm bảo an toàn mã nguồn:
 
-| Yêu Cầu / Chức Năng Cần Thay Đổi | File Cần Sửa | Hàm / Vị Trí Cụ Thể | Ghi Chú |
+1.  **GitNexus (Kiến trúc & Blast Radius):** Phân tích luồng thực thi (`processes`), tìm kiếm ký hiệu nâng cao, đánh giá tầm ảnh hưởng khi thay đổi (`impact`) và kiểm tra các thay đổi trước khi commit (`detect_changes`).
+2.  **CodeGraphContext (Ký hiệu & Quan hệ sâu):** Phân tích callers/callees chi tiết, tính toán độ phức tạp hàm (`calculate_cyclomatic_complexity`), phát hiện mã nguồn chết (`find_dead_code`).
+3.  **Lean-Ctx (Thực thi vật lý tối ưu):** Đọc/sửa file cục bộ có nén (`ctx_read`), thực thi lệnh shell nén kết quả (`ctx_shell`).
+
+```mermaid
+graph TD
+    User([Yêu cầu thay đổi từ User]) --> A[GitNexus/CGC: Phân tích cấu trúc & tìm Symbol]
+    A --> B[GitNexus: Đánh giá tầm ảnh hưởng / Blast Radius]
+    B --> C{Rủi ro cao?}
+    C -->|Có| C1[Báo cáo mức rủi ro và xin đồng ý của User]
+    C -->|Không| D[Lean-Ctx: Đọc/Sửa file tối ưu hóa ngữ cảnh]
+    C1 -->|Đồng ý| D
+    D --> E[Lean-Ctx: Chạy Shell & Kiểm thử cục bộ]
+    E --> F[GitNexus: Kiểm tra thay đổi / detect_changes]
+    F --> G[GitNexus: Tự động chạy re-ingest analyze]
+    G --> H([Hoàn thành & Báo cáo])
+```
+
+---
+
+## 3. Sơ đồ Luồng Xử Lý Thực Tế Của Chatbot (Chatbot Pipeline Flow)
+
+Sơ đồ này mô tả chi tiết đường đi của một truy vấn khi đi qua `ChatbotAnswerEngine.answer()`:
+
+### 3.1. Phân loại định tuyến câu hỏi (Stage 1)
+```mermaid
+flowchart TD
+  A["User query"] --> B["conversation_memory_load"]
+  B --> C["rule_extractor"]
+  C --> D["domain_gate"]
+  D --> E{"Route"}
+  E -->|CLARIFICATION_NEEDED| F["Clarification Engine: Hỏi làm rõ"]
+  E -->|OUT_OF_SCOPE| G["Refusal: Từ chối trả lời ngoài phạm vi"]
+  E -->|GENERAL_KNOWLEDGE| H["General Knowledge: Trả lời kiến thức chung"]
+  E -->|DATASET_QA / HYBRID| I["Dataset Pipeline"]
+  F --> Z["finish_trace + Trả kết quả"]
+  G --> Z
+  H --> Z
+  I --> J["planner"]
+```
+
+### 3.2. Tiến trình xử lý truy vấn dữ liệu (Stage 2)
+```mermaid
+flowchart TD
+  A["Dataset Pipeline"] --> B["semantic_retriever: Truy xuất ngữ nghĩa thực thể"]
+  B --> C["planner: Sinh JSON Query Plan"]
+  C --> D["query_plan_validation: Kiểm định Plan hợp lệ"]
+  D --> E["sql_compiler: Biên dịch sang SQL DuckDB"]
+  E --> F["data_engine: Thực thi truy vấn trên DuckDB"]
+  F --> G["query_cache: Lưu đệm kết quả (MD5 Hash)"]
+  G --> H["response_generator: Tổng hợp câu trả lời ngôn ngữ tự nhiên"]
+  H --> Z["finish_trace + Trả kết quả"]
+```
+
+---
+
+## 4. Bản Đồ File & Vị Trí Chức Năng Cốt Lõi
+
+Khi cần sửa đổi một chức năng cụ thể, nhà phát triển/Agent có thể đối chiếu nhanh với bảng sau:
+
+| Chức Năng Cần Thay Đổi | Đường Dẫn File Vật Lý | Hàm / Class Cụ Thể | Ghi Chú |
 | :--- | :--- | :--- | :--- |
-| **Thay đổi logic làm sạch dữ liệu thô** | `scripts/pipeline.py` | `normalize_raw_core_values` | Các bước tiền xử lý thô trước khi sinh thuộc tính. |
-| **Thay đổi logic sinh thuộc tính hộ nghèo** | `scripts/pipeline.py` | `generate_household_features` | Nơi tính toán các chỉ số đa chiều và chính sách hỗ trợ. |
-| **Thay đổi định tuyến câu hỏi Chatbot** | `src/query_control/domain_gate.py` | `DomainGate.classify` | Phân loại giữa DATASET_QA, GENERAL_KNOWLEDGE, HYBRID, OUT_OF_SCOPE, CLARIFICATION_NEEDED. |
-| **Tinh chỉnh Prompt sinh Query Plan** | `Processed/metadata/query_control/planner_prompt.md` | Toàn bộ prompt | Hướng dẫn LLM Planner cách sinh kế hoạch JSON Plan chuẩn. |
-| **Sửa đổi logic sinh SQL từ Plan** | `src/query_control/sql_compiler.py` | `SQLCompiler.compile` | Xử lý ánh xạ cột vật lý, gộp filter nghiệp vụ và giải quyết JOIN. |
-| **Cập nhật cách kết nối LLM FPT** | `src/query_control/llm_helper.py` | `call_llm` | Điều chỉnh cấu hình, URL API, cơ chế retry khi gọi mô hình gemma. |
-| **Thay đổi cách tính điểm xếp hạng Qdrant** | `src/query_control/semantic_retriever.py` | `SemanticRetriever.retrieve` | Công thức kết hợp điểm cosine, exact anchor và rule signals. |
+| **Logic làm sạch dữ liệu thô** | `src/scripts/pipeline.py` | `normalize_raw_core_values` | Chuẩn hóa tên xã/huyện, xử lý giá trị khuyết. |
+| **Logic sinh chỉ số nghèo đa chiều** | `src/scripts/pipeline.py` | `generate_household_features` | Tính toán điểm thiếu hụt các dịch vụ xã hội cơ bản. |
+| **Phân loại câu hỏi đầu vào** | `src/query_control/domain_gate.py` | `DomainGate.classify` | Phân tuyến câu hỏi giữa dữ liệu và kiến thức chung. |
+| **Tinh chỉnh Prompt Planner** | `data/Processed/metadata/query_control/planner_prompt.md` | Toàn bộ nội dung | Cung cấp ngữ cảnh cột và hướng dẫn lập plan cho LLM. |
+| **Biên dịch kế hoạch sang SQL** | `src/query_control/sql_compiler.py` | `SQLCompiler.compile` | Xử lý ánh xạ cột, xử lý lọc chính xác các từ đặc thù. |
+| **Cấu hình kết nối DuckDB** | `data/Processed/metadata/query_control/duckdb_config.json` | Toàn bộ nội dung | Chứa cấu hình kết nối DB vật lý và đường dẫn parquet. |
 
 ---
 
-## 3. Trạng Thái Hiện Tại Của Dự Án (Project Status)
-## 3. Trang Thai Hien Tai Cua Du An (Project Status)
+## 5. Trạng Thái Hiện Tại Của Dự Án
 
-Du an hien da hoan thanh Phase 2 - Xay dung thanh cong he thong Chatbot Q&A 2 nhanh va tich hop day du cac thanh phan MVP:
-* **Da hoan thanh:**
-  * **Phase 1 (Tien xu ly):** Pipeline tien xu ly va lam giau du lieu chay thanh cong, sinh day du du lieu ho gia dinh va thanh vien sach, luu tai `Processed/`.
-  * **Phase 2 (Chatbot Q&A Engine & MVP Runtime Infrastructure):**
-    * Tu dong quet va sinh file `schema_graph.json` va `semantic_layer.json`.
-    * Xay dung chi muc tim kiem ngu nghia Qdrant (`build_qdrant_semantic_index.py`), nap 27 points.
-    * Trien khai `DomainGate` ket hop bo loc tu khoa, khop chuoi chinh xac va LLM Fallback.
-    * Trien khai `QueryPlanner` ket hop `RuleExtractor` de lap ke hoach truy van JSON va kiem dinh an toan.
-    * Trien khai `SQLCompiler` bien dich Query Plan sang SQL DuckDB.
-    * **DuckDB Engine:** Tong hop du lieu Excel nap thanh cong vao DuckDB vat ly.
-    * **Query Cache (`query_cache.py`):** Exact-match MD5 hash cache (da loai bo semantic caching de tranh embedding overhead per-request).
-    * **Observability, Clarification Engine, Conversation Memory:** Hoan thanh.
-    * **Answer Engine MVP (`answer_engine.py`):** Chi giu luong `answer()` dong bo (da loai bo `async_answer` va `async_answer_stream`).
-    * **CLI (`run_mvp_chatbot.py`) va Demo Scripts:** Hoan thanh.
-    * **Golden Questions Evaluation:** Dat 100% Exact Match, 100% Route Accuracy, 100% SQL Exec Success voi Avg Latency ~1.73 giay.
-  * **Khoi phuc hieu nang baseline (Session hien tai):**
-    * `domain_gate.py`: Xoa pre-compute embedding routing patterns, khoi phuc rule-based + LLM fallback.
-    * `query_cache.py`: Loai bo EmbeddingClient va cosine similarity, chi giu exact MD5 hash lookup.
-    * `query_planner.py`: Xoa `async_plan()` method.
-    * `answer_engine.py`: Xoa `async_answer()` va `async_answer_stream()`.
+*   **Đã hoàn thành cấu trúc lại (Folder Refactoring):**
+    *   Toàn bộ dữ liệu (thô, đã xử lý, DuckDB, metadata) được di chuyển vào thư mục cha tập trung `data/`.
+    *   Mã nguồn chính được gộp vào `src/` (với `src/scripts/` và `src/query_control/`).
+    *   Tất cả các script kiểm thử, đánh giá và debug được gom vào `test/` (với `test/debug/` chứa các tệp tin hỗ trợ).
+*   **Thắt chặt quy chế Agent (Governance Rules):**
+    *   Bổ sung cơ chế **Consent-First** (Quy tắc 7): Agent tuyệt đối không tự ý chạy code/kiểm thử hoặc sửa các file nằm ngoài phạm vi yêu cầu trực tiếp trong prompt của User khi chưa được đồng ý.
+    *   Bổ sung cơ chế **Tự động Re-ingest Graph** (Quy tắc 10): Tích hợp script `test/debug/watch_gitnexus.py` hỗ trợ lập chỉ mục tự động khi có thay đổi tệp tin cục bộ, đồng thời Agent tự chạy `npx gitnexus analyze` sau khi chỉnh sửa file.
+    *   Bổ sung cơ chế **Quy trình Xem Code & Q&A Tối Ưu (Quy tắc 11):** Thiết kế lại workflow cho các tác vụ Read-Only thuần túy (không sửa đổi hay chạy code) nhằm loại bỏ hoàn toàn các API/MCP calls dư thừa (chạy test, impact analysis, detect changes, re-ingest graph) và giới hạn tối đa số lần tìm kiếm/đọc tệp tin để tiết kiệm API call.
+*   **Tích hợp Meta-Tools & Smart Hints (Hiệu Năng Toàn Diện):**
+    *   Triển khai server trung gian `src/scripts/meta_mcp_server.py` để gộp các MCP servers con (GitNexus, CodeGraphContext, Lean-Ctx) và cung cấp meta-tool `meta_deep_context`.
+    *   Xây dựng Meta-Tool `meta_deep_context` trả về tổng quan symbol (context, dependencies, impact) chỉ trong một lượt gọi duy nhất.
+    *   Tích hợp cơ chế tự động tiêm gợi ý thông minh (`_agent_hint` / `Smart Hints`) vào tất cả kết quả trả về của các công cụ, giúp định hướng hành động tiếp theo và giảm tối đa số lần gọi API dư thừa.
+    *   **Khắc phục hiệu năng & ổn định hệ thống MCP:**
+        *   Sửa lỗi treo/timeout của server `sequential-thinking` trên Windows bằng cách chuyển cấu hình trong `mcp_config.json` từ sử dụng `npx` (gây chậm trễ khởi động do tải package) sang gọi trực tiếp package cài đặt toàn cục thông qua `node`.
+        *   Khắc phục hoàn toàn lỗi khóa nghẽn (deadlock) luồng stdio của `meta_mcp_server.py` trên Windows bằng cách thay thế cơ chế đọc/ghi `sys.stdin`/`sys.stdout` đồng bộ khóa chéo bằng thread đọc thô `os.read(0, ...)` và ghi thô `os.write(1, ...)` bất đồng bộ qua Queue.
+        *   Thêm cơ chế tự động hủy tác vụ (timeout) sau 5 giây cho yêu cầu lấy danh sách công cụ (`tools/list`) và 30 giây cho yêu cầu gọi công cụ (`tools/call`) nhằm loại bỏ tình trạng đơ/treo vô hạn khi có child process bị dừng đột ngột.
+        *   Sửa lỗi giải mã dữ liệu (`UnicodeDecodeError`) của child process khi đọc logs/stderr chứa ký tự đặc biệt tiếng Việt bằng cách cấu hình giải mã `utf-8` với chế độ `errors="replace"`.
+*   **Dọn dẹp thư mục gốc (Root Clean-up):**
+    *   Di chuyển file `skills-lock.json` vào thư mục cấu hình Agent `.agents/skills-lock.json`.
+    *   Di chuyển file `test_traces.json` (chứa nhật ký dấu vết thực thi thử nghiệm) vào thư mục `test/test_traces.json`.
 
-* **Dang trien khai / Can lam tiep theo:**
-  * Chay lai danh gia golden questions (`eval/evaluate_chatbot_against_golden.py`) de xac nhan latency ve moc ~1.7s.
-  * Tinh chinh hieu nang LLM Planner (~72.85% Planner Accuracy nhung 100% data accuracy).
-  * Tich hop chatbot Q&A voi giao dien Web (UI) va xay dung module xuat bao cao Excel theo 15 bieu mau.
 
----
-
-## 4. Quy Tắc Phát Triển Dự Án Bắt Buộc (Developer & Chatbot Rules)
-
-### ⚠️ Quy tắc 1: Luôn đọc và cập nhật file `PROJECT_STRUCTURE.md`
-* Bắt buộc đọc file này đầu tiên để nắm bắt ngữ cảnh, cấu trúc thư mục và trạng thái mới nhất của dự án.
-* Cập nhật lại phần "3. Trạng Thái Hiện Tại Của Dự Án" sau khi hoàn thành mỗi yêu cầu phát triển.
-
-### 📝 Quy tắc 2: Tiêu chuẩn hóa chú thích mã nguồn bằng Tiếng Việt
-* Viết ghi chú và docstring bằng tiếng Việt rõ ràng cho tất cả các hàm và module mới được sửa đổi/tạo mới.
-
-### 🛑 Quy tắc 3: Kiểm soát phân quyền Git/Github
-* Tuyệt đối không chạy lệnh `git push` lên remote repository trừ khi có sự đồng ý hoặc hướng dẫn trực tiếp của người dùng.
-
-### ⚙️ Quy tắc 4: Quy trình kiểm nghiệm chất lượng dữ liệu và Q&A
-* Chạy lại bộ kiểm định tự động metadata `validate_query_control_metadata.py` sau khi có bất kỳ thay đổi nào liên quan đến cấu trúc metadata.
-
-### 🐍 Quy tắc 5: Luôn Sử Dụng Môi Trường Ảo `venv`
-* Mọi script kiểm thử, pipeline và chatbot bắt buộc phải chạy trong môi trường ảo `venv` cục bộ của dự án.
-
-### 🛑 Quy tắc 6: Xử Lỗi Do Sơ Xuất Của Người Dùng (Handling User Oversight Errors)
-* Dừng ngay lập tức tác vụ và báo cáo rõ ràng khi thiếu cấu hình `.env` hoặc lỗi kết nối dịch vụ ngoài (Qdrant, API Key), yêu cầu người dùng sửa cấu hình trước khi chạy tiếp.
