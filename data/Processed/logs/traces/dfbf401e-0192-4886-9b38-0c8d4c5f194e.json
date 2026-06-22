@@ -1,0 +1,90 @@
+{
+  "trace_id": "dfbf401e-0192-4886-9b38-0c8d4c5f194e",
+  "timestamp": "2026-06-21 16:51:53",
+  "user_question": "Năm 2024, tình hình hộ nghèo ở Thành phố Gia Nghĩa có cải thiện hơn so với năm 2023 không?",
+  "route": "ERROR",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 47565.772499998275,
+  "status": "error",
+  "errors": [
+    {
+      "stage": "runtime_answer",
+      "code": "CRITICAL_SYSTEM_ERROR",
+      "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+    }
+  ],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.6351000012946315
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Năm 2024, tình hình hộ nghèo ở Thành phố Gia Nghĩa có cải thiện hơn so với năm 2023 không?",
+      "rewritten_question": "Năm 2024, tình hình hộ nghèo ở Thành phố Gia Nghĩa có cải thiện hơn so với năm 2023 không?",
+      "latency_ms": 31062.830000002577
+    },
+    "rule_extractor": {
+      "task_type": "comparison_query",
+      "years": [
+        2024,
+        2023
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": true,
+      "is_aggregate": false,
+      "detected_district": "Thành phố Gia Nghĩa",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.08329999764100648
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 93.57439999803319
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 16403.926899998623
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "unknown",
+        "metrics": [],
+        "dimensions": [],
+        "filters": [],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Lỗi gọi LLM Planner: Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: 400 Client Error: Bad Request for url: https://direct.shopaikey.com/v1/chat/completions"
+        ]
+      }
+    },
+    "final": {
+      "route": "ERROR",
+      "answer": "Lỗi hệ thống nghiêm trọng: 'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>",
+      "query_plan": null,
+      "sql": null,
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [
+        {
+          "code": "CRITICAL_SYSTEM_ERROR",
+          "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+        }
+      ]
+    }
+  }
+}

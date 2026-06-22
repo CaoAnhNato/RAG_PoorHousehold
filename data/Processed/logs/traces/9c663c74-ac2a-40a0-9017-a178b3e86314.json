@@ -1,0 +1,202 @@
+{
+  "trace_id": "9c663c74-ac2a-40a0-9017-a178b3e86314",
+  "timestamp": "2026-06-21 17:08:21",
+  "user_question": "So với 2023, số hộ thoát nghèo trong 2024 tăng hay giảm ở Tuy Đức?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "comparison_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [
+      "year"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "IN",
+        "value": [
+          2023,
+          2024
+        ]
+      },
+      {
+        "field": "district",
+        "operator": "=",
+        "value": "Huyện Tuy Đức"
+      }
+    ],
+    "sort": {
+      "field": "year",
+      "direction": "asc"
+    },
+    "limit": null,
+    "output_type": "table",
+    "ambiguities": [],
+    "original_question": "So sánh số hộ nghèo ở Huyện Tuy Đức giữa năm 2023 và năm 2024",
+    "output_mode": "text"
+  },
+  "sql": "WITH base_by_year AS (\n  SELECT \"administrative.year\" AS year, \"administrative.year\" AS year, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS val FROM households WHERE LOWER(\"administrative.district\") = 'huyện tuy đức' AND \"administrative.year\" IN (2023, 2024) GROUP BY year, year\n)\nSELECT year,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_household_count_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_household_count_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_household_count\nFROM base_by_year\nGROUP BY year\nORDER BY diff_poor_household_count ASC",
+  "cache_hit": false,
+  "row_count": 2,
+  "latency_total_ms": 7723.262699997576,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.2883000017609447
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "So với 2023, số hộ thoát nghèo trong 2024 tăng hay giảm ở Tuy Đức?",
+      "rewritten_question": "So sánh số hộ nghèo ở Huyện Tuy Đức giữa năm 2023 và năm 2024",
+      "latency_ms": 2609.311500000331
+    },
+    "rule_extractor": {
+      "task_type": "comparison_query",
+      "years": [
+        2023,
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": true,
+      "is_aggregate": false,
+      "detected_district": "Huyện Tuy Đức",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.04690000059781596
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 30.13669999927515
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 2864.7995999999694
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "comparison_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "year"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "IN",
+            "value": [
+              2023,
+              2024
+            ]
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Tuy Đức"
+          }
+        ],
+        "sort": {
+          "field": "year",
+          "direction": "asc"
+        },
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "So sánh số hộ nghèo ở Huyện Tuy Đức giữa năm 2023 và năm 2024",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "e0cdf0ce78afc1e82da5cb98e218094b",
+      "latency_ms": 0.10060000204248354
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "WITH base_by_year AS (\n  SELECT \"administrative.year\" AS year, \"administrative.year\" AS year, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS val FROM households WHERE LOWER(\"administrative.district\") = 'huyện tuy đức' AND \"administrative.year\" IN (2023, 2024) GROUP BY year, year\n)\nSELECT year,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_household_count_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_household_count_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_household_count\nFROM base_by_year\nGROUP BY year\nORDER BY diff_poor_household_count ASC",
+      "latency_ms": 0.05440000313683413
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "WITH base_by_year AS (\n  SELECT \"administrative.year\" AS year, \"administrative.year\" AS year, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS val FROM households WHERE LOWER(\"administrative.district\") = 'huyện tuy đức' AND \"administrative.year\" IN (2023, 2024) GROUP BY year, year\n)\nSELECT year,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_household_count_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_household_count_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_household_count\nFROM base_by_year\nGROUP BY year\nORDER BY diff_poor_household_count ASC",
+      "latency_ms": 6.383800002367934
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 2204.595300001529
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.6762000011804048
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Số hộ nghèo ở Huyện Tuy Đức giữa năm 2023 và năm 2024 như sau:\n\n- Năm 2023: 1,674 hộ nghèo\n- Năm 2024: 829 hộ nghèo\n\nSo sánh:\n- Số hộ nghèo giảm 845 hộ từ năm 2023 sang năm 2024 (1,674 - 829 = 845). \n\nTóm lại, số hộ nghèo đã giảm đáng kể từ năm 2023 đến năm 2024.",
+      "query_plan": {
+        "task_type": "comparison_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "year"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "IN",
+            "value": [
+              2023,
+              2024
+            ]
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Tuy Đức"
+          }
+        ],
+        "sort": {
+          "field": "year",
+          "direction": "asc"
+        },
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "So sánh số hộ nghèo ở Huyện Tuy Đức giữa năm 2023 và năm 2024",
+        "output_mode": "text"
+      },
+      "sql": "WITH base_by_year AS (\n  SELECT \"administrative.year\" AS year, \"administrative.year\" AS year, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS val FROM households WHERE LOWER(\"administrative.district\") = 'huyện tuy đức' AND \"administrative.year\" IN (2023, 2024) GROUP BY year, year\n)\nSELECT year,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_household_count_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_household_count_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_household_count\nFROM base_by_year\nGROUP BY year\nORDER BY diff_poor_household_count ASC",
+      "result_preview": [
+        {
+          "year": 2023,
+          "poor_household_count_2023": 1674,
+          "poor_household_count_2024": 0,
+          "diff_poor_household_count": -1674
+        },
+        {
+          "year": 2024,
+          "poor_household_count_2023": 0,
+          "poor_household_count_2024": 829,
+          "diff_poor_household_count": 829
+        }
+      ],
+      "row_count": 2,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "So sánh số hộ nghèo ở Huyện Tuy Đức giữa năm 2023 và năm 2024"
+    }
+  }
+}

@@ -1,0 +1,224 @@
+{
+  "trace_id": "823d3157-3d85-4071-8b2f-677ead1e4f7d",
+  "timestamp": "2026-06-21 17:08:36",
+  "user_question": "Mức độ thiếu hụt của các hộ nghèo ở Đắk Mil tập trung mạnh vào những chỉ số nào?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "aggregate_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [
+      "commune"
+    ],
+    "filters": [
+      {
+        "field": "poverty_status",
+        "operator": "=",
+        "value": "Hộ nghèo"
+      },
+      {
+        "field": "district",
+        "operator": "=",
+        "value": "Huyện Đắk Mil"
+      },
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "table",
+    "ambiguities": [],
+    "original_question": "Mức độ thiếu hụt của các hộ nghèo ở Huyện Đắk Mil tập trung mạnh vào những chỉ số nào",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"administrative.commune\" AS commune, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE LOWER(\"classify\") = 'hộ nghèo' AND LOWER(\"administrative.district\") = 'huyện đắk mil' AND \"administrative.year\" = 2024 GROUP BY commune ORDER BY poor_household_count DESC",
+  "cache_hit": false,
+  "row_count": 10,
+  "latency_total_ms": 7004.1945999983,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 2.0414999999047723
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Mức độ thiếu hụt của các hộ nghèo ở Đắk Mil tập trung mạnh vào những chỉ số nào?",
+      "rewritten_question": "Mức độ thiếu hụt của các hộ nghèo ở Huyện Đắk Mil tập trung mạnh vào những chỉ số nào",
+      "latency_ms": 2580.6714999998803
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": "Huyện Đắk Mil",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.046799999836366624
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.8691342,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=False, GK=False).",
+      "latency_ms": 49.0912000022945
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 2292.52809999889
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "commune"
+        ],
+        "filters": [
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ nghèo"
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Đắk Mil"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Mức độ thiếu hụt của các hộ nghèo ở Huyện Đắk Mil tập trung mạnh vào những chỉ số nào",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "a1384ae3cc3f8bdbd05fec930de773a0",
+      "latency_ms": 0.07719999848632142
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"administrative.commune\" AS commune, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE LOWER(\"classify\") = 'hộ nghèo' AND LOWER(\"administrative.district\") = 'huyện đắk mil' AND \"administrative.year\" = 2024 GROUP BY commune ORDER BY poor_household_count DESC",
+      "latency_ms": 0.15920000078040175
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"administrative.commune\" AS commune, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE LOWER(\"classify\") = 'hộ nghèo' AND LOWER(\"administrative.district\") = 'huyện đắk mil' AND \"administrative.year\" = 2024 GROUP BY commune ORDER BY poor_household_count DESC",
+      "latency_ms": 4.3599999989965
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 2067.3478999997315
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.826699997560354
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Mức độ thiếu hụt của các hộ nghèo ở Huyện Đắk Mil tập trung mạnh vào các chỉ số sau:\n\n- **Xã Đắk Gằn**: 27 hộ nghèo\n- **Xã Đắk Sắk**: 27 hộ nghèo\n- **Xã Long Sơn**: 25 hộ nghèo\n- **Thị trấn Đắk Mil**: 24 hộ nghèo\n- **Xã Đức Mạnh**: 23 hộ nghèo\n- **Xã Đức Minh**: 20 hộ nghèo\n- **Xã Đắk RLa**: 20 hộ nghèo\n- **Xã Đắk Lao**: 20 hộ nghèo\n- **Xã Thuận An**: 20 hộ nghèo\n- **Xã Đắk NDrót**: 15 hộ nghèo\n\nCác xã có số lượng hộ nghèo cao nhất là Đắk Gằn và Đắk Sắk với 27 hộ nghèo mỗi xã.",
+      "query_plan": {
+        "task_type": "aggregate_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "commune"
+        ],
+        "filters": [
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ nghèo"
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Đắk Mil"
+          },
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "Mức độ thiếu hụt của các hộ nghèo ở Huyện Đắk Mil tập trung mạnh vào những chỉ số nào",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"administrative.commune\" AS commune, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE LOWER(\"classify\") = 'hộ nghèo' AND LOWER(\"administrative.district\") = 'huyện đắk mil' AND \"administrative.year\" = 2024 GROUP BY commune ORDER BY poor_household_count DESC",
+      "result_preview": [
+        {
+          "commune": "Xã Đắk Gằn",
+          "poor_household_count": 27
+        },
+        {
+          "commune": "Xã Đắk Sắk",
+          "poor_household_count": 27
+        },
+        {
+          "commune": "Xã Long Sơn",
+          "poor_household_count": 25
+        },
+        {
+          "commune": "Thị trấn Đắk Mil",
+          "poor_household_count": 24
+        },
+        {
+          "commune": "Xã Đức Mạnh",
+          "poor_household_count": 23
+        },
+        {
+          "commune": "Xã Đức Minh",
+          "poor_household_count": 20
+        },
+        {
+          "commune": "Xã Đắk RLa",
+          "poor_household_count": 20
+        },
+        {
+          "commune": "Xã  Đắk Lao",
+          "poor_household_count": 20
+        },
+        {
+          "commune": "Xã Thuận An",
+          "poor_household_count": 20
+        },
+        {
+          "commune": "Xã Đắk NDrót",
+          "poor_household_count": 15
+        }
+      ],
+      "row_count": 10,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Mức độ thiếu hụt của các hộ nghèo ở Huyện Đắk Mil tập trung mạnh vào những chỉ số nào"
+    }
+  }
+}

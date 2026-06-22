@@ -1,0 +1,67 @@
+{
+  "trace_id": "d60ca064-98e7-40a1-85a1-f016322c1af3",
+  "timestamp": "2026-06-21 16:56:52",
+  "user_question": "Mức độ thiếu hụt của các hộ nghèo ở Đắk Mil tập trung mạnh vào những chỉ số nào?",
+  "route": "CLARIFICATION_NEEDED",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 43023.092800001905,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.3527000010071788
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Mức độ thiếu hụt của các hộ nghèo ở Đắk Mil tập trung mạnh vào những chỉ số nào?",
+      "rewritten_question": "Mức độ thiếu hụt của các hộ nghèo ở Đắk Mil tập trung mạnh vào những chỉ số nào?",
+      "latency_ms": 26373.569899998984
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": "Huyện Đắk Mil",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.05089999831398018
+    },
+    "domain_gate": {
+      "route": "CLARIFICATION_NEEDED",
+      "confidence": 0.5,
+      "reason": "Lỗi gọi LLM Classifier: Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: 400 Client Error: Bad Request for url: https://direct.shopaikey.com/v1/chat/completions",
+      "latency_ms": 16643.95130000048
+    },
+    "final": {
+      "needs_clarification": true,
+      "message": "Bạn muốn truy vấn số liệu trong dataset hay hỏi giải thích kiến thức chung?",
+      "options": [
+        {
+          "label": "Truy vấn số liệu rà soát nghèo trong cơ sở dữ liệu",
+          "value": {
+            "route_override": "DATASET_QA"
+          }
+        },
+        {
+          "label": "Hỏi đáp kiến thức, quy chế, khái niệm chung",
+          "value": {
+            "route_override": "GENERAL_KNOWLEDGE"
+          }
+        }
+      ],
+      "reason": "Không thể phân loại rõ định tuyến câu hỏi",
+      "error_codes": [
+        "ROUTE_UNCERTAIN"
+      ],
+      "route": "CLARIFICATION_NEEDED"
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "trace_id": "5a125b06-8157-4796-a3b4-85b830934eab",
+  "timestamp": "2026-06-21 17:02:09",
+  "user_question": "Năm 2024, thống kê số hộ nghèo theo huyện.",
+  "route": "CLARIFICATION_NEEDED",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 75748.11439999758,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 2.2497999998449814
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Năm 2024, thống kê số hộ nghèo theo huyện.",
+      "rewritten_question": "Năm 2024, thống kê số hộ nghèo theo huyện.",
+      "latency_ms": 47216.66720000212
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [
+        "district"
+      ],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.15169999824138358
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 100.6980999991356
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 28424.613500003034
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "unknown",
+        "metrics": [],
+        "dimensions": [],
+        "filters": [],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Lỗi gọi LLM Planner: Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: HTTP 429: {\"error\":{\"message\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. (request id: 20260621180323118767051vsz94Nzm)\",\"type\":\"invalid_request_error\",\"param\":\"input\",\"code\":null}}"
+        ]
+      }
+    },
+    "final": {
+      "needs_clarification": true,
+      "message": "Câu hỏi của bạn cần thêm một số thông tin để mình có thể truy vấn chính xác. Vui lòng chọn một trong các gợi ý dưới đây:",
+      "options": [
+        {
+          "label": "Thống kê số lượng hộ nghèo theo huyện năm 2024",
+          "value": {
+            "metrics": [
+              "poor_household_count"
+            ],
+            "dimensions": [
+              "district"
+            ],
+            "filters": [
+              {
+                "field": "year",
+                "operator": "=",
+                "value": 2024
+              }
+            ]
+          }
+        },
+        {
+          "label": "Thống kê số lượng hộ cận nghèo theo huyện năm 2024",
+          "value": {
+            "metrics": [
+              "near_poor_household_count"
+            ],
+            "dimensions": [
+              "district"
+            ],
+            "filters": [
+              {
+                "field": "year",
+                "operator": "=",
+                "value": 2024
+              }
+            ]
+          }
+        },
+        {
+          "label": "Hỏi đáp kiến thức chung về hộ nghèo",
+          "value": {
+            "route_override": "GENERAL_KNOWLEDGE"
+          }
+        }
+      ],
+      "reason": "Câu hỏi chưa rõ ràng hoặc lỗi kiểm định kế hoạch",
+      "error_codes": [
+        "UNKNOWN_TASK_TYPE"
+      ],
+      "route": "CLARIFICATION_NEEDED"
+    }
+  }
+}

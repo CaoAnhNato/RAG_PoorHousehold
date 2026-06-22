@@ -1,0 +1,196 @@
+{
+  "trace_id": "836739ac-ceb4-43f4-a3d9-6d9e8ab53a80",
+  "timestamp": "2026-06-21 17:07:54",
+  "user_question": "Năm 2024, tình hình hộ nghèo ở Thành phố Gia Nghĩa có cải thiện hơn so với năm 2023 không?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "comparison_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "IN",
+        "value": [
+          2023,
+          2024
+        ]
+      },
+      {
+        "field": "poverty_status",
+        "operator": "=",
+        "value": "Hộ nghèo"
+      },
+      {
+        "field": "district",
+        "operator": "=",
+        "value": "Thành phố Gia Nghĩa"
+      }
+    ],
+    "sort": null,
+    "limit": null,
+    "output_type": "table",
+    "ambiguities": [],
+    "original_question": "So sánh số hộ nghèo ở Thành phố Gia Nghĩa giữa năm 2023 và năm 2024",
+    "output_mode": "text"
+  },
+  "sql": "WITH base_by_year AS (\n  SELECT \"administrative.district\" AS district, \"administrative.year\" AS year, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS val FROM households WHERE LOWER(\"classify\") = 'hộ nghèo' AND LOWER(\"administrative.district\") = 'thành phố gia nghĩa' AND \"administrative.year\" IN (2023, 2024) GROUP BY district, year\n)\nSELECT district,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_household_count_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_household_count_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_household_count\nFROM base_by_year\nGROUP BY district\nORDER BY diff_poor_household_count DESC",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 7686.032099998556,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.7182999981741887
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Năm 2024, tình hình hộ nghèo ở Thành phố Gia Nghĩa có cải thiện hơn so với năm 2023 không?",
+      "rewritten_question": "So sánh số hộ nghèo ở Thành phố Gia Nghĩa giữa năm 2023 và năm 2024",
+      "latency_ms": 2658.7217999986024
+    },
+    "rule_extractor": {
+      "task_type": "comparison_query",
+      "years": [
+        2023,
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": true,
+      "is_aggregate": false,
+      "detected_district": "Thành phố Gia Nghĩa",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.13519999993150122
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 51.625699998112395
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 3444.8436999991827
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "comparison_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "IN",
+            "value": [
+              2023,
+              2024
+            ]
+          },
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ nghèo"
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Thành phố Gia Nghĩa"
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "So sánh số hộ nghèo ở Thành phố Gia Nghĩa giữa năm 2023 và năm 2024",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "05a4591826d169fc7e48cc70f24705ad",
+      "latency_ms": 0.1841000012063887
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "WITH base_by_year AS (\n  SELECT \"administrative.district\" AS district, \"administrative.year\" AS year, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS val FROM households WHERE LOWER(\"classify\") = 'hộ nghèo' AND LOWER(\"administrative.district\") = 'thành phố gia nghĩa' AND \"administrative.year\" IN (2023, 2024) GROUP BY district, year\n)\nSELECT district,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_household_count_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_household_count_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_household_count\nFROM base_by_year\nGROUP BY district\nORDER BY diff_poor_household_count DESC",
+      "latency_ms": 0.067299999500392
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "WITH base_by_year AS (\n  SELECT \"administrative.district\" AS district, \"administrative.year\" AS year, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS val FROM households WHERE LOWER(\"classify\") = 'hộ nghèo' AND LOWER(\"administrative.district\") = 'thành phố gia nghĩa' AND \"administrative.year\" IN (2023, 2024) GROUP BY district, year\n)\nSELECT district,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_household_count_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_household_count_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_household_count\nFROM base_by_year\nGROUP BY district\nORDER BY diff_poor_household_count DESC",
+      "latency_ms": 24.965900000097463
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 1488.0869000007806
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.6561000011279248
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Số hộ nghèo ở Thành phố Gia Nghĩa giữa năm 2023 và năm 2024 như sau:\n\n- Năm 2023: 88 hộ nghèo\n- Năm 2024: 51 hộ nghèo\n\nSo sánh cho thấy số hộ nghèo đã giảm 37 hộ từ năm 2023 sang năm 2024.",
+      "query_plan": {
+        "task_type": "comparison_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "IN",
+            "value": [
+              2023,
+              2024
+            ]
+          },
+          {
+            "field": "poverty_status",
+            "operator": "=",
+            "value": "Hộ nghèo"
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Thành phố Gia Nghĩa"
+          }
+        ],
+        "sort": null,
+        "limit": null,
+        "output_type": "table",
+        "ambiguities": [],
+        "original_question": "So sánh số hộ nghèo ở Thành phố Gia Nghĩa giữa năm 2023 và năm 2024",
+        "output_mode": "text"
+      },
+      "sql": "WITH base_by_year AS (\n  SELECT \"administrative.district\" AS district, \"administrative.year\" AS year, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS val FROM households WHERE LOWER(\"classify\") = 'hộ nghèo' AND LOWER(\"administrative.district\") = 'thành phố gia nghĩa' AND \"administrative.year\" IN (2023, 2024) GROUP BY district, year\n)\nSELECT district,\n  SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS poor_household_count_2023,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) AS poor_household_count_2024,\n  SUM(CASE WHEN year = 2024 THEN val ELSE 0 END) - SUM(CASE WHEN year = 2023 THEN val ELSE 0 END) AS diff_poor_household_count\nFROM base_by_year\nGROUP BY district\nORDER BY diff_poor_household_count DESC",
+      "result_preview": [
+        {
+          "district": "Thành phố Gia Nghĩa",
+          "poor_household_count_2023": 88,
+          "poor_household_count_2024": 51,
+          "diff_poor_household_count": -37
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "So sánh số hộ nghèo ở Thành phố Gia Nghĩa giữa năm 2023 và năm 2024"
+    }
+  }
+}

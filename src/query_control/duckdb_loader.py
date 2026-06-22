@@ -111,6 +111,14 @@ def process_table_data(table_name: str, table_cfg: dict, source_root: Path) -> p
                     district_name = f.stem
                     df["administrative.district"] = district_name
                 
+                # 3. Loại bỏ các cột dư thừa
+                cols_to_drop = [
+                    c for c in df.columns 
+                    if c.startswith("processing.") or c.startswith("family.members") or c in ["administrative.areaTypeSource", "administrative.areaTypeConfidence"]
+                ]
+                if cols_to_drop:
+                    df.drop(columns=cols_to_drop, inplace=True, errors="ignore")
+                
                 dfs.append(df)
             except Exception as e:
                 logger.warning(f"Không thể đọc tệp {f}: {e}")

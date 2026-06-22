@@ -1,0 +1,67 @@
+{
+  "trace_id": "dcc0c496-af7b-4ef3-92f9-c97df28e5aa8",
+  "timestamp": "2026-06-21 16:57:35",
+  "user_question": "Khu vực nào có nhiều hộ cận nghèo nhất nhưng lại ít thiếu hụt nhất?",
+  "route": "CLARIFICATION_NEEDED",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 50587.30230000219,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 4.55810000130441
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Khu vực nào có nhiều hộ cận nghèo nhất nhưng lại ít thiếu hụt nhất?",
+      "rewritten_question": "Khu vực nào có nhiều hộ cận nghèo nhất nhưng lại ít thiếu hụt nhất?",
+      "latency_ms": 22793.722700000217
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.04859999899053946
+    },
+    "domain_gate": {
+      "route": "CLARIFICATION_NEEDED",
+      "confidence": 0.5,
+      "reason": "Lỗi gọi LLM Classifier: Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: HTTP 429: {\"error\":{\"message\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. (request id: 20260621175822145500993xIhHxC3P)\",\"type\":\"invalid_request_error\",\"param\":\"input\",\"code\":null}}",
+      "latency_ms": 27785.274600002595
+    },
+    "final": {
+      "needs_clarification": true,
+      "message": "Bạn muốn truy vấn số liệu trong dataset hay hỏi giải thích kiến thức chung?",
+      "options": [
+        {
+          "label": "Truy vấn số liệu rà soát nghèo trong cơ sở dữ liệu",
+          "value": {
+            "route_override": "DATASET_QA"
+          }
+        },
+        {
+          "label": "Hỏi đáp kiến thức, quy chế, khái niệm chung",
+          "value": {
+            "route_override": "GENERAL_KNOWLEDGE"
+          }
+        }
+      ],
+      "reason": "Không thể phân loại rõ định tuyến câu hỏi",
+      "error_codes": [
+        "ROUTE_UNCERTAIN"
+      ],
+      "route": "CLARIFICATION_NEEDED"
+    }
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "trace_id": "ce9980e5-3d7d-4f8f-a69e-d1ed92d22123",
+  "timestamp": "2026-06-21 17:03:25",
+  "user_question": "Huyện nào có nhiều hộ nghèo nhất trong năm 2024?",
+  "route": "CLARIFICATION_NEEDED",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 59053.338699999586,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.0947999980999157
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Huyện nào có nhiều hộ nghèo nhất trong năm 2024?",
+      "rewritten_question": "Huyện nào có nhiều hộ nghèo nhất trong năm 2024?",
+      "latency_ms": 23179.765099997894
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [
+        "district"
+      ],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.07199999890872277
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 44.10940000161645
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 35824.67109999925
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "unknown",
+        "metrics": [],
+        "dimensions": [],
+        "filters": [],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Lỗi gọi LLM Planner: Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: HTTP 500: {\"error\":{\"message\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. ({\\\"detail\\\":\\\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. (request id: 202606211004181197157218268d9d6qkOLg6ib)\\\",\\\"status\\\":500,\\\"upstream\\\":{\\\"message\\\":\\\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'.\\\",\\\"type\\\":\\\"invalid_request_error\\\"}})\",\"type\":\"invalid_request_error\",\"param\":\"input\",\"code\":null,\"metadata\":{\"detail\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. (request id: 202606211004181197157218268d9d6qkOLg6ib)\",\"status\":500,\"upstream\":{\"message\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'.\",\"type\":\"invalid_request_error\"}}}}"
+        ]
+      }
+    },
+    "final": {
+      "needs_clarification": true,
+      "message": "Câu hỏi của bạn cần thêm một số thông tin để mình có thể truy vấn chính xác. Vui lòng chọn một trong các gợi ý dưới đây:",
+      "options": [
+        {
+          "label": "Thống kê số lượng hộ nghèo theo huyện năm 2024",
+          "value": {
+            "metrics": [
+              "poor_household_count"
+            ],
+            "dimensions": [
+              "district"
+            ],
+            "filters": [
+              {
+                "field": "year",
+                "operator": "=",
+                "value": 2024
+              }
+            ]
+          }
+        },
+        {
+          "label": "Thống kê số lượng hộ cận nghèo theo huyện năm 2024",
+          "value": {
+            "metrics": [
+              "near_poor_household_count"
+            ],
+            "dimensions": [
+              "district"
+            ],
+            "filters": [
+              {
+                "field": "year",
+                "operator": "=",
+                "value": 2024
+              }
+            ]
+          }
+        },
+        {
+          "label": "Hỏi đáp kiến thức chung về hộ nghèo",
+          "value": {
+            "route_override": "GENERAL_KNOWLEDGE"
+          }
+        }
+      ],
+      "reason": "Câu hỏi chưa rõ ràng hoặc lỗi kiểm định kế hoạch",
+      "error_codes": [
+        "UNKNOWN_TASK_TYPE"
+      ],
+      "route": "CLARIFICATION_NEEDED"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "trace_id": "d48aa898-8cc2-42f5-b8a8-b384345fcefc",
+  "timestamp": "2026-06-21 16:50:29",
+  "user_question": "Cho tôi biết tình hình nghèo ở Đắk Nông như thế nào?",
+  "route": "GENERAL_KNOWLEDGE",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 46660.359399997105,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.2440000027709175
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Cho tôi biết tình hình nghèo ở Đắk Nông như thế nào?",
+      "rewritten_question": "Cho tôi biết tình hình nghèo ở Đắk Nông như thế nào?",
+      "latency_ms": 18650.47670000058
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.04699999772128649
+    },
+    "domain_gate": {
+      "route": "GENERAL_KNOWLEDGE",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=False, GK=True).",
+      "latency_ms": 729.9540000021807
+    },
+    "general_knowledge": {
+      "status": "processing",
+      "latency_ms": 27275.35329999955
+    },
+    "final": {
+      "route": "GENERAL_KNOWLEDGE",
+      "answer": "Có lỗi xảy ra khi xử lý kiến thức nghiệp vụ. Vui lòng thử lại sau.",
+      "query_plan": null,
+      "sql": null,
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [
+        {
+          "code": "GK_LLM_FAILED",
+          "message": "Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: HTTP 429: {\"error\":{\"message\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. (request id: 2026062117511095184530a2mcdkLr)\",\"type\":\"invalid_request_error\",\"param\":\"input\",\"code\":null}}"
+        }
+      ]
+    }
+  }
+}

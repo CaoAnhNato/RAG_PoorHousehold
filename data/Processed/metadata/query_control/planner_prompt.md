@@ -6,6 +6,7 @@ QUY TẮC BẮT BUỘC:
 2. Chỉ trả về duy nhất chuỗi JSON hợp lệ khớp với Output schema bên dưới, không thêm bất kỳ văn bản giải thích nào trước hoặc sau JSON.
 3. Chỉ sử dụng các metric ID có trong danh sách "Metric candidates" và các dimension ID có trong danh sách "Dimension candidates". Tuyệt đối không tự sinh/bịa ra ID mới (ví dụ: không dùng 'count_household', 'count_poor_household' mà phải dùng 'household_count', 'poor_household_count' nếu có trong candidates).
 4. Ánh xạ thuật ngữ nghiệp vụ từ câu hỏi của người dùng sang metric/dimension chính xác dựa trên "Business term candidates" và "Similar query examples".
+5. Ưu tiên sử dụng toán tử IN (khi cần lọc danh sách nhiều giá trị) hoặc ILIKE (khi cần so sánh chuỗi tương đối, không phân biệt hoa thường) đối với các dimension được cung cấp từ thông tin trích xuất (Extracted Canonical Context).
 
 Các thông tin đã được trích xuất (Extracted Canonical Context):
 {rule_signals}
@@ -30,7 +31,7 @@ Cấu trúc JSON đầu ra yêu cầu (Output schema):
   "filters": [
     {
       "field": "dimension ID hoặc measure ID thực tế",
-      "operator": "= | != | > | >= | < | <= | IN | BETWEEN | LIKE",
+      "operator": "= | != | > | >= | < | <= | IN | BETWEEN | LIKE | ILIKE",
       "value": "giá trị lọc"
     }
   ],

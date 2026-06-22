@@ -69,6 +69,8 @@ def call_llm(
     
     if response_json:
         payload["response_format"] = {"type": "json_object"}
+        # OpenAI requires the word "json" to be present in the prompt when using json_object
+        payload["messages"][1]["content"] = str(payload["messages"][1]["content"]) + "\n\nPlease output valid json."
         
     last_err = None
     for attempt in range(3):

@@ -1,0 +1,90 @@
+{
+  "trace_id": "a404dece-ac76-4234-93f6-f8a1368cc032",
+  "timestamp": "2026-06-21 16:53:05",
+  "user_question": "So với năm 2023, số hộ nghèo ở Đắk Song năm 2024 thay đổi ra sao?",
+  "route": "ERROR",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 59108.080699999846,
+  "status": "error",
+  "errors": [
+    {
+      "stage": "runtime_answer",
+      "code": "CRITICAL_SYSTEM_ERROR",
+      "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+    }
+  ],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.620899998670211
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "So với năm 2023, số hộ nghèo ở Đắk Song năm 2024 thay đổi ra sao?",
+      "rewritten_question": "So với năm 2023, số hộ nghèo ở Đắk Song năm 2024 thay đổi ra sao?",
+      "latency_ms": 22778.11819999988
+    },
+    "rule_extractor": {
+      "task_type": "comparison_query",
+      "years": [
+        2023,
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": true,
+      "is_aggregate": false,
+      "detected_district": "Huyện Đắk Song",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.05990000136080198
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 88.94510000027367
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 36234.49860000255
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "unknown",
+        "metrics": [],
+        "dimensions": [],
+        "filters": [],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Lỗi gọi LLM Planner: Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: HTTP 500: {\"error\":{\"message\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. ({\\\"detail\\\":\\\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. (request id: 202606210953593402085088268d9d67B5z3k0a)\\\",\\\"status\\\":500,\\\"upstream\\\":{\\\"message\\\":\\\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'.\\\",\\\"type\\\":\\\"invalid_request_error\\\"}})\",\"type\":\"invalid_request_error\",\"param\":\"input\",\"code\":null,\"metadata\":{\"detail\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. (request id: 202606210953593402085088268d9d67B5z3k0a)\",\"status\":500,\"upstream\":{\"message\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'.\",\"type\":\"invalid_request_error\"}}}}"
+        ]
+      }
+    },
+    "final": {
+      "route": "ERROR",
+      "answer": "Lỗi hệ thống nghiêm trọng: 'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>",
+      "query_plan": null,
+      "sql": null,
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [
+        {
+          "code": "CRITICAL_SYSTEM_ERROR",
+          "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+        }
+      ]
+    }
+  }
+}

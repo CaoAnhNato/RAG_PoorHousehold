@@ -177,6 +177,34 @@ class QueryPlanner:
                 "maps_to": qe["payload"].get("maps_to", {}),
                 "score": qe["score"]
             })
+
+        # Inject implied metrics from business terms and query examples to satisfy the LLM prompt rule
+        existing_metric_ids = {m["id"] for m in metric_candidates_compact}
+        implied_metric_ids = set()
+        
+        for b in business_term_candidates_compact:
+            maps_to = b.get("maps_to", {})
+            if "metric" in maps_to and maps_to["metric"] not in existing_metric_ids:
+                implied_metric_ids.add(maps_to["metric"])
+        
+        for qe in query_example_candidates_compact:
+            maps_to = qe.get("maps_to", {})
+            if "metrics" in maps_to:
+                for m_id in maps_to["metrics"]:
+                    if m_id not in existing_metric_ids:
+                        implied_metric_ids.add(m_id)
+                        
+        semantic_metrics = self.semantic_layer.get("metrics", {})
+        for m_id in implied_metric_ids:
+            if m_id in semantic_metrics:
+                m_info = semantic_metrics[m_id]
+                metric_candidates_compact.append({
+                    "id": m_id,
+                    "name_vi": m_info.get("name_vi", m_id),
+                    "definition": m_info.get("definition", f"Định nghĩa cho {m_id}"),
+                    "score": 0.5  # Auto-injected score
+                })
+                existing_metric_ids.add(m_id)
             
         return {
             "metric_candidates_compact": metric_candidates_compact,
@@ -198,7 +226,9 @@ class QueryPlanner:
             
             location_ctx = canonical_slots.get("location_context", {})
             if location_ctx.get("district"):
-                rule_output["detected_district"] = location_ctx["district"][0]
+                rule_output["detected_districts"] = location_ctx["district"]
+            if location_ctx.get("commune"):
+                rule_output["detected_communes"] = location_ctx["commune"]
             
             rule_output["extracted_metrics"] = canonical_slots.get("metrics", [])
             rule_output["logical_conditions"] = canonical_slots.get("logical_conditions", [])
@@ -541,12 +571,39 @@ class QueryPlanner:
                 })
                 
         # Thêm filter district nếu phát hiện
-        if "district" not in existing_fields and rule_output.get("detected_district"):
-            existing_filters.append({
-                "field": "district",
-                "operator": "=",
-                "value": rule_output["detected_district"]
-            })
+        detected_districts = rule_output.get("detected_districts")
+        if not detected_districts and rule_output.get("detected_district"):
+            detected_districts = [rule_output["detected_district"]]
+            
+        if "district" not in existing_fields and detected_districts:
+            if len(detected_districts) > 1:
+                existing_filters.append({
+                    "field": "district",
+                    "operator": "IN",
+                    "value": detected_districts
+                })
+            else:
+                existing_filters.append({
+                    "field": "district",
+                    "operator": "=",
+                    "value": detected_districts[0]
+                })
+                
+        # Thêm filter commune nếu phát hiện
+        detected_communes = rule_output.get("detected_communes")
+        if "commune" not in existing_fields and detected_communes:
+            if len(detected_communes) > 1:
+                existing_filters.append({
+                    "field": "commune",
+                    "operator": "IN",
+                    "value": detected_communes
+                })
+            else:
+                existing_filters.append({
+                    "field": "commune",
+                    "operator": "=",
+                    "value": detected_communes[0]
+                })
             
         plan["filters"] = existing_filters
         

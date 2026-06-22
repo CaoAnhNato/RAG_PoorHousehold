@@ -85,6 +85,10 @@ def scan_excel_files(node_type: str, files: list[Path]) -> tuple[dict[str, Any],
                 df["administrative.district"] = district_val
                 
             for col in df.columns:
+                # Bỏ qua các cột dư thừa
+                if col.startswith("processing.") or col.startswith("family.members") or col in ["administrative.areaTypeSource", "administrative.areaTypeConfidence"]:
+                    continue
+                
                 series = df[col]
                 null_count = int(series.isna().sum())
                 total_count = len(series)

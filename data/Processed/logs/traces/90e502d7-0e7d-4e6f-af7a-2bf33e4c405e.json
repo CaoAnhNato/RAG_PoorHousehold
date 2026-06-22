@@ -1,0 +1,159 @@
+{
+  "trace_id": "90e502d7-0e7d-4e6f-af7a-2bf33e4c405e",
+  "timestamp": "2026-06-21 17:08:43",
+  "user_question": "Khu vực nào có nhiều hộ cận nghèo nhất nhưng lại ít thiếu hụt nhất?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "topk_query",
+    "metrics": [
+      "near_poor_household_count"
+    ],
+    "dimensions": [
+      "district"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": {
+      "field": "near_poor_household_count",
+      "direction": "desc"
+    },
+    "limit": 1,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Huyện nào có số hộ cận nghèo nhiều nhất nhưng lại ít thiếu hụt nhất",
+    "output_mode": "text"
+  },
+  "sql": "",
+  "cache_hit": true,
+  "row_count": 1,
+  "latency_total_ms": 10659.843600002205,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.2562000010802876
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Khu vực nào có nhiều hộ cận nghèo nhất nhưng lại ít thiếu hụt nhất?",
+      "rewritten_question": "Huyện nào có số hộ cận nghèo nhiều nhất nhưng lại ít thiếu hụt nhất",
+      "latency_ms": 6205.422399998497
+    },
+    "rule_extractor": {
+      "task_type": "topk_query",
+      "years": [],
+      "group_by": [
+        "district"
+      ],
+      "is_topk": true,
+      "direction": "desc",
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.04770000305143185
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 27.05989999958547
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 2651.2364000009256
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "topk_query",
+        "metrics": [
+          "near_poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": {
+          "field": "near_poor_household_count",
+          "direction": "desc"
+        },
+        "limit": 1,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Huyện nào có số hộ cận nghèo nhiều nhất nhưng lại ít thiếu hụt nhất",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": true,
+      "cache_key": "e69e0d0f3bb7cf80e35e0820b0d3d103",
+      "latency_ms": 0.7245999986480456
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 1768.0435000002035
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 1.5631999995093793
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Huyện có số hộ cận nghèo nhiều nhất là Huyện Tuy Đức với 917 hộ. Tuy nhiên, dữ liệu về mức độ thiếu hụt không được cung cấp trong kết quả truy vấn, nên không thể xác định huyện nào có ít thiếu hụt nhất.",
+      "query_plan": {
+        "task_type": "topk_query",
+        "metrics": [
+          "near_poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": {
+          "field": "near_poor_household_count",
+          "direction": "desc"
+        },
+        "limit": 1,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Huyện nào có số hộ cận nghèo nhiều nhất nhưng lại ít thiếu hụt nhất",
+        "output_mode": "text"
+      },
+      "sql": "",
+      "result_preview": [
+        {
+          "district": "Huyện Tuy Đức",
+          "near_poor_household_count": 917
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": true,
+        "key": "e69e0d0f3bb7cf80e35e0820b0d3d103"
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Huyện nào có số hộ cận nghèo nhiều nhất nhưng lại ít thiếu hụt nhất"
+    }
+  }
+}

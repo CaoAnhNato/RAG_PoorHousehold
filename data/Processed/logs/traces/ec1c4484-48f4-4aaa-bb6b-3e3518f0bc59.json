@@ -1,0 +1,91 @@
+{
+  "trace_id": "ec1c4484-48f4-4aaa-bb6b-3e3518f0bc59",
+  "timestamp": "2026-06-21 16:48:05",
+  "user_question": "Năm 2024, thống kê số hộ nghèo theo huyện.",
+  "route": "ERROR",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 68555.36700000084,
+  "status": "error",
+  "errors": [
+    {
+      "stage": "runtime_answer",
+      "code": "CRITICAL_SYSTEM_ERROR",
+      "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+    }
+  ],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 7.695399999647634
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Năm 2024, thống kê số hộ nghèo theo huyện.",
+      "rewritten_question": "Năm 2024, thống kê số hộ nghèo theo huyện.",
+      "latency_ms": 42804.875800000445
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [
+        "district"
+      ],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.2872000004572328
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 236.33909999989555
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 25493.19789999936
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "unknown",
+        "metrics": [],
+        "dimensions": [],
+        "filters": [],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Lỗi gọi LLM Planner: Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: 400 Client Error: Bad Request for url: https://direct.shopaikey.com/v1/chat/completions"
+        ]
+      }
+    },
+    "final": {
+      "route": "ERROR",
+      "answer": "Lỗi hệ thống nghiêm trọng: 'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>",
+      "query_plan": null,
+      "sql": null,
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [
+        {
+          "code": "CRITICAL_SYSTEM_ERROR",
+          "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "trace_id": "498b3bfe-aec2-4b6f-964d-87bfffd44da0",
+  "timestamp": "2026-06-21 16:55:13",
+  "user_question": "So với 2023, số hộ thoát nghèo trong 2024 tăng hay giảm ở Tuy Đức?",
+  "route": "ERROR",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 38548.97490000076,
+  "status": "error",
+  "errors": [
+    {
+      "stage": "runtime_answer",
+      "code": "CRITICAL_SYSTEM_ERROR",
+      "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+    }
+  ],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.6118000021378975
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "So với 2023, số hộ thoát nghèo trong 2024 tăng hay giảm ở Tuy Đức?",
+      "rewritten_question": "So với 2023, số hộ thoát nghèo trong 2024 tăng hay giảm ở Tuy Đức?",
+      "latency_ms": 16651.815400000487
+    },
+    "rule_extractor": {
+      "task_type": "comparison_query",
+      "years": [
+        2023,
+        2024
+      ],
+      "group_by": [],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": true,
+      "is_aggregate": false,
+      "detected_district": "Huyện Tuy Đức",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.05740000051446259
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 108.62909999923431
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 21783.02899999835
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "unknown",
+        "metrics": [],
+        "dimensions": [],
+        "filters": [],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Lỗi gọi LLM Planner: Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: 400 Client Error: Bad Request for url: https://direct.shopaikey.com/v1/chat/completions"
+        ]
+      }
+    },
+    "final": {
+      "route": "ERROR",
+      "answer": "Lỗi hệ thống nghiêm trọng: 'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>",
+      "query_plan": null,
+      "sql": null,
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [
+        {
+          "code": "CRITICAL_SYSTEM_ERROR",
+          "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+        }
+      ]
+    }
+  }
+}

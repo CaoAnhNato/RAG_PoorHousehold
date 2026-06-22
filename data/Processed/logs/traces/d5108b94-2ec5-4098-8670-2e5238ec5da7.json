@@ -1,0 +1,91 @@
+{
+  "trace_id": "d5108b94-2ec5-4098-8670-2e5238ec5da7",
+  "timestamp": "2026-06-21 16:53:36",
+  "user_question": "Năm 2024, hộ cận nghèo đang tập trung nhiều ở huyện nào?",
+  "route": "ERROR",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 48935.87259999913,
+  "status": "error",
+  "errors": [
+    {
+      "stage": "runtime_answer",
+      "code": "CRITICAL_SYSTEM_ERROR",
+      "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+    }
+  ],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.5139999995881226
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Năm 2024, hộ cận nghèo đang tập trung nhiều ở huyện nào?",
+      "rewritten_question": "Năm 2024, hộ cận nghèo đang tập trung nhiều ở huyện nào?",
+      "latency_ms": 27478.1851000007
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [
+        "district"
+      ],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.0562999994144775
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 117.68979999760631
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 21334.418700000242
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "unknown",
+        "metrics": [],
+        "dimensions": [],
+        "filters": [],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Lỗi gọi LLM Planner: Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: HTTP 500: {\"error\":{\"message\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. ({\\\"detail\\\":\\\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. (request id: 202606210954192115201628268d9d6q9dEhUnr)\\\",\\\"status\\\":500,\\\"upstream\\\":{\\\"message\\\":\\\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'.\\\",\\\"type\\\":\\\"invalid_request_error\\\"}})\",\"type\":\"invalid_request_error\",\"param\":\"input\",\"code\":null,\"metadata\":{\"detail\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. (request id: 202606210954192115201628268d9d6q9dEhUnr)\",\"status\":500,\"upstream\":{\"message\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'.\",\"type\":\"invalid_request_error\"}}}}"
+        ]
+      }
+    },
+    "final": {
+      "route": "ERROR",
+      "answer": "Lỗi hệ thống nghiêm trọng: 'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>",
+      "query_plan": null,
+      "sql": null,
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [
+        {
+          "code": "CRITICAL_SYSTEM_ERROR",
+          "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+        }
+      ]
+    }
+  }
+}

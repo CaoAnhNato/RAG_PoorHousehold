@@ -1,0 +1,87 @@
+{
+  "trace_id": "26f92933-e5f6-4f25-b5fb-8a89b393f0db",
+  "timestamp": "2026-06-21 16:55:52",
+  "user_question": "Chủ hộ nào có số thành viên nhiều nhất ở Huyện Đắk Song?",
+  "route": "ERROR",
+  "query_plan": null,
+  "sql": null,
+  "cache_hit": false,
+  "row_count": 0,
+  "latency_total_ms": 59809.8768000018,
+  "status": "error",
+  "errors": [
+    {
+      "stage": "runtime_answer",
+      "code": "CRITICAL_SYSTEM_ERROR",
+      "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+    }
+  ],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 3.5131999975419603
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Chủ hộ nào có số thành viên nhiều nhất ở Huyện Đắk Song?",
+      "rewritten_question": "Chủ hộ nào có số thành viên nhiều nhất ở Huyện Đắk Song?",
+      "latency_ms": 26349.142999999458
+    },
+    "rule_extractor": {
+      "task_type": "topk_query",
+      "years": [],
+      "group_by": [],
+      "is_topk": true,
+      "direction": "desc",
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": "Huyện Đắk Song",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.05439999949885532
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 101.18759999750182
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 33352.5281000002
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "unknown",
+        "metrics": [],
+        "dimensions": [],
+        "filters": [],
+        "sort": null,
+        "limit": null,
+        "output_type": "text",
+        "ambiguities": [
+          "Lỗi gọi LLM Planner: Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: HTTP 429: {\"error\":{\"message\":\"Response input messages must contain the word 'json' in some form to use '***.format' of type 'json_object'. (request id: 20260621175648981780168KuDEoLAl)\",\"type\":\"invalid_request_error\",\"param\":\"input\",\"code\":null}}"
+        ]
+      }
+    },
+    "final": {
+      "route": "ERROR",
+      "answer": "Lỗi hệ thống nghiêm trọng: 'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>",
+      "query_plan": null,
+      "sql": null,
+      "result_preview": [],
+      "row_count": 0,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [
+        {
+          "code": "CRITICAL_SYSTEM_ERROR",
+          "message": "'charmap' codec can't encode character '\\u1ec3' in position 59: character maps to <undefined>"
+        }
+      ]
+    }
+  }
+}

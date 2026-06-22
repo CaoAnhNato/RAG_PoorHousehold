@@ -1,0 +1,184 @@
+{
+  "trace_id": "2fd1a906-360d-4619-84b0-e4e626dbeba1",
+  "timestamp": "2026-06-21 17:08:15",
+  "user_question": "Ở Huyện Cư Jút, hộ nghèo nào thiếu nhà tiêu hợp vệ sinh nhiều nhất?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "topk_query",
+    "metrics": [
+      "poor_household_count"
+    ],
+    "dimensions": [
+      "hygienic_toilet"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2023
+      },
+      {
+        "field": "district",
+        "operator": "=",
+        "value": "Huyện Cư Jút"
+      }
+    ],
+    "sort": {
+      "field": "poor_household_count",
+      "direction": "desc"
+    },
+    "limit": 1,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Huyện Cư Jút có hộ nghèo nào thiếu nhà tiêu hợp vệ sinh nhiều nhất năm 2023",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"deprivation.hygienicToilet\" AS hygienic_toilet, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 AND LOWER(\"administrative.district\") = 'huyện cư jút' GROUP BY hygienic_toilet ORDER BY poor_household_count DESC LIMIT 1",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 6071.0196,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 1.2566000004881062
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Ở Huyện Cư Jút, hộ nghèo nào thiếu nhà tiêu hợp vệ sinh nhiều nhất?",
+      "rewritten_question": "Huyện Cư Jút có hộ nghèo nào thiếu nhà tiêu hợp vệ sinh nhiều nhất năm 2023",
+      "latency_ms": 2577.1650999995472
+    },
+    "rule_extractor": {
+      "task_type": "topk_query",
+      "years": [
+        2023
+      ],
+      "group_by": [],
+      "is_topk": true,
+      "direction": "desc",
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": "Huyện Cư Jút",
+      "has_both_poverty_types": false,
+      "latency_ms": 0.049700000090524554
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 35.10889999961364
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 2363.234200001898
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "topk_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "hygienic_toilet"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2023
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Cư Jút"
+          }
+        ],
+        "sort": {
+          "field": "poor_household_count",
+          "direction": "desc"
+        },
+        "limit": 1,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Huyện Cư Jút có hộ nghèo nào thiếu nhà tiêu hợp vệ sinh nhiều nhất năm 2023",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "6357280244eba4ffe75a1255f7be9b7e",
+      "latency_ms": 0.07929999992484227
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"deprivation.hygienicToilet\" AS hygienic_toilet, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 AND LOWER(\"administrative.district\") = 'huyện cư jút' GROUP BY hygienic_toilet ORDER BY poor_household_count DESC LIMIT 1",
+      "latency_ms": 0.06629999916185625
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"deprivation.hygienicToilet\" AS hygienic_toilet, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 AND LOWER(\"administrative.district\") = 'huyện cư jút' GROUP BY hygienic_toilet ORDER BY poor_household_count DESC LIMIT 1",
+      "latency_ms": 4.205499997624429
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 1081.9637999993574
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.6606999995710794
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Huyện Cư Jút có 543 hộ nghèo thiếu nhà tiêu hợp vệ sinh trong năm 2023.",
+      "query_plan": {
+        "task_type": "topk_query",
+        "metrics": [
+          "poor_household_count"
+        ],
+        "dimensions": [
+          "hygienic_toilet"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2023
+          },
+          {
+            "field": "district",
+            "operator": "=",
+            "value": "Huyện Cư Jút"
+          }
+        ],
+        "sort": {
+          "field": "poor_household_count",
+          "direction": "desc"
+        },
+        "limit": 1,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Huyện Cư Jút có hộ nghèo nào thiếu nhà tiêu hợp vệ sinh nhiều nhất năm 2023",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"deprivation.hygienicToilet\" AS hygienic_toilet, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2023 AND LOWER(\"administrative.district\") = 'huyện cư jút' GROUP BY hygienic_toilet ORDER BY poor_household_count DESC LIMIT 1",
+      "result_preview": [
+        {
+          "hygienic_toilet": false,
+          "poor_household_count": 543
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Huyện Cư Jút có hộ nghèo nào thiếu nhà tiêu hợp vệ sinh nhiều nhất năm 2023"
+    }
+  }
+}

@@ -457,11 +457,14 @@ ORDER BY {out_sort_field} {out_sort_dir.upper()}
                         cond = f"LOWER({escaped_field}) BETWEEN {val1} AND {val2}"
                     else:
                         cond = f"{escaped_field} BETWEEN {val1} AND {val2}"
-            elif f_op == "LIKE":
+            elif f_op in ["LIKE", "ILIKE"]:
                 if isinstance(f_val, str) and not is_metric_filter and not is_boolean:
-                    cond = f"LOWER({escaped_field}) LIKE '%" + f_val.lower().replace("'", "''") + "%'"
+                    if f_op == "ILIKE":
+                        cond = f"{escaped_field} ILIKE '%" + f_val.replace("'", "''") + "%'"
+                    else:
+                        cond = f"LOWER({escaped_field}) LIKE '%" + f_val.lower().replace("'", "''") + "%'"
                 else:
-                    cond = f"{escaped_field} LIKE '%" + f_val.replace("'", "''") + "%'"
+                    cond = f"{escaped_field} {f_op} '%" + f_val.replace("'", "''") + "%'"
             else:
                 if isinstance(f_val, str) and not is_metric_filter and not is_boolean:
                     cond = f"LOWER({escaped_field}) {f_op} '" + f_val.lower().replace("'", "''") + "'"

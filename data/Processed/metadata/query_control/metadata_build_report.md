@@ -1,11 +1,11 @@
 # BÁO CÁO XÂY DỰNG METADATA TRUY VẤN (METADATA BUILD REPORT)
 
-**Thời gian sinh:** 2026-06-19 15:30:56
+**Thời gian sinh:** 2026-06-21 13:56:45
 
 ## 1. Kết quả quét Schema Graph
 - **Số file hộ gia đình quét thành công:** 17
 - **Số file thành viên quét thành công:** 16
-- **Số cột phát hiện trong households:** 116
+- **Số cột phát hiện trong households:** 75
 - **Số cột phát hiện trong members:** 20
 
 ## 2. Cảnh báo & Lỗi (Warnings)
@@ -57,8 +57,34 @@
 ## 4. Kết quả nạp chỉ mục ngữ nghĩa Qdrant
 - **Địa chỉ Qdrant:** `http://localhost:6333`
 - **Tên Collection:** `query_control_semantic`
-- **Mô hình Embedding:** `Vietnamese_Embedding`
-- **Kích thước vector:** 1024
+- **Mô hình Embedding:** `text-embedding-3-small`
+- **Kích thước vector:** 1536
+- **Tổng số điểm đã index:** 44
+  - Số chỉ số (metrics): 10
+  - Số chiều dữ liệu (dimensions): 22
+  - Số thuật ngữ nghiệp vụ (business terms): 8
+  - Số câu hỏi mẫu (query examples): 4
+- **Collection được tạo lại (recreated):** True
+
+
+## 4. Kết quả nạp chỉ mục ngữ nghĩa Qdrant
+- **Địa chỉ Qdrant:** `http://localhost:6333`
+- **Tên Collection:** `query_control_semantic`
+- **Mô hình Embedding:** `intfloat/multilingual-e5-small`
+- **Kích thước vector:** 384
+- **Tổng số điểm đã index:** 44
+  - Số chỉ số (metrics): 10
+  - Số chiều dữ liệu (dimensions): 22
+  - Số thuật ngữ nghiệp vụ (business terms): 8
+  - Số câu hỏi mẫu (query examples): 4
+- **Collection được tạo lại (recreated):** True
+
+
+## 4. Kết quả nạp chỉ mục ngữ nghĩa Qdrant
+- **Địa chỉ Qdrant:** `http://localhost:6333`
+- **Tên Collection:** `query_control_semantic`
+- **Mô hình Embedding:** `text-embedding-3-small`
+- **Kích thước vector:** 1536
 - **Tổng số điểm đã index:** 44
   - Số chỉ số (metrics): 10
   - Số chiều dữ liệu (dimensions): 22

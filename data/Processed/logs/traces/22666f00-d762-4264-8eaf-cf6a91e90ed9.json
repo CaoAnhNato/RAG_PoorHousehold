@@ -1,0 +1,171 @@
+{
+  "trace_id": "22666f00-d762-4264-8eaf-cf6a91e90ed9",
+  "timestamp": "2026-06-21 17:08:09",
+  "user_question": "Năm 2024, hộ cận nghèo đang tập trung nhiều ở huyện nào?",
+  "route": "DATASET_QA",
+  "query_plan": {
+    "task_type": "topk_query",
+    "metrics": [
+      "near_poor_household_count"
+    ],
+    "dimensions": [
+      "district"
+    ],
+    "filters": [
+      {
+        "field": "year",
+        "operator": "=",
+        "value": 2024
+      }
+    ],
+    "sort": {
+      "field": "near_poor_household_count",
+      "direction": "desc"
+    },
+    "limit": 1,
+    "output_type": "text",
+    "ambiguities": [],
+    "original_question": "Huyện nào có nhiều hộ cận nghèo nhất năm 2024",
+    "output_mode": "text"
+  },
+  "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"classify\" = 'Hộ cận nghèo' AND \"administrative.year\" = 2024 GROUP BY district ORDER BY near_poor_household_count DESC LIMIT 1",
+  "cache_hit": false,
+  "row_count": 1,
+  "latency_total_ms": 6076.410099998611,
+  "status": "success",
+  "errors": [],
+  "warnings": [],
+  "stages": {
+    "conversation_memory_load": {
+      "status": "loading",
+      "latency_ms": 2.8645999991567805
+    },
+    "query_rewriter": {
+      "status": "rewriting",
+      "original_question": "Năm 2024, hộ cận nghèo đang tập trung nhiều ở huyện nào?",
+      "rewritten_question": "Huyện nào có nhiều hộ cận nghèo nhất năm 2024",
+      "latency_ms": 2438.648999999714
+    },
+    "rule_extractor": {
+      "task_type": "aggregate_query",
+      "years": [
+        2024
+      ],
+      "group_by": [
+        "district"
+      ],
+      "is_topk": false,
+      "direction": null,
+      "is_comparison": false,
+      "is_aggregate": false,
+      "detected_district": null,
+      "has_both_poverty_types": false,
+      "latency_ms": 0.04470000203582458
+    },
+    "domain_gate": {
+      "route": "DATASET_QA",
+      "confidence": 0.85,
+      "reason": "Phân loại dựa trên từ khoá và bộ lọc ngữ nghĩa (QA=True, GK=False).",
+      "latency_ms": 30.258899998443667
+    },
+    "planner": {
+      "status": "generating",
+      "latency_ms": 2376.7903999978444
+    },
+    "query_plan_validation": {
+      "plan": {
+        "task_type": "topk_query",
+        "metrics": [
+          "near_poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": {
+          "field": "near_poor_household_count",
+          "direction": "desc"
+        },
+        "limit": 1,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Huyện nào có nhiều hộ cận nghèo nhất năm 2024",
+        "output_mode": "text"
+      }
+    },
+    "cache_lookup": {
+      "status": "searching",
+      "cache_hit": false,
+      "cache_key": "e69e0d0f3bb7cf80e35e0820b0d3d103",
+      "latency_ms": 0.10760000077425502
+    },
+    "sql_compiler": {
+      "status": "compiling",
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"classify\" = 'Hộ cận nghèo' AND \"administrative.year\" = 2024 GROUP BY district ORDER BY near_poor_household_count DESC LIMIT 1",
+      "latency_ms": 0.05050000254414044
+    },
+    "duckdb_execution": {
+      "status": "executing",
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"classify\" = 'Hộ cận nghèo' AND \"administrative.year\" = 2024 GROUP BY district ORDER BY near_poor_household_count DESC LIMIT 1",
+      "latency_ms": 3.2777000014903024
+    },
+    "answer_formatting": {
+      "status": "formatting",
+      "latency_ms": 1217.455500001961
+    },
+    "conversation_memory_update": {
+      "status": "success",
+      "latency_ms": 0.634400003036717
+    },
+    "final": {
+      "route": "DATASET_QA",
+      "answer": "Huyện có nhiều hộ cận nghèo nhất năm 2024 là Huyện Tuy Đức với 917 hộ cận nghèo.",
+      "query_plan": {
+        "task_type": "topk_query",
+        "metrics": [
+          "near_poor_household_count"
+        ],
+        "dimensions": [
+          "district"
+        ],
+        "filters": [
+          {
+            "field": "year",
+            "operator": "=",
+            "value": 2024
+          }
+        ],
+        "sort": {
+          "field": "near_poor_household_count",
+          "direction": "desc"
+        },
+        "limit": 1,
+        "output_type": "text",
+        "ambiguities": [],
+        "original_question": "Huyện nào có nhiều hộ cận nghèo nhất năm 2024",
+        "output_mode": "text"
+      },
+      "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS near_poor_household_count FROM households WHERE \"classify\" = 'Hộ cận nghèo' AND \"administrative.year\" = 2024 GROUP BY district ORDER BY near_poor_household_count DESC LIMIT 1",
+      "result_preview": [
+        {
+          "district": "Huyện Tuy Đức",
+          "near_poor_household_count": 917
+        }
+      ],
+      "row_count": 1,
+      "cache": {
+        "hit": false,
+        "key": null
+      },
+      "warnings": [],
+      "errors": [],
+      "rewritten_question": "Huyện nào có nhiều hộ cận nghèo nhất năm 2024"
+    }
+  }
+}
