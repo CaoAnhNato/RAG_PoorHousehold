@@ -734,6 +734,13 @@
         "operator": "!=",
         "filter_value": "Kinh"
       }
+    },
+    "thành phố gia nghĩa": {
+      "definition": "Thành phố Gia Nghĩa, đơn vị hành chính cấp huyện",
+      "maps_to": {
+        "dimension": "district",
+        "filter_value": "Thành phố Gia Nghĩa"
+      }
     }
   },
   "query_examples": [

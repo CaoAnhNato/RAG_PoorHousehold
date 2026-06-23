@@ -35,6 +35,7 @@ def print_welcome_message() -> None:
     print(" - Gõ '/exit' hoặc '/quit' để thoát chương trình.")
     print(" - Gõ '/clear' để xóa lịch sử bộ nhớ hội thoại hiện tại.")
     print(" - Gõ '/debug' để bật/tắt chế độ hiển thị SQL và thông tin Cache.")
+    print(" - Gõ '/mode [auto|qa|chart|report]' để chuyển chế độ (mặc định Auto).")
     print("=" * 70)
 
 def main() -> None:
@@ -62,51 +63,12 @@ def main() -> None:
     if not embedding_model:
         embedding_model = os.environ.get("FPT_EMBEDDING_MODEL_NAME", qdrant_config.get("embedding_model"))
         
-    # 1. Khởi tạo toàn bộ các thành phần
-    print("[*] Đang khởi động hệ thống Chatbot Q&A...")
+    from src.query_control.agentic.agent_pipeline import AgenticPipeline
+
+    # 1. Khởi tạo Agentic Pipeline
+    print("[*] Đang khởi động hệ thống Chatbot Q&A (Agentic Pipeline)...")
     try:
-        retriever = SemanticRetriever(
-            qdrant_url=qdrant_url,
-            collection_name=collection_name,
-            embedding_model=embedding_model
-        )
-        
-        domain_gate = DomainGate(
-            config_path=domain_gate_config_path,
-            semantic_layer_path=semantic_layer_path,
-            semantic_retriever=retriever
-        )
-        
-        planner = QueryPlanner(
-            schema_graph_path=schema_graph_path,
-            semantic_layer_path=semantic_layer_path,
-            query_plan_schema_path=query_plan_schema_path,
-            semantic_retriever=retriever
-        )
-        
-        compiler = SQLCompiler(
-            schema_graph_path=schema_graph_path,
-            semantic_layer_path=semantic_layer_path
-        )
-        
-        data_engine = DuckDBEngine(config_path=str(duckdb_config_path))
-        query_cache = QueryCache(config_path=str(cache_config_path))
-        observability_logger = ObservabilityLogger(config_path=str(observability_config_path))
-        clarification_engine = ClarificationEngine(config_path=str(clarification_config_path), semantic_layer_path=str(semantic_layer_path))
-        
-        session_id = "cli_session_default"
-        conversation_memory = ConversationMemory(config_path=str(memory_config_path), session_id=session_id)
-        
-        engine = ChatbotAnswerEngine(
-            domain_gate=domain_gate,
-            query_planner=planner,
-            sql_compiler=compiler,
-            data_engine=data_engine,
-            query_cache=query_cache,
-            observability_logger=observability_logger,
-            clarification_engine=clarification_engine,
-            conversation_memory=conversation_memory
-        )
+        engine = AgenticPipeline()
     except Exception as e:
         print(f"[!] Lỗi khởi động Chatbot: {e}")
         sys.exit(1)
@@ -116,11 +78,12 @@ def main() -> None:
     
     debug_mode = False
     pending_options = []
+    current_mode = "Auto"
     
     while True:
         try:
             # Nhập câu hỏi người dùng
-            user_input = input("\nUser > ").strip()
+            user_input = input(f"\nUser [{current_mode}] > ").strip()
             
             if not user_input:
                 continue
@@ -139,6 +102,16 @@ def main() -> None:
             if user_input.lower() == "/debug":
                 debug_mode = not debug_mode
                 print(f"[Chatbot] Chế độ gỡ lỗi (debug): {'BẬT' if debug_mode else 'TẮT'}")
+                continue
+                
+            if user_input.lower().startswith("/mode "):
+                new_mode = user_input.split(" ", 1)[1].strip().lower()
+                mapping = {"auto": "Auto", "qa": "Hỏi - Đáp", "chart": "Biểu đồ", "report": "Báo Cáo"}
+                if new_mode in mapping:
+                    current_mode = mapping[new_mode]
+                    print(f"[Chatbot] Đã chuyển sang chế độ: {current_mode}")
+                else:
+                    print("[Chatbot] Lỗi: Chế độ không hợp lệ. Hãy chọn: auto, qa, chart, report")
                 continue
                 
             # Xử lý chọn lựa chọn làm rõ nếu đang có danh sách chờ
@@ -178,39 +151,25 @@ def main() -> None:
                     pending_options = []
                     
             # Gửi câu hỏi vào engine xử lý chính
-            response = engine.answer(user_input)
+            response = engine.process(user_input, mode=current_mode)
             
-            # Kiểm tra xem có yêu cầu làm rõ không
-            if response.get("needs_clarification"):
-                print(f"\nBot > {response.get('message')}")
-                pending_options = response.get("options", [])
-                for i, opt in enumerate(pending_options, 1):
-                    print(f"  [{i}] {opt['label']}")
-                    
-                if debug_mode:
-                    print("\n" + "-" * 40)
-                    print("[DEBUG INFO - CLARIFICATION]")
-                    print(f"- Error codes: {response.get('error_codes')}")
-                    print(f"- Reason: {response.get('reason')}")
-                    print("-" * 40)
-                continue
-                
             # Hiển thị kết quả bình thường
-            print(f"\nBot > {response.get('answer')}")
+            ans = response.get('answer')
+            print(f"\nBot >")
+            if hasattr(ans, 'to_markdown'):
+                print(ans.to_markdown(index=False))
+            else:
+                print(ans)
             
             # Hiển thị thông tin debug nếu bật chế độ debug
             if debug_mode:
                 print("\n" + "-" * 40)
                 print("[DEBUG INFO]")
-                print(f"- Phân loại định tuyến: {response.get('route')}")
-                print(f"- Cache hit: {response.get('cache', {}).get('hit')} (Key: {response.get('cache', {}).get('key')})")
-                print(f"- Số dòng kết quả: {response.get('row_count')}")
                 if response.get("sql"):
                     print(f"- SQL generated:\n{response.get('sql')}")
-                if response.get("warnings"):
-                    print(f"- Cảnh báo: {response.get('warnings')}")
-                if response.get("errors"):
-                    print(f"- Lỗi: {response.get('errors')}")
+                df = response.get("data")
+                if df is not None:
+                    print(f"- Data shape: {df.shape}")
                 print("-" * 40)
                 
         except KeyboardInterrupt:

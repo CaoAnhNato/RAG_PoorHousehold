@@ -171,76 +171,13 @@ def make_session_id() -> str:
 
 
 @st.cache_resource(show_spinner=False)
-def get_shared_pipeline() -> dict[str, Any]:
-    with open(QDRANT_CONFIG_PATH, "r", encoding="utf-8") as file:
-        qdrant_config = json.load(file)
+def get_shared_pipeline() -> Any:
+    from src.query_control.agentic.agent_pipeline import AgenticPipeline
+    return AgenticPipeline()
 
-    embedding_model = os.environ.get("EMBEDDING_MODEL") or os.environ.get(
-        "FPT_EMBEDDING_MODEL_NAME",
-        qdrant_config.get("embedding_model"),
-    )
-
-    retriever = SemanticRetriever(
-        qdrant_url=qdrant_config.get("qdrant_url", "http://localhost:6333"),
-        collection_name=qdrant_config.get("collection_name", "query_control_semantic"),
-        embedding_model=embedding_model,
-    )
-
-    return {
-        "domain_gate": DomainGate(
-            config_path=DOMAIN_GATE_CONFIG_PATH,
-            semantic_layer_path=SEMANTIC_LAYER_PATH,
-            semantic_retriever=retriever,
-        ),
-        "query_planner": QueryPlanner(
-            schema_graph_path=SCHEMA_GRAPH_PATH,
-            semantic_layer_path=SEMANTIC_LAYER_PATH,
-            query_plan_schema_path=QUERY_PLAN_SCHEMA_PATH,
-            semantic_retriever=retriever,
-        ),
-        "sql_compiler": SQLCompiler(
-            schema_graph_path=SCHEMA_GRAPH_PATH,
-            semantic_layer_path=SEMANTIC_LAYER_PATH,
-        ),
-        "data_engine": DuckDBEngine(config_path=str(DUCKDB_CONFIG_PATH)),
-        "query_cache": QueryCache(config_path=str(CACHE_CONFIG_PATH)),
-        "clarification_engine": ClarificationEngine(
-            config_path=str(CLARIFICATION_CONFIG_PATH),
-            semantic_layer_path=str(SEMANTIC_LAYER_PATH),
-        ),
-        "visualization_planner": VisualizationPlanner(
-            metadata_dir=str(PROJECT_ROOT / "Processed" / "metadata")
-        ),
-        "chart_validator": ChartValidator(
-            metadata_dir=str(PROJECT_ROOT / "Processed" / "metadata")
-        ),
-        "chart_renderer": ChartRenderer(),
-    }
-
-
-def build_engine(session_id: str, event_queue: queue.Queue[str] | None = None) -> ChatbotAnswerEngine:
-    shared = get_shared_pipeline()
-    conversation_memory = ConversationMemory(
-        config_path=str(MEMORY_CONFIG_PATH),
-        session_id=session_id,
-    )
-    observability_logger = StreamlitObservabilityLogger(
-        config_path=str(OBSERVABILITY_CONFIG_PATH),
-        event_queue=event_queue,
-    )
-    return ChatbotAnswerEngine(
-        domain_gate=shared["domain_gate"],
-        query_planner=shared["query_planner"],
-        sql_compiler=shared["sql_compiler"],
-        data_engine=shared["data_engine"],
-        query_cache=shared["query_cache"],
-        observability_logger=observability_logger,
-        clarification_engine=shared["clarification_engine"],
-        conversation_memory=conversation_memory,
-        visualization_planner=shared["visualization_planner"],
-        chart_validator=shared["chart_validator"],
-        chart_renderer=shared["chart_renderer"],
-    )
+def build_engine(session_id: str, event_queue: queue.Queue[str] | None = None) -> Any:
+    # AgenticPipeline is stateless, reuse the shared instance
+    return get_shared_pipeline()
 
 
 def bootstrap_state(history_store: UIHistoryStore) -> None:
@@ -252,6 +189,8 @@ def bootstrap_state(history_store: UIHistoryStore) -> None:
         st.session_state.messages = []
     if "pending_options" not in st.session_state:
         st.session_state.pending_options = []
+    if "current_mode" not in st.session_state:
+        st.session_state.current_mode = "Auto"
     load_session_into_state(st.session_state.current_session_id, history_store)
 
 
@@ -281,6 +220,12 @@ def create_new_session(history_store: UIHistoryStore) -> None:
 
 
 def render_sidebar(history_store: UIHistoryStore) -> None:
+    st.sidebar.title("Cài đặt")
+    modes = ["Auto", "Hỏi - Đáp", "Biểu đồ", "Báo Cáo"]
+    default_idx = modes.index(st.session_state.current_mode) if st.session_state.current_mode in modes else 0
+    st.session_state.current_mode = st.sidebar.selectbox("Chế độ (Mode)", options=modes, index=default_idx)
+    
+    st.sidebar.divider()
     st.sidebar.title("Lịch sử phiên")
     if st.sidebar.button("Tạo phiên mới", use_container_width=True):
         create_new_session(history_store)
@@ -376,14 +321,14 @@ def render_status_lines(stages: list[str], pulse_index: int) -> str:
     return "\n\n".join(lines)
 
 
-def run_pipeline(user_prompt: str, session_id: str) -> dict[str, Any]:
+def run_pipeline(user_prompt: str, session_id: str, mode: str) -> dict[str, Any]:
     event_queue: queue.Queue[str] = queue.Queue()
     status_placeholder = st.empty()
     stages: list[str] = []
 
     def _worker() -> dict[str, Any]:
         engine = build_engine(session_id=session_id, event_queue=event_queue)
-        return engine.answer(user_prompt)
+        return engine.process(user_prompt, mode=mode)
 
     with ThreadPoolExecutor(max_workers=1) as executor:
         future = executor.submit(_worker)
@@ -402,44 +347,44 @@ def run_pipeline(user_prompt: str, session_id: str) -> dict[str, Any]:
         return response
 
 
-def assistant_text_from_response(response: dict[str, Any]) -> str:
-    return (
-        response.get("answer")
-        or response.get("message")
-        or "Không nhận được nội dung phản hồi từ pipeline."
-    )
+def assistant_text_from_response(response: dict[str, Any]) -> Any:
+    return response.get("answer", "Không nhận được nội dung phản hồi từ pipeline.")
 
 
 def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
     session_id = st.session_state.current_session_id
+    mode = st.session_state.current_mode
     st.session_state.messages.append({"role": "user", "content": user_prompt})
     with st.chat_message("user"):
         st.markdown(user_prompt)
 
     with st.chat_message("assistant"):
-        response = run_pipeline(user_prompt=user_prompt, session_id=session_id)
+        response = run_pipeline(user_prompt=user_prompt, session_id=session_id, mode=mode)
         
-        # Determine if we should show chart
-        chart_fig = response.get("chart_fig")
-        if chart_fig:
-            st.plotly_chart(chart_fig, use_container_width=True)
+        ans = assistant_text_from_response(response)
+        if hasattr(ans, 'to_markdown'):
+            st.dataframe(ans)
+            final_text = "Kết quả bảng dữ liệu."
+        else:
+            streamed_text = st.write_stream(stream_text(str(ans)))
+            final_text = streamed_text if isinstance(streamed_text, str) else str(ans)
             
-        assistant_text = assistant_text_from_response(response)
-        streamed_text = st.write_stream(stream_text(assistant_text))
-        final_text = streamed_text if isinstance(streamed_text, str) else assistant_text
+        if response.get("chart_fig"):
+            st.plotly_chart(response["chart_fig"], use_container_width=True)
+            
+        if response.get("data") is not None and not response.get("data").empty:
+            st.dataframe(response["data"])
 
     assistant_msg = {"role": "assistant", "content": final_text}
-    chart_json = None
-    if chart_fig:
-        assistant_msg["chart_fig"] = chart_fig
+    if response.get("chart_fig"):
         try:
-            chart_json = chart_fig.to_json()
+            assistant_msg["chart_fig"] = response["chart_fig"]
         except Exception:
             pass
 
     st.session_state.messages.append(assistant_msg)
-    st.session_state.pending_options = response.get("options", []) if response.get("needs_clarification") else []
-    history_store.append_turn(session_id=session_id, question=user_prompt, answer=final_text, chart_json=chart_json)
+    st.session_state.pending_options = []
+    history_store.append_turn(session_id=session_id, question=user_prompt, answer=final_text, chart_json=None)
 
 
 def render_pending_options(history_store: UIHistoryStore) -> None:

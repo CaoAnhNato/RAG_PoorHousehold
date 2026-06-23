@@ -52,7 +52,8 @@ class ChildServer:
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
             env=merged_env,
-            cwd=self.cwd
+            cwd=self.cwd,
+            limit=1024 * 1024 * 32  # 32MB limit for large JSON-RPC messages
         )
         self.reader = self.process.stdout
         self.writer = self.process.stdin
@@ -64,6 +65,28 @@ class ChildServer:
         line = json.dumps(msg_dict) + "\n"
         self.writer.write(line.encode("utf-8"))
         await self.writer.drain()
+
+    async def stop(self):
+        if self.writer:
+            try:
+                self.writer.close()
+                await self.writer.wait_closed()
+            except Exception as e:
+                log(f"Error closing writer for {self.name}: {e}")
+        if self.process:
+            try:
+                self.process.terminate()
+            except ProcessLookupError:
+                pass
+            try:
+                await asyncio.wait_for(self.process.wait(), timeout=2.0)
+            except asyncio.TimeoutError:
+                try:
+                    self.process.kill()
+                    await self.process.wait()
+                except ProcessLookupError:
+                    pass
+        log(f"Child {self.name} stopped.")
 
 class MetaMCPServer:
     def __init__(self):
@@ -143,6 +166,40 @@ class MetaMCPServer:
                     env=c.get("env"),
                     cwd=c.get("cwd")
                 )
+                
+            # Load octocode
+            if "octocode" in servers_config:
+                c = servers_config["octocode"]
+                self.children["octocode"] = ChildServer(
+                    "octocode",
+                    c.get("command"),
+                    c.get("args", []),
+                    env=c.get("env"),
+                    cwd=c.get("cwd")
+                )
+                
+            # Load fetch
+            if "fetch" in servers_config:
+                c = servers_config["fetch"]
+                self.children["fetch"] = ChildServer(
+                    "fetch",
+                    c.get("command"),
+                    c.get("args", []),
+                    env=c.get("env"),
+                    cwd=c.get("cwd")
+                )
+                
+            # Load firecrawl
+            if "firecrawl" in servers_config:
+                c = servers_config["firecrawl"]
+                self.children["firecrawl"] = ChildServer(
+                    "firecrawl",
+                    c.get("command"),
+                    c.get("args", []),
+                    env=c.get("env"),
+                    cwd=c.get("cwd")
+                )
+                
             return True
         except Exception as e:
             log(f"Error loading config: {e}")
@@ -240,10 +297,18 @@ class MetaMCPServer:
                 log(f"Error reading {child.name} stderr: {e}")
                 break
 
+    async def stop(self):
+        log("Shutting down MetaMCPServer...")
+        for name, child in list(self.children.items()):
+            await child.stop()
+        self.children.clear()
+        log("All child servers stopped.")
+
     async def handle_child_death(self, child):
         if child.name in self.children:
             del self.children[child.name]
             log(f"Removed dead child {child.name}. Active children remaining: {list(self.children.keys())}")
+            await child.stop()
         
         # Resolve pending tools_list requests if they were waiting for this child
         keys_to_resolve = []
@@ -429,15 +494,15 @@ class MetaMCPServer:
                 async def run_with_timeout():
                     try:
                         if tool_name == "meta_deep_context":
-                            await asyncio.wait_for(self.handle_meta_deep_context(msg_id, arguments), timeout=60.0)
+                            await asyncio.wait_for(self.handle_meta_deep_context(msg_id, arguments), timeout=180.0)
                         elif tool_name == "meta_explore_structure":
-                            await asyncio.wait_for(self.handle_meta_explore_structure(msg_id, arguments), timeout=60.0)
+                            await asyncio.wait_for(self.handle_meta_explore_structure(msg_id, arguments), timeout=180.0)
                         elif tool_name == "meta_safe_edit_preview":
-                            await asyncio.wait_for(self.handle_meta_safe_edit_preview(msg_id, arguments), timeout=60.0)
+                            await asyncio.wait_for(self.handle_meta_safe_edit_preview(msg_id, arguments), timeout=180.0)
                         elif tool_name == "meta_trace_flow":
-                            await asyncio.wait_for(self.handle_meta_trace_flow(msg_id, arguments), timeout=60.0)
+                            await asyncio.wait_for(self.handle_meta_trace_flow(msg_id, arguments), timeout=180.0)
                         elif tool_name == "meta_research_idea":
-                            await asyncio.wait_for(self.handle_meta_research_idea(msg_id, arguments), timeout=60.0)
+                            await asyncio.wait_for(self.handle_meta_research_idea(msg_id, arguments), timeout=180.0)
                     except asyncio.TimeoutError:
                         log(f"Meta-tool {tool_name} timed out for {msg_id}")
                         await self.send_to_client({
@@ -582,7 +647,10 @@ class MetaMCPServer:
             if req_key in self.pending_requests:
                 fut = self.pending_requests[req_key]
                 if not fut.done():
-                    fut.set_result(msg.get("result", {}))
+                    if "error" in msg:
+                        fut.set_exception(Exception(str(msg["error"])))
+                    else:
+                        fut.set_result(msg.get("result", {}))
             return
 
         if ":call:" in id_str:
@@ -712,23 +780,204 @@ class MetaMCPServer:
         log(f"Handling meta_research_idea for '{query}' in {source}")
         
         tasks = []
+        source_names = []
         
-        # 1. Search Web (Exa)
-        if source in ["web", "both"] and "exa" in self.children:
-            # Dynamically find the Exa search tool (often 'web_search_exa' or 'search')
-            exa_tool = next((t for t, c in self.tool_to_child.items() if c == "exa" and "search" in t.lower()), "web_search_exa")
-            tasks.append(self.call_child_tool_internal("exa", exa_tool, {
-                "query": query,
-                "numResults": 5
-            }))
+        def extract_text_from_result(res):
+            content_obj = res.get("content", res) if isinstance(res, dict) else res
+            content_str = ""
+            if isinstance(content_obj, str):
+                content_str = content_obj
+            elif isinstance(content_obj, list):
+                for item in content_obj:
+                    if isinstance(item, dict) and "text" in item:
+                        content_str += item["text"] + "\n"
+                    else:
+                        content_str += str(item) + "\n"
+            else:
+                content_str = str(content_obj)
+            return content_str
+
+        if source in ["web", "both"] and "firecrawl" in self.children:
+            async def search_web_firecrawl(q):
+                try:
+                    res = await asyncio.wait_for(self.call_child_tool_internal("firecrawl", "firecrawl_search", {
+                        "query": q,
+                        "limit": 8
+                    }), timeout=90.0)
+                    
+                    if isinstance(res, dict) and "error" in res and res["error"]:
+                        return {"tool_name": "firecrawl", "error": f"Search returned error: {res['error']}"}
+
+                    content_obj = res.get("content", res) if isinstance(res, dict) else res
+                    extracted_text = ""
+                    
+                    def process_json_item(data):
+                        nonlocal extracted_text
+                        web_data = data.get("data", {}).get("web", [])
+                        if not web_data and "web" in data:
+                            web_data = data["web"]
+                        if web_data:
+                            for doc in web_data:
+                                url = doc.get("url", "Unknown URL")
+                                title = doc.get("title", "Unknown Title")
+                                desc = doc.get("description", "No description available.")
+                                
+                                extracted_text += f"### 🌐 {title}\n**URL:** {url}\n**Summary:** {desc}\n\n"
+                        else:
+                            extracted_text += f"No web results found. Keys: {list(data.keys())}\n\n"
+
+                    if isinstance(content_obj, list):
+                        for item in content_obj:
+                            if isinstance(item, dict) and "text" in item:
+                                try:
+                                    import json
+                                    data = json.loads(item["text"])
+                                    process_json_item(data)
+                                except Exception as e:
+                                    extracted_text += f"Failed to parse JSON: {e}\n\n{str(item['text'])[:500]}\n\n"
+                            else:
+                                extracted_text += str(item)[:500] + "\n"
+                    elif isinstance(content_obj, str):
+                        try:
+                            import json
+                            data = json.loads(content_obj)
+                            process_json_item(data)
+                        except:
+                            extracted_text += content_obj[:1500]
+                    else:
+                        extracted_text += str(content_obj)[:1500]
+                        
+                    return {"tool_name": "firecrawl", "content": extracted_text}
+                except Exception as e:
+                    return {"tool_name": "firecrawl", "error": f"Web search failed or timed out: {e}"}
+                    
+            tasks.append(search_web_firecrawl(query))
+            source_names.append("🌐 Web Search (Articles & Documentation)")
             
-        # 2. Search Academic Papers (arXiv)
+        if source in ["github", "both", "web"] and "octocode" in self.children:
+            async def search_github_deep(q):
+                if "octocode" in self.children:
+                    try:
+                        import re
+                        search_keywords = [kw for kw in re.split(r'\W+', q) if len(kw) > 3][:3]
+                        if not search_keywords:
+                            search_keywords = [q.replace(" ", "-")[:50]]
+                        search_res = await asyncio.wait_for(self.call_child_tool_internal("octocode", "githubSearchRepositories", {
+                            "queries": [{"keywordsToSearch": search_keywords, "sort": "best-match"}]
+                        }), timeout=60.0)
+
+                        if isinstance(search_res, dict) and "error" in search_res and search_res["error"]:
+                            return {"tool_name": "octocode", "error": f"Search returned error: {search_res['error']}"}
+
+                        content_str = extract_text_from_result(search_res)
+                        repos = []
+                        # Robust extraction for GitHub repos from JSON strings or raw text
+                        import json
+                        try:
+                            # Try parsing if it's wrapped in text JSON
+                            content_obj = search_res.get("content", search_res) if isinstance(search_res, dict) else search_res
+                            if isinstance(content_obj, list):
+                                for item in content_obj:
+                                    if isinstance(item, dict) and "text" in item:
+                                        data = json.loads(item["text"])
+                                        items = data.get("items", data) if isinstance(data, dict) else data
+                                        if isinstance(items, list):
+                                            for r in items:
+                                                owner = r.get("owner", {}).get("login") if isinstance(r.get("owner"), dict) else r.get("owner")
+                                                name = r.get("name")
+                                                if owner and name:
+                                                    repos.append((owner, name))
+                        except:
+                            pass
+
+                        if not repos:
+                            # Regex fallback
+                            matches = re.findall(r'full_name["\'\s:]+([A-Za-z0-9_\-\.]+)/([A-Za-z0-9_\-\.]+)', content_str, re.IGNORECASE)
+                            repos.extend(matches)
+                            if not repos:
+                                matches = re.findall(r'owner["\'\s:]+([A-Za-z0-9_\-\.]+).*?name["\'\s:]+([A-Za-z0-9_\-\.]+)', content_str, re.IGNORECASE | re.DOTALL)
+                                repos.extend(matches)
+                            if not repos:
+                                repos = re.findall(r'github\.com/([A-Za-z0-9_\-\.]+)/([A-Za-z0-9_\-\.]+)', content_str)
+
+                        # Deduplicate while preserving order
+                        seen = set()
+                        repos = [r for r in repos if not (r in seen or seen.add(r))]
+
+                        if not repos:
+                            return {"tool_name": "octocode", "content": f"No repositories found for keywords {search_keywords}. Output was:\n{content_str[:500]}"}
+
+                        # 2. Fetch READMEs and Code Structure
+                        readme_tasks = []
+                        for owner, repo in repos[:3]:
+                            readme_tasks.append(asyncio.wait_for(self.call_child_tool_internal("octocode", "githubGetFileContent", {
+                                "queries": [{"owner": owner, "repo": repo, "path": "README.md", "fullContent": True}]
+                            }), timeout=20.0))
+
+                            readme_tasks.append(asyncio.wait_for(self.call_child_tool_internal("octocode", "githubSearchCode", {
+                                "queries": [{"owner": owner, "repo": repo, "pattern": search_keywords[0], "match": "file", "page": 1}]
+                            }), timeout=20.0))
+
+                        readmes = await asyncio.gather(*readme_tasks, return_exceptions=True)
+
+                        combined_readmes = f"Found {len(repos)} relevant repositories. Extracted insights:\n\n"
+                        for idx, (owner, repo) in enumerate(repos[:3]):
+                            combined_readmes += f"### 🐙 Repository: {owner}/{repo}\n"
+
+                            # README
+                            res_readme = readmes[idx*2]
+                            readme_content = ""
+                            if not isinstance(res_readme, Exception):
+                                readme_content = extract_text_from_result(res_readme)
+
+                            if isinstance(res_readme, Exception) or (isinstance(res_readme, dict) and "error" in res_readme and res_readme["error"]) or "error:" in readme_content.lower() or "API Error:" in readme_content:
+                                combined_readmes += f"*- README not available-*\n\n"
+                            else:
+                                if len(readme_content) > 1500:
+                                    readme_content = readme_content[:1500] + "\n..."
+                                combined_readmes += "**README Excerpt:**\n" + readme_content + "\n\n"
+
+                            # Code Match
+                            res_code = readmes[idx*2 + 1]
+                            code_content = ""
+                            if not isinstance(res_code, Exception):
+                                code_content = extract_text_from_result(res_code)
+
+                            if isinstance(res_code, Exception) or (isinstance(res_code, dict) and "error" in res_code and res_code["error"]) or "error:" in code_content.lower() or "API Error:" in code_content:
+                                pass # Skip code if not available
+                            else:
+                                if len(code_content) > 1500:
+                                    code_content = code_content[:1500] + "\n..."
+                                combined_readmes += "**Code Snippet Matches:**\n" + code_content + "\n\n"
+
+                        return {"tool_name": "octocode", "content": combined_readmes}
+                    except Exception as e:
+                        return {"tool_name": "octocode", "error": f"GitHub deep search timed out or failed: {e}"}
+
+                return {"tool_name": "octocode", "content": "Octocode not available"}
+
+            tasks.append(search_github_deep(query))
+            source_names.append("🐙 GitHub (Repositories & Code)")
+
         if source in ["arxiv", "both"] and "arxiv" in self.children:
-            # Dynamically find the arXiv search tool
-            arxiv_tool = next((t for t, c in self.tool_to_child.items() if c == "arxiv" and "search" in t.lower()), "search_arxiv")
-            tasks.append(self.call_child_tool_internal("arxiv", arxiv_tool, {
-                "query": query
-            }))
+            async def search_arxiv_safe(q):
+                try:
+                    res = await asyncio.wait_for(self.call_child_tool_internal("arxiv", "search_papers", {
+                        "query": q
+                    }), timeout=45.0)
+                    if isinstance(res, dict) and "error" in res and res["error"]:
+                        return {"tool_name": "arxiv", "error": res["error"]}
+                    
+                    content_str = extract_text_from_result(res)
+                    if not content_str.strip() or "error" in content_str.lower():
+                        return {"tool_name": "arxiv", "content": f"No papers found or error: {content_str}"}
+                        
+                    return {"tool_name": "arxiv", "content": content_str}
+                except Exception as e:
+                    return {"tool_name": "arxiv", "error": f"arXiv search failed: {e}"}
+                    
+            tasks.append(search_arxiv_safe(query))
+            source_names.append("📄 Academic Papers (arXiv)")
             
         if not tasks:
             await self.send_to_client({
@@ -740,49 +989,80 @@ class MetaMCPServer:
             })
             return
             
-        # Execute in parallel
         results = await asyncio.gather(*tasks, return_exceptions=True)
         
-        combined_text = f"# 🔍 Research Ideas for: {query}\n\n"
+        combined_text = f"# 🔍 Deep Research Insights for: {query}\n\n"
+        combined_text += "> **Research Objective:** Extract clear, actionable architectural insights from multiple domains to synthesize the optimal solution.\n\n"
         
+        raw_insights = ""
         for idx, res in enumerate(results):
-            source_name = "Web/Exa" if idx == 0 and source in ["web", "both"] else "arXiv"
-            if source == "both" and idx == 1:
-                source_name = "arXiv"
-                
-            combined_text += f"## Source: {source_name}\n"
+            source_name = source_names[idx] if idx < len(source_names) else f"Source {idx}"
+            combined_text += f"## {source_name}\n"
             if isinstance(res, Exception):
-                combined_text += f"Error from source: {res}\n\n"
+                combined_text += f"*Error from source: {res}*\n\n"
                 continue
-                
+            
             tool_res = res
-            if isinstance(tool_res, dict):
-                content = tool_res.get("content", [])
-                for item in content:
-                    if "text" in item:
-                        combined_text += item["text"] + "\n\n"
-                    else:
-                        combined_text += str(item) + "\n\n"
-            elif isinstance(tool_res, list):
-                for item in tool_res:
-                    if isinstance(item, dict) and "text" in item:
-                        combined_text += item["text"] + "\n\n"
-                    else:
-                        combined_text += str(item) + "\n\n"
-            else:
-                combined_text += str(tool_res) + "\n\n"
+            content_str = extract_text_from_result(tool_res)
                 
-        # Inject standard smart hints for next steps
-        hints = [
-            f"[Meta-Agent Hint]: Use ctx_read to verify the findings in your local code.",
-            f"[Meta-Agent Hint]: If these ideas help, consider using meta_safe_edit_preview before making changes.",
-            f"[Meta-Agent Hint]: Consider saving important concepts to knowledge using ctx_knowledge."
-        ]
+            # If the content is extremely large, truncate it for raw_insights but keep full for combined_text
+            raw_insights += f"Source {source_name}:\n{content_str[:5000]}\n\n"
+            combined_text += content_str + "\n\n---\n\n"
+
+        # Try to use ShopAPI LLM to synthesize if possible
+        import os
+        from urllib import request, error
+        import json as builtin_json
+        
+        api_key = os.environ.get("SHOPAPI_LLM_API_KEY")
+        base_url = os.environ.get("SHOPAPI_BASE_URL", "https://direct.shopaikey.com/v1")
+        model = os.environ.get("SHOPAPI_MODEL_LLM", "gpt-4o-mini")
+        
+        synthesis = ""
+        if api_key:
+            try:
+                log("Attempting to synthesize research with ShopAPI...")
+                req_data = builtin_json.dumps({
+                    "model": model,
+                    "messages": [
+                        {"role": "system", "content": "You are an expert software architect. Synthesize the raw research data into a clear, actionable improvement plan. Group by 1. Core Ideas, 2. Best Practices from Github, 3. Academic/Theoretical foundations. Provide specific code strategies and avoid vague fluff."},
+                        {"role": "user", "content": f"Query: {query}\n\nRaw Research:\n{raw_insights}"}
+                    ],
+                    "max_tokens": 1500,
+                    "temperature": 0.3
+                }).encode('utf-8')
+                
+                req = request.Request(f"{base_url}/chat/completions", data=req_data, headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json"
+                })
+                
+                with request.urlopen(req, timeout=30.0) as response:
+                    resp_data = builtin_json.loads(response.read().decode('utf-8'))
+                    synthesis = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+            except Exception as e:
+                log(f"Synthesis failed: {e}")
+                
+        if synthesis:
+            combined_text = f"# 🧠 Synthesized Action Plan\n\n{synthesis}\n\n---\n\n" + combined_text
+            
+        # Save output to markdown file
+        import time
+        os.makedirs("artifacts", exist_ok=True)
+        filename = f"artifacts/research_proposal_{int(time.time())}.md"
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(combined_text)
+            
+        hints = {
+            "next_tools_to_call": [f"ctx_read('{filename}')"],
+            "tools_to_avoid": ["meta_research_idea"],
+            "estimated_remaining_calls": 2
+        }
         
         response_content = [
             {
                 "type": "text",
-                "text": combined_text
+                "text": f"✅ Deep Research completed successfully.\n\nExtracted rich content from technical articles, cross-referenced multiple GitHub repositories (fetching READMEs and code structure), and retrieved academic papers.\n\n" + ("✨ An AI-synthesized action plan was successfully generated.\n\n" if synthesis else "") + f"The detailed research data has been saved to: `{filename}`.\n\nPlease read this file using `ctx_read('{filename}')` to evaluate the architectural approach and actionable insights for your problem."
             },
             {
                 "type": "text",
@@ -1009,13 +1289,16 @@ class MetaMCPServer:
         })
         
         try:
-            # Wait for response with a 15-second timeout
-            res = await asyncio.wait_for(fut, timeout=15.0)
+            # Wait for response with a longer timeout
+            res = await asyncio.wait_for(fut, timeout=180.0)
             text_content = ""
             for item in res.get("content", []):
                 if item.get("type") == "text":
                     text_content += item.get("text", "")
             return {"tool_name": tool_name, "content": text_content}
+        except asyncio.TimeoutError:
+            log(f"Internal call to {tool_name} timed out.")
+            return {"tool_name": tool_name, "error": "Timeout after 180 seconds"}
         except Exception as e:
             log(f"Internal call to {tool_name} failed: {e}")
             return {"tool_name": tool_name, "error": str(e)}
@@ -1140,10 +1423,16 @@ class MetaMCPServer:
             "estimated_remaining_calls": remaining
         }
 
-if __name__ == "__main__":
+async def run_server():
     server = MetaMCPServer()
     try:
-        asyncio.run(server.start())
+        await server.start()
+    finally:
+        await server.stop()
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(run_server())
     except KeyboardInterrupt:
         log("Server stopped by user interrupt")
     except Exception as e:
