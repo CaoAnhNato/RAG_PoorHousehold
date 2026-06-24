@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+import sys
+if sys.stdout.encoding != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
 import json
 import os
 import queue
@@ -14,6 +21,7 @@ from typing import Any
 
 import streamlit as st
 import plotly.io as pio
+import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
@@ -101,13 +109,14 @@ class UIHistoryStore:
             encoding="utf-8",
         )
 
-    def append_turn(self, session_id: str, question: str, answer: str, chart_json: str | None = None) -> None:
+    def append_turn(self, session_id: str, question: str, answer: str, chart_json: str | None = None, data_json: str | None = None) -> None:
         session_data = self.load(session_id)
         session_data["turns"].append(
             {
                 "question": question,
                 "answer": answer,
                 "chart_json": chart_json,
+                "data_json": data_json,
                 "timestamp": self._now(),
             }
         )
@@ -172,6 +181,7 @@ def make_session_id() -> str:
 
 @st.cache_resource(show_spinner=False)
 def get_shared_pipeline() -> Any:
+    # Busted cache to reload DomainGate changes
     from src.query_control.agentic.agent_pipeline import AgenticPipeline
     return AgenticPipeline()
 
@@ -211,6 +221,14 @@ def load_session_into_state(session_id: str, history_store: UIHistoryStore) -> N
                 assistant_msg["chart_fig"] = pio.from_json(turn.get("chart_json"))
             except Exception:
                 pass
+                
+        if turn.get("data_json"):
+            try:
+                import pandas as pd
+                assistant_msg["data"] = pd.read_json(turn.get("data_json"), orient="split")
+            except Exception:
+                pass
+                
         st.session_state.messages.append(assistant_msg)
 
 
@@ -227,7 +245,7 @@ def render_sidebar(history_store: UIHistoryStore) -> None:
     
     st.sidebar.divider()
     st.sidebar.title("Lịch sử phiên")
-    if st.sidebar.button("Tạo phiên mới", use_container_width=True):
+    if st.sidebar.button("Tạo phiên mới", width="stretch"):
         create_new_session(history_store)
         st.rerun()
 
@@ -347,6 +365,15 @@ def run_pipeline(user_prompt: str, session_id: str, mode: str) -> dict[str, Any]
         return response
 
 
+def format_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    # Gộp các dòng trùng giá trị bằng cách thiết lập MultiIndex
+    idx_candidates = ["Năm", "Huyện", "Xã", "Thôn/Bon", "Phân loại hộ", "Loại hộ", "Thiếu hụt"]
+    idx_cols = [c for c in df.columns if c in idx_candidates]
+    if idx_cols:
+        df = df.sort_values(by=idx_cols)
+        df = df.set_index(idx_cols)
+    return df
+
 def assistant_text_from_response(response: dict[str, Any]) -> Any:
     return response.get("answer", "Không nhận được nội dung phản hồi từ pipeline.")
 
@@ -362,29 +389,49 @@ def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
         response = run_pipeline(user_prompt=user_prompt, session_id=session_id, mode=mode)
         
         ans = assistant_text_from_response(response)
+        
+        # Nếu LLM quyết định trả về bảng (do > 5 dòng)
         if hasattr(ans, 'to_markdown'):
-            st.dataframe(ans)
+            formatted_ans = format_dataframe(ans)
+            hide_idx = True if formatted_ans.index.name is None and not isinstance(formatted_ans.index, pd.MultiIndex) else False
+            st.dataframe(formatted_ans, hide_index=hide_idx)
             final_text = "Kết quả bảng dữ liệu."
+            response["data"] = formatted_ans
         else:
             streamed_text = st.write_stream(stream_text(str(ans)))
             final_text = streamed_text if isinstance(streamed_text, str) else str(ans)
             
         if response.get("chart_fig"):
-            st.plotly_chart(response["chart_fig"], use_container_width=True)
+            st.plotly_chart(response["chart_fig"], width="stretch", key="current_chart")
             
-        if response.get("data") is not None and not response.get("data").empty:
-            st.dataframe(response["data"])
+        # Nếu có data đi kèm (trong chế độ Biểu đồ hoặc data chưa được in ra)
+        if response.get("data") is not None and not response.get("data").empty and not hasattr(ans, 'to_markdown'):
+            formatted_data = format_dataframe(response["data"])
+            hide_idx = True if formatted_data.index.name is None and not isinstance(formatted_data.index, pd.MultiIndex) else False
+            st.dataframe(formatted_data, hide_index=hide_idx)
+            response["data"] = formatted_data
 
     assistant_msg = {"role": "assistant", "content": final_text}
+    chart_json_str = None
+    data_json_str = None
+    
     if response.get("chart_fig"):
         try:
             assistant_msg["chart_fig"] = response["chart_fig"]
+            chart_json_str = response["chart_fig"].to_json()
+        except Exception:
+            pass
+            
+    if response.get("data") is not None and not response.get("data").empty:
+        try:
+            assistant_msg["data"] = response["data"]
+            data_json_str = response["data"].to_json(orient="split")
         except Exception:
             pass
 
     st.session_state.messages.append(assistant_msg)
     st.session_state.pending_options = []
-    history_store.append_turn(session_id=session_id, question=user_prompt, answer=final_text, chart_json=None)
+    history_store.append_turn(session_id=session_id, question=user_prompt, answer=final_text, chart_json=chart_json_str, data_json=data_json_str)
 
 
 def render_pending_options(history_store: UIHistoryStore) -> None:
@@ -396,7 +443,7 @@ def render_pending_options(history_store: UIHistoryStore) -> None:
     columns = st.columns(len(options))
     for index, option in enumerate(options):
         label = option.get("label", f"Lựa chọn {index + 1}")
-        if columns[index].button(label, key=f"clarify_{index}", use_container_width=True):
+        if columns[index].button(label, key=f"clarify_{index}", width="stretch"):
             st.session_state.pending_options = []
             prompt = resolve_option_input(option, st.session_state.current_session_id)
             handle_prompt(prompt, history_store)
@@ -420,11 +467,15 @@ def main() -> None:
     bootstrap_state(history_store)
     render_sidebar(history_store)
 
-    for message in st.session_state.messages:
+    for idx, message in enumerate(st.session_state.messages):
         with st.chat_message(message["role"]):
-            if message.get("chart_fig"):
-                st.plotly_chart(message["chart_fig"], use_container_width=True)
             st.markdown(message["content"])
+            if message.get("chart_fig"):
+                st.plotly_chart(message["chart_fig"], width="stretch", key=f"history_chart_{idx}")
+            if "data" in message and message.get("data") is not None and not message["data"].empty:
+                df = message["data"]
+                hide_idx = True if df.index.name is None and not isinstance(df.index, pd.MultiIndex) else False
+                st.dataframe(df, hide_index=hide_idx)
 
     render_pending_options(history_store)
 

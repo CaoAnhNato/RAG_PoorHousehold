@@ -23,6 +23,23 @@ class SQLRefiner:
                 # Mở connection read-only để tránh file lock
                 with duckdb.connect(str(self.db_path), read_only=True) as con:
                     df = con.execute(current_sql).df()
+                    
+                    # TỰ KIỂM TRA LỖI LOGIC TỔNG QUÁT (SELF-CORRECTION FOR ALL LOGIC ERRORS)
+                    # 1. Bắt lỗi GROUP BY thiếu trong SELECT cho TẤT CẢ các trường
+                    sql_upper = current_sql.upper()
+                    if "GROUP BY" in sql_upper:
+                        import re
+                        group_by_clause = sql_upper.split("GROUP BY")[1].split("ORDER BY")[0].split("LIMIT")[0].split("HAVING")[0]
+                        # Tìm tất cả các từ có vẻ là tên cột (bỏ qua số, khoảng trắng)
+                        gb_tokens = re.findall(r'"?([a-zA-Z0-9_\.]+)"?', group_by_clause)
+                        gb_fields = [token for token in gb_tokens if not token.isnumeric() and token.lower() not in ('asc', 'desc')]
+                        
+                        # So sánh số lượng trường được Group By với số lượng cột thực tế (trừ cột tổng)
+                        # Thông thường df trả về sẽ có các cột phân loại (String/Int) và cột tổng (thường mang tên hàm aggregations hoặc alias khác)
+                        # Để an toàn nhất: Đếm số cột trong df. Nếu số cột trong df < số trường trong group by -> Chắc chắn thiếu cột SELECT
+                        if len(df.columns) < len(gb_fields) + 1: # +1 là ít nhất 1 cột cho giá trị SUM/COUNT
+                            raise ValueError(f"LỖI LOGIC: SQL dùng GROUP BY với {len(gb_fields)} trường ({', '.join(gb_fields)}) nhưng DataFrame chỉ xuất ra {len(df.columns)} cột. Bạn đã QUÊN đưa các trường GROUP BY vào mệnh đề SELECT (kèm alias). Yêu cầu sửa ngay!")
+
                     return df, current_sql
             except Exception as e:
                 error_msg = str(e)

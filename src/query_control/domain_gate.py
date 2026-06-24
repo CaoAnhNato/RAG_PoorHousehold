@@ -55,7 +55,7 @@ class DomainGate:
             "trung bình", "cao nhất", "ít nhất", "nhiều nhất", "so sánh", "chênh lệch", "tăng", "giảm",
             "tỉ lệ", "tỷ lệ", "phần trăm", "ở đâu", "huyện nào", "xã nào", "năm 2023", "năm 2024",
             "có thiếu", "có bị", "có phải", "có nghèo", "bị nghèo", "thiếu nước", "thiếu vốn", "dân tộc", "nguyên nhân",
-            "bao người", "nước sạch", "nhà tiêu", "thiếu đất", "ốm đau", "tai nạn"
+            "bao người", "nước sạch", "nhà tiêu", "thiếu đất", "ốm đau", "tai nạn", "tình hình", "biểu đồ", "thay đổi", "xu hướng", "cơ cấu", "số hộ"
         ]
 
         # 2. Từ khoá dành cho General Knowledge (định nghĩa, giải thích)
