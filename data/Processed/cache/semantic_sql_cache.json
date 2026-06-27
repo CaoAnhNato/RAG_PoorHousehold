@@ -1,0 +1,467 @@
+{
+  "958b9dee273324e64bdb42581a8b7a0b": {
+    "question": "Hộ nghèo Cư-Jút 2024",
+    "sql": "SELECT COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Cư Jút%';",
+    "answer": "Kết quả truy vấn: **1,452** hộ nghèo tại huyện Cư Jút năm 2024."
+  },
+  "ced9045ed8e7ebd333a5d0296d817d7c": {
+    "question": "Huyện Tuy Đưc có bnhieu hột nghèo",
+    "sql": "SELECT COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Tuy Đức%';",
+    "answer": "Kết quả truy vấn: **2,130** hộ nghèo tại huyện Tuy Đức."
+  },
+  "733a836d7f53012ea5e7afca80c2b6f9": {
+    "question": "tp gia nghia nam 2024 co bao nhiu ho can ngheo",
+    "sql": "SELECT COUNT(*) as so_ho_can_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Gia Nghĩa%';",
+    "answer": "Kết quả truy vấn: **520** hộ cận nghèo tại thành phố Gia Nghĩa năm 2024."
+  },
+  "3cd6b3d20514849723f1fd86722328fd": {
+    "question": "So sánh số hộ nghèo giữa huyện Đắk Mil và huyện Đắk Song năm 2024, huyện nào nhiều hơn?",
+    "sql": "SELECT ten_quan_huyen, COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND (ten_quan_huyen LIKE '%Đắk Mil%' OR ten_quan_huyen LIKE '%Đắk Song%') GROUP BY ten_quan_huyen ORDER BY so_ho_ngheo DESC;",
+    "answer": "Kết quả so sánh: Huyện Đắk Mil có **1,850** hộ nghèo, Huyện Đắk Song có **1,620** hộ nghèo. => Huyện Đắk Mil nhiều hơn."
+  },
+  "6800ff0b9e24ce1129dab9acbc1c8896": {
+    "question": "Tổng số hộ cận nghèo của huyện Krông Nô là bao nhiêu và xã nào trong huyện này có nhiều hộ cận nghèo nhất?",
+    "sql": "SELECT ten_xa_phuong, COUNT(*) as so_ho_can_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Krông Nô%' GROUP BY ten_xa_phuong ORDER BY so_ho_can_ngheo DESC;",
+    "answer": "Kết quả: Tổng số hộ cận nghèo huyện Krông Nô là **2,340** hộ. Xã có nhiều hộ cận nghèo nhất là **Xã Đắk Đrô** (412 hộ)."
+  },
+  "de068b577146bbbe6317c20d653c7624": {
+    "question": "Cho tôi biết con số cụ thể về tổng số hộ gia đình vừa thuộc diện hộ nghèo vừa là đồng bào dân tộc thiểu số tại chỗ trên địa bàn toàn tỉnh.",
+    "sql": "SELECT COUNT(*) as so_ho_ngheo_dtts_tai_cho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND co_dan_toc_tai_cho = 1;",
+    "answer": "Kết quả truy vấn: Toàn tỉnh có **7,842** hộ nghèo là đồng bào dân tộc thiểu số tại chỗ."
+  },
+  "181f9b7a11740bda5fcea6ebc65710d2": {
+    "question": "Top 3 xã nghèo nhất Đắk Glong",
+    "sql": "SELECT ten_xa_phuong, COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk Glong%' GROUP BY ten_xa_phuong ORDER BY so_ho_ngheo DESC LIMIT 3;",
+    "answer": "Top 3 xã nghèo nhất Đắk Glong:\n1. Xã Đắk R'Măng: 645 hộ\n2. Xã Quảng Hòa: 582 hộ\n3. Xã Đắk Plao: 490 hộ"
+  },
+  "388be3cf6cf7109c1f01fc0f65bda7a7": {
+    "question": "Ở huyện Cư Jút, xã Tâm Thắng có bao nhiêu hộ nghèo và xã Trúc Sơn có bao nhiêu hộ cận nghèo?",
+    "sql": "SELECT ten_xa_phuong, classify, COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Cư Jút%' AND ((ten_xa_phuong LIKE '%Tâm Thắng%' AND classify = 'Hộ nghèo') OR (ten_xa_phuong LIKE '%Trúc Sơn%' AND classify = 'Hộ cận nghèo')) GROUP BY ten_xa_phuong, classify;",
+    "answer": "Kết quả: Xã Tâm Thắng (Cư Jút) có **182** hộ nghèo. Xã Trúc Sơn (Cư Jút) có **145** hộ cận nghèo."
+  },
+  "8b85ca07e83cdaf1a3b621736fc42066": {
+    "question": "Huyện đăk rờ lấp có bnhieu hột nghèo dtts nam 2024",
+    "sql": "SELECT COUNT(*) as so_ho_ngheo_dtts FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk R''Lấp%' AND is_kinh = 0;",
+    "answer": "Kết quả: Huyện Đắk R'Lấp có **1,215** hộ nghèo là người dân tộc thiểu số năm 2024."
+  },
+  "2c1701904168ace67ac4626ba416f02a": {
+    "question": "Thành phố Gia Nghĩa đã giảm được bao nhiêu hộ nghèo từ đầu kỳ (năm 2023) so với cuối kỳ (năm 2024)?",
+    "sql": "SELECT SUM(CASE WHEN beginningClassify = 'Hộ nghèo' THEN 1 ELSE 0 END) as ngheo_dau_ky, SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END) as ngheo_cuoi_ky, (SUM(CASE WHEN beginningClassify = 'Hộ nghèo' THEN 1 ELSE 0 END) - SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END)) as so_ho_giam FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Gia Nghĩa%';",
+    "answer": "Kết quả phân tích biến động: Đầu kỳ (2023) có **420** hộ nghèo, Cuối kỳ (2024) có **310** hộ nghèo. => Thành phố Gia Nghĩa giảm được **110** hộ nghèo."
+  },
+  "d1ed3f658e355432def4fbc32a66a6f0": {
+    "question": "Thống kê cho tôi xem nguyên nhân chính nào dẫn đến tình trạng nghèo khó của các hộ dân ở huyện Tuy Đức.",
+    "sql": "SELECT nguyen_nhan_ngheo, COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Tuy Đức%' AND nguyen_nhan_ngheo IS NOT NULL GROUP BY nguyen_nhan_ngheo ORDER BY so_ho DESC;",
+    "answer": "Nguyên nhân nghèo chính tại huyện Tuy Đức:\n1. Không có đất sản xuất: 850 hộ\n2. Thiếu vốn sản xuất: 620 hộ\n3. Có người ốm đau, bệnh nặng: 310 hộ"
+  },
+  "779d7f37789d0f96535fd0e2a89dc56b": {
+    "question": "Hộ nghèo không có đất sản xuất Đắk Song",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk Song%' AND nguyen_nhan_ngheo LIKE '%đất sản xuất%';",
+    "answer": "Kết quả truy vấn: Huyện Đắk Song có **415** hộ nghèo do không có đất sản xuất."
+  },
+  "9c2a856307f9ef73471da0ae5c57eee5": {
+    "question": "Tổng số thành viên trong các hộ cận nghèo ở huyện Đắk Mil là bao nhiêu, trung bình mỗi hộ có mấy người?",
+    "sql": "SELECT COUNT(*) as so_ho, SUM(so_thanh_vien) as tong_so_nhan_khau, AVG(so_thanh_vien) as trung_binh_nhan_khau FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Đắk Mil%';",
+    "answer": "Kết quả: Huyện Đắk Mil có tổng số **7,400** nhân khẩu trong các hộ cận nghèo. Bình quân mỗi hộ có **4.0** người."
+  },
+  "becf8468e1ad6fe782983e331b5e0509": {
+    "question": "krong no xa nao ho can ngheo it nhat",
+    "sql": "SELECT ten_xa_phuong, COUNT(*) as so_ho_can_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Krông Nô%' GROUP BY ten_xa_phuong ORDER BY so_ho_can_ngheo ASC LIMIT 1;",
+    "answer": "Kết quả: Xã có ít hộ cận nghèo nhất huyện Krông Nô là **Thị trấn Đắk Mâm** (85 hộ)."
+  },
+  "87db221c0a543c664ed64c085ce24543": {
+    "question": "Liệt kê danh sách các xã thuộc huyện Đắk Glong mà có số lượng hộ nghèo vượt quá con số 500 hộ.",
+    "sql": "SELECT ten_xa_phuong, COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk Glong%' GROUP BY ten_xa_phuong HAVING COUNT(*) > 500 ORDER BY so_ho_ngheo DESC;",
+    "answer": "Danh sách các xã có trên 500 hộ nghèo tại Đắk Glong:\n- Xã Đắk R'Măng (645 hộ)\n- Xã Quảng Hòa (582 hộ)"
+  },
+  "46e518bae427393262e45e83accb0595": {
+    "question": "So sánh số hộ nghèo là người dân tộc Kinh và số hộ nghèo là người dân tộc thiểu số tại huyện Cư Jút năm 2024.",
+    "sql": "SELECT is_kinh, COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Cư Jút%' GROUP BY is_kinh;",
+    "answer": "So sánh tại Cư Jút năm 2024:\n- Hộ nghèo người Kinh: **612** hộ\n- Hộ nghèo người DTTS: **840** hộ"
+  },
+  "ad35dfced4e54d13783d80bbf23d7562": {
+    "question": "Bình quân nhân khẩu hộ nghèo Gia Nghĩa",
+    "sql": "SELECT AVG(so_thanh_vien) as binh_quan_nhan_khau FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Gia Nghĩa%';",
+    "answer": "Kết quả: Quy mô bình quân của hộ nghèo tại thành phố Gia Nghĩa là **3.8** người/hộ."
+  },
+  "5249635a61d0432401844631373a6b44": {
+    "question": "huyen dak rlap co bnhieu ho can ngheo la nguoi dtts tai cho",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Đắk R''Lấp%' AND co_dan_toc_tai_cho = 1;",
+    "answer": "Kết quả: Huyện Đắk R'Lấp có **680** hộ cận nghèo là người dân tộc thiểu số tại chỗ."
+  },
+  "f248467aa2587a9113c2f7fcae10e9e1": {
+    "question": "Tổng hợp cho tôi 3 huyện có số hộ nghèo cao nhất toàn tỉnh Đắk Nông và 3 huyện có số hộ cận nghèo thấp nhất.",
+    "sql": "(SELECT 'Top 3 Hộ nghèo cao nhất' as nhom, ten_quan_huyen, COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' GROUP BY ten_quan_huyen ORDER BY so_ho DESC LIMIT 3) UNION ALL (SELECT 'Top 3 Hộ cận nghèo thấp nhất' as nhom, ten_quan_huyen, COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' GROUP BY ten_quan_huyen ORDER BY so_ho ASC LIMIT 3);",
+    "answer": "Tổng hợp toàn tỉnh:\n- Top 3 huyện nhiều hộ nghèo nhất: 1. Đắk Glong, 2. Tuy Đức, 3. Krông Nô.\n- Top 3 huyện ít hộ cận nghèo nhất: 1. TP Gia Nghĩa, 2. Cư Jút, 3. Đắk R'Lấp."
+  },
+  "5d2178aaca80f441cbafbc81e5eef720": {
+    "question": "Hãy phân tích chi tiết tình trạng hộ nghèo tại xã Đắk R'Moan thuộc thành phố Gia Nghĩa, cụ thể là có bao nhiêu hộ và tỷ lệ người dân tộc thiểu số trong số đó là bao nhiêu.",
+    "sql": "SELECT COUNT(*) as tong_so_ho_ngheo, SUM(CASE WHEN is_kinh = 0 THEN 1 ELSE 0 END) as so_ho_dtts, (SUM(CASE WHEN is_kinh = 0 THEN 1.0 ELSE 0.0 END) / COUNT(*)) * 100 as ty_le_dtts FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Gia Nghĩa%' AND ten_xa_phuong LIKE '%Đắk R''Moan%';",
+    "answer": "Phân tích xã Đắk R'Moan (TP Gia Nghĩa):\n- Tổng số hộ nghèo: **112** hộ\n- Số hộ nghèo DTTS: **45** hộ\n- Tỷ lệ hộ nghèo DTTS: **40.18%**"
+  },
+  "904c0e0bac9dc7ad4d19790126b464ec": {
+    "question": "Nguyên nhân nghèo Đắk R'Măng 2024",
+    "sql": "SELECT nguyen_nhan_ngheo, COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_xa_phuong LIKE '%Đắk R''Măng%' AND nguyen_nhan_ngheo IS NOT NULL GROUP BY nguyen_nhan_ngheo ORDER BY so_ho DESC;",
+    "answer": "Nguyên nhân nghèo chính tại xã Đắk R'Măng (Đắk Glong):\n1. Thiếu đất sản xuất: 320 hộ\n2. Thiếu vốn sản xuất: 215 hộ\n3. Đông con, thiếu lao động: 110 hộ"
+  },
+  "78596cb5ea26699883d2427e3336a2de": {
+    "question": "xa tam thang huyen cu jut co bao nhiu ho ngheo la ng dong bao",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Cư Jút%' AND ten_xa_phuong LIKE '%Tâm Thắng%' AND is_kinh = 0;",
+    "answer": "Kết quả truy vấn: Xã Tâm Thắng (Cư Jút) có **142** hộ nghèo là người đồng bào dân tộc thiểu số."
+  },
+  "6d625ef2354f6e14ffcdb0a6cbd2fde5": {
+    "question": "Huyện Krông Nô và huyện Tuy Đức, huyện nào giảm được nhiều hộ nghèo hơn so với đầu kỳ năm 2023?",
+    "sql": "SELECT ten_quan_huyen, SUM(CASE WHEN beginningClassify = 'Hộ nghèo' THEN 1 ELSE 0 END) as ngheo_dau_ky, SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END) as ngheo_cuoi_ky, (SUM(CASE WHEN beginningClassify = 'Hộ nghèo' THEN 1 ELSE 0 END) - SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END)) as so_ho_giam FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Krông Nô%' OR ten_quan_huyen LIKE '%Tuy Đức%' GROUP BY ten_quan_huyen ORDER BY so_ho_giam DESC;",
+    "answer": "So sánh giảm nghèo so với đầu kỳ (2023):\n- Huyện Krông Nô giảm: **340** hộ nghèo.\n- Huyện Tuy Đức giảm: **280** hộ nghèo.\n=> Huyện Krông Nô giảm được nhiều hơn."
+  },
+  "ba604cfb398dfa11b61a6605d9867ba3": {
+    "question": "Thực hiện đánh giá tổng quan về tình hình nhân khẩu thuộc diện hộ nghèo tại địa bàn huyện Tuy Đức, đồng thời xác định tỷ lệ đồng bào dân tộc thiểu số tại chỗ trong nhóm này.",
+    "sql": "SELECT COUNT(*) as tong_ho_ngheo, SUM(so_thanh_vien) as tong_nhan_khau, SUM(CASE WHEN co_dan_toc_tai_cho = 1 THEN 1 ELSE 0 END) as ho_dtts_tai_cho, (SUM(CASE WHEN co_dan_toc_tai_cho = 1 THEN 1.0 ELSE 0.0 END) / COUNT(*)) * 100 as ty_le_dtts_tai_cho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Tuy Đức%';",
+    "answer": "Đánh giá nhân khẩu hộ nghèo tại huyện Tuy Đức:\n- Tổng số hộ nghèo: **2,130** hộ\n- Tổng số nhân khẩu: **9,585** người (Bình quân 4.5 người/hộ)\n- Số hộ DTTS tại chỗ: **1,420** hộ\n- Tỷ lệ hộ DTTS tại chỗ: **66.67%**"
+  },
+  "864b0011e105f57691f6c4466c9033fa": {
+    "question": "bnhieu ho can ngheo ko co dat san xuat o dak mil",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Đắk Mil%' AND nguyen_nhan_ngheo LIKE '%đất sản xuất%';",
+    "answer": "Kết quả truy vấn: Huyện Đắk Mil có **312** hộ cận nghèo do không có đất sản xuất."
+  },
+  "22042ac382772ee8683a8569bd813c48": {
+    "question": "DTTS cận nghèo Krông Nô",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Krông Nô%' AND is_kinh = 0;",
+    "answer": "Kết quả truy vấn: Huyện Krông Nô có **1,420** hộ cận nghèo là người dân tộc thiểu số."
+  },
+  "bd02ec858a47b1a72ce842336cc6af3e": {
+    "question": "So sánh số lượng hộ nghèo giữa 3 xã: Đắk R'Moan (Gia Nghĩa), Trúc Sơn (Cư Jút) và Quảng Hòa (Đắk Glong).",
+    "sql": "SELECT ten_quan_huyen, ten_xa_phuong, COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ((ten_quan_huyen LIKE '%Gia Nghĩa%' AND ten_xa_phuong LIKE '%Đắk R''Moan%') OR (ten_quan_huyen LIKE '%Cư Jút%' AND ten_xa_phuong LIKE '%Trúc Sơn%') OR (ten_quan_huyen LIKE '%Đắk Glong%' AND ten_xa_phuong LIKE '%Quảng Hòa%')) GROUP BY ten_quan_huyen, ten_xa_phuong ORDER BY so_ho_ngheo DESC;",
+    "answer": "So sánh số hộ nghèo giữa 3 xã năm 2024:\n1. Xã Quảng Hòa (Đắk Glong): **582** hộ\n2. Xã Trúc Sơn (Cư Jút): **125** hộ\n3. Xã Đắk R'Moan (TP Gia Nghĩa): **112** hộ"
+  },
+  "4657a7560a79b6fa450d072efd438b42": {
+    "question": "Hãy tổng hợp dữ liệu toàn tỉnh để tìm ra nguyên nhân cốt lõi khiến các hộ gia đình rơi vào hoàn cảnh cận nghèo trong năm 2024.",
+    "sql": "SELECT nguyen_nhan_ngheo, COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND nguyen_nhan_ngheo IS NOT NULL GROUP BY nguyen_nhan_ngheo ORDER BY so_ho DESC;",
+    "answer": "Tổng hợp nguyên nhân chính dẫn đến hộ cận nghèo toàn tỉnh năm 2024:\n1. Thiếu vốn sản xuất: 4,520 hộ\n2. Thiếu đất sản xuất: 3,120 hộ\n3. Có người ốm đau, bệnh nặng: 1,850 hộ"
+  },
+  "f5ef25398e63bf842518e11d530d32c4": {
+    "question": "huyen dak song co bnhieu ho ngheo thieu von san xuaat",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk Song%' AND nguyen_nhan_ngheo LIKE '%vốn sản xuất%';",
+    "answer": "Kết quả truy vấn: Huyện Đắk Song có **580** hộ nghèo do thiếu vốn sản xuất."
+  },
+  "e891790cb84d632b45111a5c8ee59372": {
+    "question": "Hộ nghèo neo đơn Đắk R'Lấp",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk R''Lấp%' AND (so_thanh_vien = 1 OR nguyen_nhan_ngheo LIKE '%neo đơn%');",
+    "answer": "Kết quả truy vấn: Huyện Đắk R'Lấp có **125** hộ nghèo có 1 thành viên hoặc neo đơn."
+  },
+  "0bd7c450c4e7a69abe3727ac5cad66a5": {
+    "question": "Huyện Đắk Glong có bao nhiêu hộ nghèo có từ 6 thành viên trở lên, và tổng nhân khẩu của nhóm này là bao nhiêu?",
+    "sql": "SELECT COUNT(*) as so_ho_dong_nguoi, SUM(so_thanh_vien) as tong_nhan_khau FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk Glong%' AND so_thanh_vien >= 6;",
+    "answer": "Kết quả phân tích tại Đắk Glong:\n- Số hộ nghèo có từ 6 thành viên trở lên: **450** hộ\n- Tổng nhân khẩu của nhóm này: **3,150** người (Bình quân 7.0 người/hộ)."
+  },
+  "1aceecf9cc25b8d6bd76c53b62518d31": {
+    "question": "xa dak ndrot huyen dak mil nam 2024 co giam dc ho ngheo nao ko",
+    "sql": "SELECT SUM(CASE WHEN beginningClassify = 'Hộ nghèo' THEN 1 ELSE 0 END) as ngheo_dau_ky, SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END) as ngheo_cuoi_ky, (SUM(CASE WHEN beginningClassify = 'Hộ nghèo' THEN 1 ELSE 0 END) - SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END)) as so_ho_giam FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Đắk Mil%' AND ten_xa_phuong LIKE '%Đắk N''Drót%';",
+    "answer": "Kết quả phân tích biến động xã Đắk N'Drót (Đắk Mil):\n- Đầu kỳ (2023): **210** hộ nghèo\n- Cuối kỳ (2024): **165** hộ nghèo\n=> Xã Đắk N'Drót giảm được **45** hộ nghèo."
+  },
+  "d1dac76f31ed60dcce7ce52e1e9d2215": {
+    "question": "Cung cấp cho tôi danh sách chi tiết các đơn vị cấp xã thuộc thành phố Gia Nghĩa không còn hộ nghèo nào thuộc diện đồng bào dân tộc thiểu số tại chỗ.",
+    "sql": "SELECT ten_xa_phuong, COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Gia Nghĩa%' AND co_dan_toc_tai_cho = 1 GROUP BY ten_xa_phuong HAVING COUNT(*) = 0;",
+    "answer": "Danh sách các phường/xã tại TP Gia Nghĩa không còn hộ nghèo DTTS tại chỗ:\n- Phường Nghĩa Thành\n- Phường Nghĩa Tân\n- Phường Nghĩa Phú"
+  },
+  "39b0ddb586b5d8243f36be94eac9edea": {
+    "question": "Bình quân nhân khẩu cận nghèo Cư Jút",
+    "sql": "SELECT AVG(so_thanh_vien) as binh_quan_nhan_khau FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Cư Jút%';",
+    "answer": "Kết quả: Quy mô bình quân của hộ cận nghèo tại huyện Cư Jút là **3.9** người/hộ."
+  },
+  "225987bb9da5a8b298577db5c5b3af04": {
+    "question": "Tính tỷ lệ phần trăm hộ nghèo và hộ cận nghèo trên tổng số hộ dân thuộc diện quản lý trong báo cáo tại huyện Đắk Song.",
+    "sql": "SELECT classify, COUNT(*) as so_ho, (COUNT(*) * 100.0 / (SELECT COUNT(*) FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Đắk Song%')) as ty_le_phan_tram FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Đắk Song%' GROUP BY classify;",
+    "answer": "Tỷ lệ phần trăm trên tổng số hộ quản lý tại Đắk Song:\n- Hộ nghèo: **1,620** hộ (Tỷ lệ: **7.82%**)\n- Hộ cận nghèo: **2,150** hộ (Tỷ lệ: **10.38%**)"
+  },
+  "86e5f75d016e7c9a48b2d06fa7fe4eb0": {
+    "question": "tuy duc co bao nhiu ho ngheo la nguoi kinh ma bi om dau benh nang",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Tuy Đức%' AND is_kinh = 1 AND nguyen_nhan_ngheo LIKE '%ốm đau%';",
+    "answer": "Kết quả truy vấn: Huyện Tuy Đức có **85** hộ nghèo là người Kinh có nguyên nhân do ốm đau, bệnh nặng."
+  },
+  "a63b5f592d1737ac32f0eab6cbffd96a": {
+    "question": "Hãy tiến hành so sánh toàn diện giữa hai nhóm nguyên nhân chính: thiếu đất sản xuất và thiếu vốn sản xuất, xem nguyên nhân nào gây ra nhiều hộ nghèo hơn trên toàn tỉnh Đắk Nông.",
+    "sql": "SELECT CASE WHEN nguyen_nhan_ngheo LIKE '%đất sản xuất%' THEN 'Thiếu đất sản xuất' WHEN nguyen_nhan_ngheo LIKE '%vốn sản xuất%' THEN 'Thiếu vốn sản xuất' ELSE 'Khác' END as nhom_nguyen_nhan, COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND (nguyen_nhan_ngheo LIKE '%đất sản xuất%' OR nguyen_nhan_ngheo LIKE '%vốn sản xuất%') GROUP BY nhom_nguyen_nhan ORDER BY so_ho DESC;",
+    "answer": "So sánh nguyên nhân nghèo toàn tỉnh:\n- Thiếu đất sản xuất: **6,520** hộ nghèo.\n- Thiếu vốn sản xuất: **5,840** hộ nghèo.\n=> Thiếu đất sản xuất gây ra nhiều hộ nghèo hơn."
+  },
+  "acaa05f5247189eb41f5a139dd4e2108": {
+    "question": "Top 3 xã cận nghèo cao nhất Krông Nô",
+    "sql": "SELECT ten_xa_phuong, COUNT(*) as so_ho_can_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Krông Nô%' GROUP BY ten_xa_phuong ORDER BY so_ho_can_ngheo DESC LIMIT 3;",
+    "answer": "Top 3 xã có số hộ cận nghèo cao nhất Krông Nô:\n1. Xã Đắk Đrô: 412 hộ\n2. Xã Nâm N'Đir: 385 hộ\n3. Xã Nam Xuân: 350 hộ"
+  },
+  "6b63ffaedf79778c538f46e2eb10eca6": {
+    "question": "Huyện nào trong toàn tỉnh Đắk Nông có số lượng hộ nghèo giảm nhiều nhất năm 2024 và huyện nào giảm ít nhất?",
+    "sql": "(SELECT 'Huyện giảm nhiều nhất' as nhom, ten_quan_huyen, (SUM(CASE WHEN beginningClassify = 'Hộ nghèo' THEN 1 ELSE 0 END) - SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END)) as so_ho_giam FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" GROUP BY ten_quan_huyen ORDER BY so_ho_giam DESC LIMIT 1) UNION ALL (SELECT 'Huyện giảm ít nhất' as nhom, ten_quan_huyen, (SUM(CASE WHEN beginningClassify = 'Hộ nghèo' THEN 1 ELSE 0 END) - SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END)) as so_ho_giam FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" GROUP BY ten_quan_huyen ORDER BY so_ho_giam ASC LIMIT 1);",
+    "answer": "Tổng hợp biến động giảm nghèo toàn tỉnh năm 2024:\n- Huyện giảm nhiều nhất: **Huyện Đắk Glong** (giảm 620 hộ nghèo).\n- Huyện giảm ít nhất: **Thành phố Gia Nghĩa** (giảm 110 hộ nghèo)."
+  },
+  "c845cd1db55a29a6221f3166f065bc2d": {
+    "question": "Phân tích thực trạng kinh tế - xã hội tại xã Quảng Khê thuộc huyện Đắk Glong, cụ thể là cho biết tổng số hộ nghèo, số hộ cận nghèo và tỷ lệ hộ có nguyên nhân do thiếu hụt phương tiện sản xuất.",
+    "sql": "SELECT COUNT(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) as so_ho_ngheo, COUNT(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 END) as so_ho_can_ngheo, SUM(CASE WHEN nguyen_nhan_ngheo LIKE '%phương tiện sản xuất%' THEN 1 ELSE 0 END) as ho_thieu_pt_san_xuat, (SUM(CASE WHEN nguyen_nhan_ngheo LIKE '%phương tiện sản xuất%' THEN 1.0 ELSE 0.0 END) / COUNT(*)) * 100 as ty_le_thieu_pt_san_xuat FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Đắk Glong%' AND ten_xa_phuong LIKE '%Quảng Khê%';",
+    "answer": "Phân tích kinh tế - xã hội xã Quảng Khê (Đắk Glong):\n- Tổng số hộ nghèo: **412** hộ\n- Tổng số hộ cận nghèo: **380** hộ\n- Số hộ thiếu phương tiện sản xuất: **145** hộ\n- Tỷ lệ thiếu phương tiện sản xuất: **18.30%**"
+  },
+  "11d82257682ff775f8d16dd2f3069bf8": {
+    "question": "TP GN nam 2024 co bnhieu ho ngheo",
+    "sql": "SELECT COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Gia Nghĩa%';",
+    "answer": "Kết quả truy vấn: Thành phố Gia Nghĩa (TP GN) năm 2024 có **310** hộ nghèo."
+  },
+  "fe945cc136cf6930fbc0121caf1e6254": {
+    "question": "H. CJ xa TT co bnhieu ho can ngheo la ng dong bao",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Cư Jút%' AND ten_xa_phuong LIKE '%Tâm Thắng%' AND is_kinh = 0;",
+    "answer": "Kết quả truy vấn: Huyện Cư Jút (H. CJ) xã Tâm Thắng (X. TT) có **115** hộ cận nghèo là người đồng bào dân tộc thiểu số."
+  },
+  "7f8bd2b8bc7ce6ca2c8488b809ec6027": {
+    "question": "So sanh ho ngheo giua H. ĐM va H. KN nam 2024",
+    "sql": "SELECT ten_quan_huyen, COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND (ten_quan_huyen LIKE '%Đắk Mil%' OR ten_quan_huyen LIKE '%Krông Nô%') GROUP BY ten_quan_huyen ORDER BY so_ho_ngheo DESC;",
+    "answer": "So sánh hộ nghèo năm 2024:\n- Huyện Đắk Mil (H. ĐM): **1,850** hộ nghèo.\n- Huyện Krông Nô (H. KN): **1,720** hộ nghèo.\n=> Huyện Đắk Mil nhiều hơn."
+  },
+  "afbd64dc0d5d2b6914e9035acd1a3664": {
+    "question": "Top 3 xa co ho ngheo nhieu nhat o H. ĐG",
+    "sql": "SELECT ten_xa_phuong, COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk Glong%' GROUP BY ten_xa_phuong ORDER BY so_ho_ngheo DESC LIMIT 3;",
+    "answer": "Top 3 xã nhiều hộ nghèo nhất Huyện Đắk Glong (H. ĐG):\n1. Xã Đắk R'Măng: 645 hộ\n2. Xã Quảng Hòa: 582 hộ\n3. Xã Đắk Plao: 490 hộ"
+  },
+  "149df435225c2995be3e0021862170f9": {
+    "question": "H. TĐ co bao nhiu ho ngheo do ko co dat san xuat",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Tuy Đức%' AND nguyen_nhan_ngheo LIKE '%đất sản xuất%';",
+    "answer": "Kết quả truy vấn: Huyện Tuy Đức (H. TĐ) có **850** hộ nghèo do không có đất sản xuất."
+  },
+  "58020a338ef7aee0b9570fa401b0ba6d": {
+    "question": "H. ĐS ho can ngheo thieu von san xuat",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Đắk Song%' AND nguyen_nhan_ngheo LIKE '%vốn sản xuất%';",
+    "answer": "Kết quả truy vấn: Huyện Đắk Song (H. ĐS) có **720** hộ cận nghèo do thiếu vốn sản xuất."
+  },
+  "68d400d71120d5712da67e4e0112a5e8": {
+    "question": "H. ĐRL co bao nhiu ho ngheo neo don",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk R''Lấp%' AND (so_thanh_vien = 1 OR nguyen_nhan_ngheo LIKE '%neo đơn%');",
+    "answer": "Kết quả truy vấn: Huyện Đắk R'Lấp (H. ĐRL) có **125** hộ nghèo neo đơn hoặc có 1 thành viên."
+  },
+  "e665f4155ffa08e57806e6c68ca4dedc": {
+    "question": "TP GN phuong NT co ho ngheo dtts tai cho ko",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Gia Nghĩa%' AND ten_xa_phuong LIKE '%Nghĩa Thành%' AND co_dan_toc_tai_cho = 1;",
+    "answer": "Kết quả phân tích: Thành phố Gia Nghĩa phường Nghĩa Thành (TP GN P. NT) **CÓ** hộ nghèo là người DTTS tại chỗ (Tổng số: **12** hộ)."
+  },
+  "2cb84f1c2dae0ce39ab849c42882d1db": {
+    "question": "H. CJ xa TS bnhieu ho can ngheo",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Cư Jút%' AND ten_xa_phuong LIKE '%Trúc Sơn%';",
+    "answer": "Kết quả truy vấn: Huyện Cư Jút xã Trúc Sơn (H. CJ X. TS) có **145** hộ cận nghèo."
+  },
+  "6c7479af5c730c4a9a97ca387cd0e65c": {
+    "question": "X. ĐRM o TP GN ty le ho ngheo dtts la bnhieu",
+    "sql": "SELECT COUNT(*) as tong_so_ho_ngheo, SUM(CASE WHEN is_kinh = 0 THEN 1 ELSE 0 END) as so_ho_dtts, (SUM(CASE WHEN is_kinh = 0 THEN 1.0 ELSE 0.0 END) / COUNT(*)) * 100 as ty_le_dtts FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Gia Nghĩa%' AND ten_xa_phuong LIKE '%Đắk R''Moan%';",
+    "answer": "Phân tích xã Đắk R'Moan, TP Gia Nghĩa (X. ĐRM TP GN):\n- Tổng số hộ nghèo: **112** hộ\n- Số hộ nghèo DTTS: **45** hộ\n- Tỷ lệ hộ nghèo DTTS: **40.18%**"
+  },
+  "e876b3f511c06a79fc1ba4bb4a0ab48d": {
+    "question": "H. KN xa Nam Xuan nam 2024 giam dc bnhieu ho ngheo",
+    "sql": "SELECT SUM(CASE WHEN beginningClassify = 'Hộ nghèo' THEN 1 ELSE 0 END) as ngheo_dau_ky, SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END) as ngheo_cuoi_ky, (SUM(CASE WHEN beginningClassify = 'Hộ nghèo' THEN 1 ELSE 0 END) - SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END)) as so_ho_giam FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Krông Nô%' AND ten_xa_phuong LIKE '%Nam Xuân%';",
+    "answer": "Phân tích biến động Huyện Krông Nô xã Nam Xuân (H. KN X. Nam Xuân):\n- Đầu kỳ (2023): **180** hộ nghèo\n- Cuối kỳ (2024): **142** hộ nghèo\n=> Xã Nam Xuân giảm được **38** hộ nghèo."
+  },
+  "73d7037f641791d590664a68c488bc4a": {
+    "question": "H. ĐM xa Đak N'drot co bao nhiu ho ngheo la ng kinh",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk Mil%' AND ten_xa_phuong LIKE '%Đắk N''Drót%' AND is_kinh = 1;",
+    "answer": "Kết quả truy vấn: Huyện Đắk Mil xã Đắk N'Drót (H. ĐM X. Đắk N'Drót) có **45** hộ nghèo là người Kinh."
+  },
+  "6c3081c01588c080c78fe320a39ad07a": {
+    "question": "H. TĐ binh quan nhan khau ho can ngheo",
+    "sql": "SELECT AVG(so_thanh_vien) as binh_quan_nhan_khau FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Tuy Đức%';",
+    "answer": "Kết quả: Huyện Tuy Đức (H. TĐ) có bình quân nhân khẩu trong hộ cận nghèo là **4.2** người/hộ."
+  },
+  "77199d1b3e23d59edac1dadc43368639": {
+    "question": "TP GN so sanh ho can ngheo giua P. NT va P. Nghia Tan",
+    "sql": "SELECT ten_xa_phuong, COUNT(*) as so_ho_can_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ cận nghèo' AND ten_quan_huyen LIKE '%Gia Nghĩa%' AND (ten_xa_phuong LIKE '%Nghĩa Thành%' OR ten_xa_phuong LIKE '%Nghĩa Tân%') GROUP BY ten_xa_phuong ORDER BY so_ho_can_ngheo DESC;",
+    "answer": "So sánh hộ cận nghèo tại TP Gia Nghĩa (TP GN):\n- Phường Nghĩa Thành (P. NT): **45** hộ\n- Phường Nghĩa Tân (P. Nghĩa Tân): **38** hộ\n=> Phường Nghĩa Thành nhiều hơn."
+  },
+  "e34597cb8199d2d1bd87d52c39d691bd": {
+    "question": "H. ĐG xa Quang Khe ho ngheo tu 5 nguoi tro len co bnhieu ho",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk Glong%' AND ten_xa_phuong LIKE '%Quảng Khê%' AND so_thanh_vien >= 5;",
+    "answer": "Kết quả truy vấn: Huyện Đắk Glong xã Quảng Khê (H. ĐG X. Quảng Khê) có **185** hộ nghèo có từ 5 người trở lên."
+  },
+  "66a426b8ae379d0de0f6a8052d75ed8a": {
+    "question": "H. ĐS xa Nam N'jang co ho ngheo nao om dau benh nang ko",
+    "sql": "SELECT COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk Song%' AND ten_xa_phuong LIKE '%Nâm N''Jang%' AND nguyen_nhan_ngheo LIKE '%ốm đau%';",
+    "answer": "Kết quả: Huyện Đắk Song xã Nâm N'Jang (H. ĐS X. Nâm N'Jang) **CÓ** hộ nghèo do ốm đau, bệnh nặng (Tổng số: **18** hộ)."
+  },
+  "025889f7883293b1b9b78835079852d6": {
+    "question": "H. ĐRL so sanh ho ngheo thieu dat va thieu von",
+    "sql": "SELECT CASE WHEN nguyen_nhan_ngheo LIKE '%đất sản xuất%' THEN 'Thiếu đất sản xuất' WHEN nguyen_nhan_ngheo LIKE '%vốn sản xuất%' THEN 'Thiếu vốn sản xuất' ELSE 'Khác' END as nhom_nguyen_nhan, COUNT(*) as so_ho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Đắk R''Lấp%' AND (nguyen_nhan_ngheo LIKE '%đất sản xuất%' OR nguyen_nhan_ngheo LIKE '%vốn sản xuất%') GROUP BY nhom_nguyen_nhan ORDER BY so_ho DESC;",
+    "answer": "So sánh nguyên nhân nghèo tại Huyện Đắk R'Lấp (H. ĐRL):\n- Thiếu đất sản xuất: **410** hộ\n- Thiếu vốn sản xuất: **530** hộ\n=> Thiếu vốn sản xuất gây ra nhiều hộ nghèo hơn."
+  },
+  "87f62b7c2e47b13300bc8b0ae86e9ab0": {
+    "question": "Top 3 xa it ho ngheo nhat H. CJ",
+    "sql": "SELECT ten_xa_phuong, COUNT(*) as so_ho_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE classify = 'Hộ nghèo' AND ten_quan_huyen LIKE '%Cư Jút%' GROUP BY ten_xa_phuong ORDER BY so_ho_ngheo ASC LIMIT 3;",
+    "answer": "Top 3 xã ít hộ nghèo nhất Huyện Cư Jút (H. CJ):\n1. Thị trấn Ea T'ling: 42 hộ\n2. Xã Tâm Thắng: 182 hộ\n3. Xã Nam Dong: 210 hộ"
+  },
+  "02c1fe100567d69a02869ecb6e90cf8e": {
+    "question": "H. KN va H. ĐS huyen nao giam dc nhieu ho can ngheo hon",
+    "sql": "SELECT ten_quan_huyen, SUM(CASE WHEN beginningClassify = 'Hộ cận nghèo' THEN 1 ELSE 0 END) as can_ngheo_dau_ky, SUM(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 ELSE 0 END) as can_ngheo_cuoi_ky, (SUM(CASE WHEN beginningClassify = 'Hộ cận nghèo' THEN 1 ELSE 0 END) - SUM(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 ELSE 0 END)) as so_ho_giam FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Krông Nô%' OR ten_quan_huyen LIKE '%Đắk Song%' GROUP BY ten_quan_huyen ORDER BY so_ho_giam DESC;",
+    "answer": "So sánh giảm hộ cận nghèo năm 2024:\n- Huyện Krông Nô (H. KN) giảm: **210** hộ cận nghèo.\n- Huyện Đắk Song (H. ĐS) giảm: **185** hộ cận nghèo.\n=> Huyện Krông Nô giảm được nhiều hơn."
+  },
+  "34fadb1631527a8beca10cf2f78412b4": {
+    "question": "H. CJ xa TT co bnhieu ho ngheo, bnhieu ho can ngheo va ty le dtts tai cho",
+    "sql": "SELECT COUNT(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) as so_ho_ngheo, COUNT(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 END) as so_ho_can_ngheo, SUM(CASE WHEN co_dan_toc_tai_cho = 1 THEN 1 ELSE 0 END) as ho_dtts_tai_cho, (SUM(CASE WHEN co_dan_toc_tai_cho = 1 THEN 1.0 ELSE 0.0 END) / COUNT(*)) * 100 as ty_le_dtts_tai_cho FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Cư Jút%' AND ten_xa_phuong LIKE '%Tâm Thắng%';",
+    "answer": "Phân tích Huyện Cư Jút xã Tâm Thắng (H. CJ X. TT):\n- Số hộ nghèo: **182** hộ\n- Số hộ cận nghèo: **115** hộ\n- Số hộ DTTS tại chỗ: **95** hộ\n- Tỷ lệ DTTS tại chỗ: **31.98%**"
+  },
+  "c5c0f2c257427adb8810da9266d5af17": {
+    "question": "So sanh diem B1 va B2 giua ho ong Y Bhao va ho ba H'Blai o xa Đak N'drot huyen Đak Mil",
+    "sql": "SELECT ten_chu_ho, b1 as diem_b1, b2 as diem_b2 FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Đắk Mil%' AND ten_xa_phuong LIKE '%Đắk N''Drót%' AND (ten_chu_ho LIKE '%Y Bhao%' OR ten_chu_ho LIKE '%H''Blai%');",
+    "answer": "So sánh điểm B1 và B2 tại xã Đắk N'Drót:\n- Hộ ông Y Bhao: Điểm B1 = **15**, Điểm B2 = **30**\n- Hộ bà H'Blai: Điểm B1 = **20**, Điểm B2 = **45**\n=> Hộ bà H'Blai có điểm thiếu hụt B2 cao hơn."
+  },
+  "7584490f0de115076f3be11e4f5160eb": {
+    "question": "Ho chu ho Tran Van A o xa Tam Thang huyen Cu Jut co bi thieu hut nuoc sinh hoat va nha tieu nam 2024 ko",
+    "sql": "SELECT ten_chu_ho, thieu_nuoc_sinh_hoat, thieu_nha_tieu FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Cư Jút%' AND ten_xa_phuong LIKE '%Tâm Thắng%' AND ten_chu_ho LIKE '%Trần Văn A%';",
+    "answer": "Phân tích hộ ông Trần Văn A tại xã Tâm Thắng (Cư Jút):\n- Thiếu hụt nước sinh hoạt: **CÓ** (1)\n- Thiếu hụt nhà tiêu hợp vệ sinh: **CÓ** (1)\n=> Hộ ông Trần Văn A bị thiếu hụt cả 2 dịch vụ này."
+  },
+  "8075017e762622d48341070b3cd6d856": {
+    "question": "Nam 2024 ho ong Le Van B o phuong Nghia Thanh TP GN da thoat ngheo chua, tinh trang dau ky va cuoi ky la gi",
+    "sql": "SELECT ten_chu_ho, beginningClassify as phan_loai_dau_ky, classify as phan_loai_cuoi_ky FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Gia Nghĩa%' AND ten_xa_phuong LIKE '%Nghĩa Thành%' AND ten_chu_ho LIKE '%Lê Văn B%';",
+    "answer": "Cập nhật biến động hộ ông Lê Văn B (Phường Nghĩa Thành, TP Gia Nghĩa):\n- Phân loại đầu kỳ (2023): **Hộ nghèo**\n- Phân loại cuối kỳ (2024): **Hộ thoát nghèo**\n=> Hộ ông Lê Văn B đã thoát nghèo thành công trong năm 2024."
+  },
+  "56c7db860fd7b21ce901b0eede95f84e": {
+    "question": "Ho ba Nguyen Thi C co bao nhiu thanh vien bi thieu hut bhyt va viec lam o xa Nam Dong",
+    "sql": "SELECT ten_chu_ho, so_thanh_vien, thieu_bhyte, thieu_viec_lam FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_xa_phuong LIKE '%Nam Dong%' AND ten_chu_ho LIKE '%Nguyễn Thị C%';",
+    "answer": "Thông tin hộ bà Nguyễn Thị C (Xã Nam Dong):\n- Số thành viên: **5** người\n- Thiếu hụt BHYT: **CÓ** (thiếu 2 thành viên)\n- Thiếu hụt việc làm: **CÓ** (thiếu 1 lao động chính)."
+  },
+  "669bca85e70c3d625b3e61d614ad8980": {
+    "question": "So sanh so thanh vien va tong diem thieu hut giua ho ma so MH12345 va ho MH67890 tai xa Truc Son",
+    "sql": "SELECT ma_ho, ten_chu_ho, so_thanh_vien, b2 as diem_thieu_hut FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_xa_phuong LIKE '%Trúc Sơn%' AND (ma_ho = 'MH12345' OR ma_ho = 'MH67890');",
+    "answer": "So sánh giữa 2 mã hộ tại xã Trúc Sơn:\n- Hộ MH12345: **4** thành viên, Tổng điểm thiếu hụt = **35**\n- Hộ MH67890: **6** thành viên, Tổng điểm thiếu hụt = **50**\n=> Hộ MH67890 có quy mô đông hơn và điểm thiếu hụt cao hơn."
+  },
+  "1b4ec57fe86d9d78d2bcbca0ebc18806": {
+    "question": "Chu ho Y Truong o xa Quang Hoa huyen Dak Glong co phai la ho dtts tai cho va co nguyen nhan ngheo do om dau ko",
+    "sql": "SELECT ten_chu_ho, co_dan_toc_tai_cho, nguyen_nhan_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Đắk Glong%' AND ten_xa_phuong LIKE '%Quảng Hòa%' AND ten_chu_ho LIKE '%Y Truong%';",
+    "answer": "Phân tích chủ hộ Y Truong (Xã Quảng Hòa, Đắk Glong):\n- Đồng bào DTTS tại chỗ: **ĐÚNG** (co_dan_toc_tai_cho = 1)\n- Nguyên nhân nghèo: **Có người ốm đau, bệnh nặng**."
+  },
+  "a2be5963a3f5296cb2d9464eeb68e34e": {
+    "question": "Ho ong Hoang Van D o xa Nam N'jang huyen Dak Song co bi thieu chat luong nha o va dien tich nha o nam 2024 ko",
+    "sql": "SELECT ten_chu_ho, thieu_chat_luong_nha, thieu_dien_tich_nha FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Đắk Song%' AND ten_xa_phuong LIKE '%Nâm N''Jang%' AND ten_chu_ho LIKE '%Hoàng Văn D%';",
+    "answer": "Kiểm tra hộ ông Hoàng Văn D (Xã Nâm N'Jang, Đắk Song):\n- Thiếu chất lượng nhà ở: **CÓ** (nhà tạm/dột nát)\n- Thiếu diện tích nhà ở: **KHÔNG** (đạt bình quân >8m2/người)."
+  },
+  "969f3b089c9a909de56fcab77947a3e4": {
+    "question": "Trong ho ba Trinh Thi E o thon 1 xa Đak R'moan, co bao nhiu tre em ko duoc den truong (thieu gd tre em)",
+    "sql": "SELECT ten_chu_ho, so_thanh_vien, thieu_gd_tre_em FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_xa_phuong LIKE '%Đắk R''Moan%' AND ten_chu_ho LIKE '%Trịnh Thị E%';",
+    "answer": "Kiểm tra hộ bà Trịnh Thị E (Xã Đắk R'Moan):\n- Tổng số thành viên: **6** người\n- Thiếu hụt giáo dục trẻ em: **CÓ** (1 trẻ em từ 3-15 tuổi không được đến trường)."
+  },
+  "07ad3b44440d0289a7f93310d1921568": {
+    "question": "Ho ong Vu Van F o thon 2 xa Quang Khe co bi thieu hut dich vu vien thong va pt tiep can thong tin ko",
+    "sql": "SELECT ten_chu_ho, thieu_dv_vien_thong, thieu_pt_tiep_can_tt FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_xa_phuong LIKE '%Quảng Khê%' AND ten_chu_ho LIKE '%Vũ Văn F%';",
+    "answer": "Kiểm tra hộ ông Vũ Văn F (Xã Quảng Khê):\n- Thiếu dịch vụ viễn thông: **KHÔNG** (có điện thoại di động)\n- Thiếu phương tiện tiếp cận thông tin: **CÓ** (không có tivi/radio/máy tính)."
+  },
+  "a3189a81de77dc6779c23b61504026ff": {
+    "question": "So sanh nguyen nhan ngheo va diem B1 giua ho Y Mai va ho ba H'Diem o xa Tuyen Đuc huyen Tuy Đuc",
+    "sql": "SELECT ten_chu_ho, nguyen_nhan_ngheo, b1 as diem_b1 FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Tuy Đức%' AND (ten_chu_ho LIKE '%Y Mai%' OR ten_chu_ho LIKE '%H''Diem%');",
+    "answer": "So sánh tại huyện Tuy Đức:\n- Hộ Y Mai: Nguyên nhân = **Thiếu đất sản xuất**, Điểm B1 = **10**\n- Hộ bà H'Diem: Nguyên nhân = **Thiếu vốn sản xuất**, Điểm B1 = **15**."
+  },
+  "6b65539e5620c777fd506298bcd690aa": {
+    "question": "Ho ong Pham Van G o xa Đak Plao co may thanh vien, nam 2024 co duoc phan loai la ho can ngheo ko",
+    "sql": "SELECT ten_chu_ho, so_thanh_vien, classify FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_xa_phuong LIKE '%Đắk Plao%' AND ten_chu_ho LIKE '%Phạm Văn G%';",
+    "answer": "Thông tin hộ ông Phạm Văn G (Xã Đắk Plao):\n- Số thành viên: **4** người\n- Phân loại năm 2024: **Hộ cận nghèo** (classify = 'Hộ cận nghèo')."
+  },
+  "4c37690826424b53903d322d60c5f41b": {
+    "question": "Ho ba Do Thi H o thi tran Ea T'ling co bi thieu hut dinh duong va bao hiem y te trong nam 2024 ko",
+    "sql": "SELECT ten_chu_ho, thieu_dinh_duong, thieu_bhyte FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_xa_phuong LIKE '%Ea T''ling%' AND ten_chu_ho LIKE '%Đỗ Thị H%';",
+    "answer": "Kiểm tra hộ bà Đỗ Thị H (Thị trấn Ea T'ling):\n- Thiếu hụt dinh dưỡng: **CÓ** (trẻ em suy dinh dưỡng thấp còi)\n- Thiếu hụt bảo hiểm y tế: **KHÔNG** (100% thành viên có BHYT)."
+  },
+  "c7ff57cd1e42f5331573c37814b9c706": {
+    "question": "So sanh ho ong Ly Van I va ho ba Nhan Thi K o xa Nam Xuan huyen Krong No, ho nao co so thanh vien dong hon",
+    "sql": "SELECT ten_chu_ho, so_thanh_vien FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Krông Nô%' AND ten_xa_phuong LIKE '%Nam Xuân%' AND (ten_chu_ho LIKE '%Lý Văn I%' OR ten_chu_ho LIKE '%Nhữ Thị K%') ORDER BY so_thanh_vien DESC;",
+    "answer": "So sánh nhân khẩu tại xã Nam Xuân (Krông Nô):\n- Hộ ông Lý Văn I: **6** thành viên\n- Hộ bà Nhữ Thị K: **4** thành viên\n=> Hộ ông Lý Văn I có số thành viên đông hơn."
+  },
+  "267d8fedb52473e08e4c6e4bedbd8fad": {
+    "question": "Ho ong Phan Van L o xa Đak R'mang huyen Dak Glong co su thay doi phan loai nao tu nam 2023 den nam 2024",
+    "sql": "SELECT ten_chu_ho, beginningClassify as phan_loai_2023, classify as phan_loai_2024 FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Đắk Glong%' AND ten_xa_phuong LIKE '%Đắk R''Măng%' AND ten_chu_ho LIKE '%Phan Văn L%';",
+    "answer": "Biến động phân loại hộ ông Phan Văn L (Xã Đắk R'Măng, Đắk Glong):\n- Năm 2023 (đầu kỳ): **Hộ nghèo**\n- Năm 2024 (cuối kỳ): **Hộ cận nghèo**\n=> Hộ ông Phan Văn L đã chuyển từ hộ nghèo sang hộ cận nghèo."
+  },
+  "e825375ed99b7776cf534065235bb600": {
+    "question": "Ho ba Mai Thi M o phuong Nghia Tan TP GN co may chi so thieu hut dich vu xa hoi co ban nam 2024",
+    "sql": "SELECT ten_chu_ho, (CAST(thieu_nuoc_sinh_hoat AS INTEGER) + CAST(thieu_nha_tieu AS INTEGER) + CAST(thieu_bhyte AS INTEGER) + CAST(thieu_gd_nguoi_lon AS INTEGER) + CAST(thieu_gd_tre_em AS INTEGER) + CAST(thieu_chat_luong_nha AS INTEGER) + CAST(thieu_dien_tich_nha AS INTEGER) + CAST(thieu_dv_vien_thong AS INTEGER) + CAST(thieu_pt_tiep_can_tt AS INTEGER) + CAST(thieu_viec_lam AS INTEGER) + CAST(thieu_dinh_duong AS INTEGER)) as tong_chi_so_thieu_hut FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Gia Nghĩa%' AND ten_xa_phuong LIKE '%Nghĩa Tân%' AND ten_chu_ho LIKE '%Mai Thị M%';",
+    "answer": "Phân tích hộ bà Mai Thị M (Phường Nghĩa Tân, TP Gia Nghĩa):\n- Tổng số chỉ số thiếu hụt: **4** chỉ số (bao gồm: nước sinh hoạt, nhà tiêu, bảo hiểm y tế, và việc làm)."
+  },
+  "ce6963e000082b8756853b68a4c0a87d": {
+    "question": "So sanh tinh trang thieu nuoc sinh hoat va nha tieu giua ho ong Dinh Van N va ho ba Luc Thi O o xa Truc Son",
+    "sql": "SELECT ten_chu_ho, thieu_nuoc_sinh_hoat, thieu_nha_tieu FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_xa_phuong LIKE '%Trúc Sơn%' AND (ten_chu_ho LIKE '%Đinh Văn N%' OR ten_chu_ho LIKE '%Lục Thị O%');",
+    "answer": "So sánh thiếu hụt nước và vệ sinh tại xã Trúc Sơn:\n- Hộ ông Đinh Văn N: Thiếu nước = **CÓ**, Thiếu nhà tiêu = **KHÔNG**\n- Hộ bà Lục Thị O: Thiếu nước = **CÓ**, Thiếu nhà tiêu = **CÓ**\n=> Hộ bà Lục Thị O khó khăn hơn về vệ sinh."
+  },
+  "dddbd2c2e06d1d6e1a3f9c8f6d7c1350": {
+    "question": "Ho ong Cao Van P o xa Quảng Hòa có điểm B2 bằng bao nhiêu và có thuộc diện hộ nghèo neo đơn không",
+    "sql": "SELECT ten_chu_ho, b2 as diem_b2, nguyen_nhan_ngheo FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_xa_phuong LIKE '%Quảng Hòa%' AND ten_chu_ho LIKE '%Cao Văn P%';",
+    "answer": "Thông tin hộ ông Cao Văn P (Xã Quảng Hòa):\n- Điểm thiếu hụt B2: **45** điểm\n- Diện neo đơn: **ĐÚNG** (nguyen_nhan_ngheo = 'Già cả, neo đơn')."
+  },
+  "5e1f1d3f98df231294e5a4b17e61c337": {
+    "question": "Ho ba La Thi Q o xa Đắk Đrô huyện Krông Nô có bao nhiêu thành viên là người dân tộc Kinh và có thiếu việc làm không",
+    "sql": "SELECT ten_chu_ho, so_thanh_vien, is_kinh, thieu_viec_lam FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Krông Nô%' AND ten_xa_phuong LIKE '%Đắk Đrô%' AND ten_chu_ho LIKE '%La Thị Q%';",
+    "answer": "Thông tin hộ bà La Thị Q (Xã Đắk Đrô, Krông Nô):\n- Số thành viên: **5** người\n- Dân tộc Kinh: **ĐÚNG** (is_kinh = 1)\n- Thiếu việc làm: **CÓ** (thieu_viec_lam = 1)."
+  },
+  "986f0d094177d9530460fbb4510a586b": {
+    "question": "So sanh diem B1, diem B2 va so thanh vien giua ho ong Y Ngong va ho ong Y Thom o xa Đắk Plao",
+    "sql": "SELECT ten_chu_ho, b1 as diem_b1, b2 as diem_b2, so_thanh_vien FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_xa_phuong LIKE '%Đắk Plao%' AND (ten_chu_ho LIKE '%Y Ngong%' OR ten_chu_ho LIKE '%Y Thom%');",
+    "answer": "So sánh 3 chỉ số tại xã Đắk Plao:\n- Hộ ông Y Ngong: Điểm B1 = **10**, Điểm B2 = **35**, Số thành viên = **5**\n- Hộ ông Y Thom: Điểm B1 = **15**, Điểm B2 = **40**, Số thành viên = **7**."
+  },
+  "7f329ef1196a9c3c9b4893953489ae1a": {
+    "question": "Ho ong Tạ Văn R ở xã Nâm N'Đir huyện Krông Nô có tổng điểm thiếu hụt đa chiều là bao nhiêu và thiếu những dịch vụ nào",
+    "sql": "SELECT ten_chu_ho, b2 as diem_thieu_hut, thieu_nuoc_sinh_hoat, thieu_nha_tieu, thieu_bhyte, thieu_gd_nguoi_lon, thieu_gd_tre_em, thieu_chat_luong_nha, thieu_dien_tich_nha, thieu_dv_vien_thong, thieu_pt_tiep_can_tt, thieu_viec_lam, thieu_dinh_duong FROM \"Báo cáo số liệu hộ nghèo, hộ cận nghèo năm 2024\" WHERE ten_quan_huyen LIKE '%Krông Nô%' AND ten_xa_phuong LIKE '%Nâm N''Đir%' AND ten_chu_ho LIKE '%Tạ Văn R%';",
+    "answer": "Báo cáo tổng thể hộ ông Tạ Văn R (Xã Nâm N'Đir, Krông Nô):\n- Tổng điểm thiếu hụt B2: **55** điểm\n- Danh sách dịch vụ bị thiếu hụt: **Nước sinh hoạt, Nhà tiêu hợp vệ sinh, Bảo hiểm y tế, Chất lượng nhà ở, và Dinh dưỡng**."
+  },
+  "ad7f4766779fff7699c6b848e24d286b": {
+    "question": "Lệnh SQL",
+    "sql": "SELECT \"administrative.district\" AS district, SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS poor_household_count FROM households WHERE \"classify\" = 'Hộ nghèo' AND \"administrative.year\" = 2024 GROUP BY district ORDER BY poor_household_count DESC",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "1c7a870deb831699cdbc206cfc16c0c8": {
+    "question": "Cho biết cơ cấu số lượng hộ nghèo theo từng huyện năm 2023",
+    "sql": "SELECT \"administrative.district\" AS \"Huyện\",\n       SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) AS \"Số hộ nghèo\",\n       SUM(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 END) AS \"Số hộ cận nghèo\"\nFROM households\nWHERE \"administrative.year\" = 2023\nGROUP BY \"administrative.district\";",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "ea6d860ad4aa25d14b7fcb0ae62d1875": {
+    "question": "Cho biết cơ cấu giới tính là hộ nghèo của thành phố Gia Nghĩa năm 2024",
+    "sql": "SELECT \"family.hostGender\" AS \"Giới tính\", COUNT(*) AS \"Số hộ nghèo\"\nFROM households\nWHERE classify = 'Hộ nghèo' AND \"administrative.district\" ILIKE '%Gia Nghĩa%' AND \"administrative.year\" = 2024\nGROUP BY \"family.hostGender\";",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "7239a625c8201cc7272a9b4903d01f10": {
+    "question": "Top 5 huyện có số lượng hộ nghèo thấp nhất năm 2024",
+    "sql": "SELECT \"administrative.district\" AS \"Huyện\", COUNT(*) AS \"Số hộ nghèo\"\nFROM households\nWHERE classify = 'Hộ nghèo' AND \"administrative.year\" = 2024\nGROUP BY \"administrative.district\"\nORDER BY \"Số hộ nghèo\" ASC\nLIMIT 5;",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "0e593c0d5446b29b90c8609b8a5de9d4": {
+    "question": "Hiển thị biểu đồ xu hướng hộ nghèo và cận nghèo của thành phố gia nghĩa và huyện tuy đức qua các năm",
+    "sql": "SELECT \"administrative.year\" AS \"Năm\",\n       SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) AS \"Số hộ nghèo\",\n       SUM(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 END) AS \"Số hộ cận nghèo\"\nFROM households\nWHERE \"administrative.district\" IN ('Thành phố Gia Nghĩa', 'Huyện Tuy Đức')\nGROUP BY \"administrative.year\"\nORDER BY \"administrative.year\";",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "a9fcef3ed3bb0269dca7d5cc65b56f31": {
+    "question": "Biểu đồ tỷ lệ hộ cận nghèo từ năm 2023 đến 2024 của thành phố gia nghĩa.",
+    "sql": "SELECT \"administrative.year\" AS \"Năm\", COUNT(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 END) * 100.0 / COUNT(*) AS \"Tỷ lệ hộ cận nghèo\"\nFROM households\nWHERE \"administrative.district\" ILIKE '%Gia Nghĩa%' AND \"administrative.year\" IN (2023, 2024)\nGROUP BY \"administrative.year\";",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "5bdf286723259073188dc9a40451d96c": {
+    "question": "Tôi muốn nhìn nhanh thông qua biểu đồ xem số hộ nghèo ở từng huyện thay đổi như thế nào từ 2023 sang 2024.",
+    "sql": "SELECT \"administrative.district\" AS \"Huyện\",\n       COUNT(CASE WHEN \"administrative.year\" = 2023 AND classify = 'Hộ nghèo' THEN 1 END) AS \"Số hộ nghèo 2023\",\n       COUNT(CASE WHEN \"administrative.year\" = 2024 AND classify = 'Hộ nghèo' THEN 1 END) AS \"Số hộ nghèo 2024\"\nFROM households\nWHERE classify = 'Hộ nghèo'\nGROUP BY \"administrative.district\";",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "83e2c1fee9be187f8f4e8a3f653c851b": {
+    "question": "Hiện nay hộ nghèo và hộ cận nghèo đang chiếm tỷ trọng ra sao trên toàn tỉnh năm 2024?",
+    "sql": "SELECT \"classify\" AS \"Phân loại hộ\", COUNT(*) AS \"Số hộ\" FROM households WHERE \"administrative.year\" = 2024 GROUP BY \"classify\";",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "bdb78abfd04555ac389e4bb648a2d5fd": {
+    "question": "Lập biểu đồ các huyện có số hộ nghèo cao nhất năm 2023, chỉ cần lấy vài huyện nổi bật thôi.",
+    "sql": "SELECT \"administrative.district\" AS \"Huyện\", COUNT(*) AS \"Số hộ nghèo\"\nFROM households\nWHERE classify = 'Hộ nghèo' AND \"administrative.year\" = 2023\nGROUP BY \"administrative.district\"\nORDER BY \"Số hộ nghèo\" DESC\nLIMIT 5;",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "1bf1fb918635573357f1623fd8a889c8": {
+    "question": "Tôi muốn xem phân bố hộ nghèo và hộ cận nghèo qua các năm theo từng huyện để dễ so sánh.",
+    "sql": "SELECT \"administrative.year\" AS \"Năm\", \"administrative.district\" AS \"Huyện\",\n       SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END) AS \"Số hộ nghèo\",\n       SUM(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS \"Số hộ cận nghèo\"\nFROM households\nWHERE \"administrative.year\" IN (2023, 2024)\nGROUP BY \"administrative.year\", \"administrative.district\";",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "d96b79d6db2225a9b8a77e4ba127c0a9": {
+    "question": "Trong huyện Tuy Đức, xã nào đang có nhiều hộ nghèo nhất?",
+    "sql": "SELECT \"administrative.commune\" AS \"Xã\", COUNT(*) AS \"Số hộ nghèo\"\nFROM households\nWHERE classify = 'Hộ nghèo' AND \"administrative.district\" ILIKE '%Tuy Đức%'\nGROUP BY \"administrative.commune\"\nORDER BY \"Số hộ nghèo\" DESC\nLIMIT 1;",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "85f1656e974e2f082f49d4db4544c698": {
+    "question": "Thành phố Gia Nghĩa có cải thiện tình hình hộ nghèo sau một năm không? Hiển thị giúp tôi dễ nhìn.",
+    "sql": "SELECT \"administrative.year\" AS \"Năm\",\n       SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) AS \"Số hộ nghèo\"\nFROM households\nWHERE \"administrative.district\" ILIKE '%Gia Nghĩa%' AND \"administrative.year\" IN (2023, 2024)\nGROUP BY \"administrative.year\";",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  },
+  "20bdd7a4348d9bc5d50766b85105c8a2": {
+    "question": "Những thiếu hụt nào xuất hiện nhiều nhất trong nhóm hộ nghèo?",
+    "sql": "SELECT SUM(CAST(\"deprivation.cleanWater\" AS INT)) AS \"Thiếu nước sinh hoạt\", SUM(CAST(\"deprivation.hygienicToilet\" AS INT)) AS \"Thiếu nhà tiêu hợp vệ sinh\", SUM(CAST(\"reason.lackProductionLand\" AS INT)) AS \"Thiếu đất sản xuất\", SUM(CAST(\"reason.lackCapital\" AS INT)) AS \"Thiếu vốn\", SUM(CAST(\"reason.lackLabor\" AS INT)) AS \"Thiếu lao động\", SUM(CAST(\"reason.illnessOrAccident\" AS INT)) AS \"Ốm đau hoặc tai nạn\" FROM households WHERE classify = 'Hộ nghèo';",
+    "answer": "Đã trích xuất thành công dữ liệu SQL chuẩn."
+  }
+}

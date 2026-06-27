@@ -1,3 +1,4 @@
+
 # Câu hỏi và Truy vấn SQL tương ứng
 
 Tài liệu cung cấp các câu hỏi, các lệnh SQL tương ứng, và đáp án từ SQL (context) để LLM trả lời.
@@ -740,7 +741,7 @@ SELECT "family.hostGender" AS gender, COUNT(*) AS count FROM households WHERE "a
 ]
 ```
 
-# Chart Query
+# Query Chart
 
 ### Câu 1: Cho biết cơ cấu số lượng hộ nghèo theo từng huyện năm 2023
 

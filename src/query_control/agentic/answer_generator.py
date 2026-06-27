@@ -3,21 +3,30 @@ from __future__ import annotations
 import sys
 import pandas as pd
 from pathlib import Path
+from typing import Generator, Any
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-sys.path.append(str(PROJECT_ROOT))
-from src.query_control.llm_helper import call_llm
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+from src.query_control.llm_helper import call_llm, stream_llm
 
 class AnswerGenerator:
-    """Agent tổng hợp kết quả thành câu trả lời tự nhiên."""
-    def generate(self, user_question: str, df: pd.DataFrame | None) -> str:
+    """Agent tổng hợp kết quả thành câu trả lời tự nhiên, hỗ trợ streaming chunk thô."""
+    
+    def generate(self, user_question: str, df: pd.DataFrame | None, stream: bool = False) -> str | Generator[str, None, None]:
         if df is None or df.empty:
-            return "Tôi không tìm thấy dữ liệu phù hợp hoặc hệ thống gặp lỗi khi truy xuất dữ liệu."
+            msg = "Tôi không tìm thấy dữ liệu phù hợp hoặc hệ thống gặp lỗi khi truy xuất dữ liệu."
+            if stream:
+                return (chunk for chunk in [msg])
+            return msg
             
         # Bypass LLM if the result is a large table (> 5 rows)
         if df.shape[0] > 5:
             from src.query_control.agentic.utils import normalize_columns
-            return normalize_columns(df)
+            tbl = normalize_columns(df)
+            if stream:
+                return (chunk for chunk in [tbl])
+            return tbl
             
         # Limit rows to avoid token overflow
         data_str = df.head(50).to_csv(index=False)
@@ -31,11 +40,19 @@ Nhiệm vụ của bạn là dựa vào kết quả dữ liệu được cung c�
 """
         user_prompt = f"Câu hỏi: {user_question}\n\nKết quả dữ liệu (CSV format, max 50 rows):\n{data_str}\n\nHãy sinh câu trả lời tự nhiên dựa trên dữ liệu trên."
         
-        answer = call_llm(
-            system_prompt=system_prompt,
-            user_prompt=user_prompt,
-            temperature=0.3,
-            max_tokens=800,
-            response_json=False
-        )
-        return answer.strip()
+        if stream:
+            return stream_llm(
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+                temperature=0.3,
+                max_tokens=800
+            )
+        else:
+            answer = call_llm(
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
+                temperature=0.3,
+                max_tokens=800,
+                response_json=False
+            )
+            return answer.strip()
