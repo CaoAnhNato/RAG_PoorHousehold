@@ -109,7 +109,7 @@ class UIHistoryStore:
             encoding="utf-8",
         )
 
-    def append_turn(self, session_id: str, question: str, answer: str, chart_json: str | None = None, data_json: str | None = None) -> None:
+    def append_turn(self, session_id: str, question: str, answer: str, chart_json: str | None = None, data_json: str | None = None, docx_path: str | None = None, pdf_path: str | None = None) -> None:
         session_data = self.load(session_id)
         session_data["turns"].append(
             {
@@ -117,6 +117,8 @@ class UIHistoryStore:
                 "answer": answer,
                 "chart_json": chart_json,
                 "data_json": data_json,
+                "docx_path": docx_path,
+                "pdf_path": pdf_path,
                 "timestamp": self._now(),
             }
         )
@@ -228,6 +230,11 @@ def load_session_into_state(session_id: str, history_store: UIHistoryStore) -> N
                 assistant_msg["data"] = pd.read_json(turn.get("data_json"), orient="split")
             except Exception:
                 pass
+                
+        if turn.get("docx_path"):
+            assistant_msg["docx_path"] = turn.get("docx_path")
+        if turn.get("pdf_path"):
+            assistant_msg["pdf_path"] = turn.get("pdf_path")
                 
         st.session_state.messages.append(assistant_msg)
 
@@ -365,13 +372,46 @@ def run_pipeline(user_prompt: str, session_id: str, mode: str) -> dict[str, Any]
         return response
 
 
-def format_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    # Gộp các dòng trùng giá trị bằng cách thiết lập MultiIndex
+def format_dataframe(df: pd.DataFrame) -> Any:
+    if not df.columns.is_unique:
+        df = df.loc[:, ~df.columns.duplicated()]
+
     idx_candidates = ["Năm", "Huyện", "Xã", "Thôn/Bon", "Phân loại hộ", "Loại hộ", "Thiếu hụt"]
-    idx_cols = [c for c in df.columns if c in idx_candidates]
-    if idx_cols:
-        df = df.sort_values(by=idx_cols)
-        df = df.set_index(idx_cols)
+    
+    # Nếu DataFrame quá rộng (>5 cột), ta thực hiện xoay (transpose)
+    if len(df.columns) > 5:
+        idx_cols = [c for c in df.columns if c in idx_candidates]
+        if idx_cols:
+            df = df.set_index(idx_cols)
+        df = df.T
+        df = df.reset_index()
+        # Rename cột chứa tên chỉ số (cột cũ) thành tên chung
+        df.rename(columns={'index': 'Chỉ tiêu / Danh mục'}, inplace=True)
+        # Ép tất cả các tên cột thành string để Styler không bị lỗi MultiIndex
+        df.columns = [str(c) if not isinstance(c, tuple) else " - ".join(map(str, c)) for c in df.columns]
+    else:
+        idx_cols = [c for c in df.columns if c in idx_candidates]
+        # Sort: Nếu có cột số, ưu tiên sort giảm dần để hiển thị giá trị "cao nhất" lên top
+        numeric_cols = df.select_dtypes(include=['number']).columns
+        if len(numeric_cols) > 0 and len(idx_cols) <= 2:
+            df = df.sort_values(by=numeric_cols[0], ascending=False)
+        elif idx_cols:
+            df = df.sort_values(by=idx_cols)
+            
+        if idx_cols:
+            df = df.set_index(idx_cols)
+        
+    # Áp dụng Pandas Styler để bôi đậm giá trị lớn nhất (đối với các cột số)
+    if len(df) <= 100 and df.index.is_unique and df.columns.is_unique:
+        def highlight_max(s):
+            if pd.api.types.is_numeric_dtype(s.dtype) and len(s) > 0:
+                is_max = s == s.max()
+                return ['font-weight: bold; color: #ff4b4b;' if v else '' for v in is_max]
+            return [''] * len(s)
+        try:
+            return df.style.apply(highlight_max)
+        except Exception:
+            return df
     return df
 
 def assistant_text_from_response(response: dict[str, Any]) -> Any:
@@ -390,10 +430,10 @@ def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
         
         ans = assistant_text_from_response(response)
         
-        # Nếu LLM quyết định trả về bảng (do > 5 dòng)
         if hasattr(ans, 'to_markdown'):
             formatted_ans = format_dataframe(ans)
-            hide_idx = True if formatted_ans.index.name is None and not isinstance(formatted_ans.index, pd.MultiIndex) else False
+            underlying_df = getattr(formatted_ans, "data", formatted_ans)
+            hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
             st.dataframe(formatted_ans, hide_index=hide_idx)
             final_text = "Kết quả bảng dữ liệu."
             response["data"] = formatted_ans
@@ -404,16 +444,28 @@ def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
         if response.get("chart_fig"):
             st.plotly_chart(response["chart_fig"], width="stretch", key="current_chart")
             
-        # Nếu có data đi kèm (trong chế độ Biểu đồ hoặc data chưa được in ra)
         if response.get("data") is not None and not response.get("data").empty and not hasattr(ans, 'to_markdown'):
             formatted_data = format_dataframe(response["data"])
-            hide_idx = True if formatted_data.index.name is None and not isinstance(formatted_data.index, pd.MultiIndex) else False
+            underlying_df = getattr(formatted_data, "data", formatted_data)
+            hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
             st.dataframe(formatted_data, hide_index=hide_idx)
             response["data"] = formatted_data
+
+        if response.get("docx_path") and response.get("pdf_path"):
+            docx_p = Path(response["docx_path"])
+            pdf_p = Path(response["pdf_path"])
+            if docx_p.exists() and pdf_p.exists():
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.download_button(label="📥 Tải báo cáo (Word / .docx)", data=docx_p.read_bytes(), file_name=docx_p.name, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key="current_docx_dl")
+                with col2:
+                    st.download_button(label="📥 Tải báo cáo (PDF)", data=pdf_p.read_bytes(), file_name=pdf_p.name, mime="application/pdf", key="current_pdf_dl")
 
     assistant_msg = {"role": "assistant", "content": final_text}
     chart_json_str = None
     data_json_str = None
+    docx_path_str = response.get("docx_path")
+    pdf_path_str = response.get("pdf_path")
     
     if response.get("chart_fig"):
         try:
@@ -422,16 +474,20 @@ def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
         except Exception:
             pass
             
-    if response.get("data") is not None and not response.get("data").empty:
+    if response.get("data") is not None and not getattr(getattr(response.get("data"), "data", response.get("data")), "empty", True):
         try:
+            underlying_df = getattr(response["data"], "data", response["data"])
             assistant_msg["data"] = response["data"]
-            data_json_str = response["data"].to_json(orient="split")
+            data_json_str = underlying_df.to_json(orient="split")
         except Exception:
             pass
 
+    if docx_path_str: assistant_msg["docx_path"] = docx_path_str
+    if pdf_path_str: assistant_msg["pdf_path"] = pdf_path_str
+
     st.session_state.messages.append(assistant_msg)
     st.session_state.pending_options = []
-    history_store.append_turn(session_id=session_id, question=user_prompt, answer=final_text, chart_json=chart_json_str, data_json=data_json_str)
+    history_store.append_turn(session_id=session_id, question=user_prompt, answer=final_text, chart_json=chart_json_str, data_json=data_json_str, docx_path=docx_path_str, pdf_path=pdf_path_str)
 
 
 def render_pending_options(history_store: UIHistoryStore) -> None:
@@ -472,10 +528,20 @@ def main() -> None:
             st.markdown(message["content"])
             if message.get("chart_fig"):
                 st.plotly_chart(message["chart_fig"], width="stretch", key=f"history_chart_{idx}")
-            if "data" in message and message.get("data") is not None and not message["data"].empty:
+            if "data" in message and message.get("data") is not None and not getattr(getattr(message.get("data"), "data", message.get("data")), "empty", True):
                 df = message["data"]
-                hide_idx = True if df.index.name is None and not isinstance(df.index, pd.MultiIndex) else False
+                underlying_df = getattr(df, "data", df)
+                hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
                 st.dataframe(df, hide_index=hide_idx)
+            if message.get("docx_path") and message.get("pdf_path"):
+                docx_p = Path(message["docx_path"])
+                pdf_p = Path(message["pdf_path"])
+                if docx_p.exists() and pdf_p.exists():
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.download_button(label="📥 Tải báo cáo (Word / .docx)", data=docx_p.read_bytes(), file_name=docx_p.name, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key=f"hist_docx_{idx}")
+                    with col2:
+                        st.download_button(label="📥 Tải báo cáo (PDF)", data=pdf_p.read_bytes(), file_name=pdf_p.name, mime="application/pdf", key=f"hist_pdf_{idx}")
 
     render_pending_options(history_store)
 

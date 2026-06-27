@@ -8,6 +8,8 @@ từ đó định nghĩa các Dimensions, Measures, Metrics, Business Terms và 
 from __future__ import annotations
 import json
 import os
+import sys
+if hasattr(sys.stdout, 'reconfigure'): sys.stdout.reconfigure(encoding='utf-8')
 from pathlib import Path
 import datetime as dt
 from typing import Any
@@ -156,6 +158,26 @@ def main() -> None:
             "allowed_for_filter": True,
             "query_examples": ["có phải dân tộc thiểu số", "là hộ dtts"]
         },
+        "is_kinh": {
+            "name_vi": "Là hộ Kinh",
+            "definition": "Xác định hộ có phải là dân tộc Kinh không",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["family.isKinh"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["hộ Kinh", "là hộ kinh", "dân tộc kinh"]
+        },
+        "co_dan_toc_tai_cho": {
+            "name_vi": "Có dân tộc tại chỗ",
+            "definition": "Xác định hộ có thuộc dân tộc tại chỗ theo trường coDanTocTaiCho",
+            "semantic_type": "category",
+            "base_table": "households",
+            "physical_columns": ["family.coDanTocTaiCho"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["có dân tộc tại chỗ", "đồng bào dân tộc tại chỗ"]
+        },
         "poverty_detail": {
             "name_vi": "Chi tiết phân loại hộ nghèo",
             "definition": "Phân loại chi tiết nguyên nhân hộ nghèo",
@@ -265,6 +287,36 @@ def main() -> None:
             "allowed_for_group_by": True,
             "allowed_for_filter": True,
             "query_examples": ["bị ốm đau", "tai nạn"]
+        },
+        "lack_production_tools": {
+            "name_vi": "Lý do: Thiếu công cụ sản xuất",
+            "definition": "Xác định nguyên nhân nghèo do thiếu công cụ sản xuất",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["reason.lackProductionTools"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["thiếu công cụ sản xuất", "không có công cụ"]
+        },
+        "lack_production_knowledge": {
+            "name_vi": "Lý do: Thiếu kiến thức sản xuất",
+            "definition": "Xác định nguyên nhân nghèo do thiếu kiến thức sản xuất",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["reason.lackProductionKnowledge"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["thiếu kiến thức sản xuất", "không có kiến thức sản xuất"]
+        },
+        "lack_labor_skill": {
+            "name_vi": "Lý do: Thiếu kỹ năng lao động",
+            "definition": "Xác định nguyên nhân nghèo do thiếu kỹ năng lao động",
+            "semantic_type": "boolean",
+            "base_table": "households",
+            "physical_columns": ["reason.lackLaborSkill"],
+            "allowed_for_group_by": True,
+            "allowed_for_filter": True,
+            "query_examples": ["thiếu kỹ năng lao động", "không có tay nghề"]
         }
     }
     
@@ -305,6 +357,42 @@ def main() -> None:
             "default_aggregation": "avg",
             "allowed_aggregations": ["avg", "sum", "min", "max"],
             "query_examples": ["quy mô hộ", "số nhân khẩu"]
+        },
+        "children_total": {
+            "name_vi": "Tổng số trẻ em",
+            "definition": "Tổng số trẻ em trong hộ nghèo, cận nghèo",
+            "base_table": "households",
+            "physical_columns": ["children.totalCount"],
+            "default_aggregation": "sum",
+            "allowed_aggregations": ["sum", "avg", "min", "max"],
+            "query_examples": ["tổng số trẻ em", "trẻ em hộ nghèo", "trẻ em hộ cận nghèo", "số lượng trẻ em"]
+        },
+        "children_health_insurance": {
+            "name_vi": "Trẻ em thiếu hụt bảo hiểm y tế",
+            "definition": "Số trẻ em bị thiếu hụt bảo hiểm y tế trong hộ gia đình",
+            "base_table": "households",
+            "physical_columns": ["children.lackHealthInsuranceCount"],
+            "default_aggregation": "sum",
+            "allowed_aggregations": ["sum", "avg", "min", "max"],
+            "query_examples": ["thiếu hụt bảo hiểm y tế trẻ em", "trẻ em không có bảo hiểm y tế"]
+        },
+        "children_nutrition": {
+            "name_vi": "Trẻ em thiếu hụt dinh dưỡng",
+            "definition": "Số trẻ em bị thiếu hụt dinh dưỡng trong hộ gia đình",
+            "base_table": "households",
+            "physical_columns": ["children.nutritionDeprivedCount"],
+            "default_aggregation": "sum",
+            "allowed_aggregations": ["sum", "avg", "min", "max"],
+            "query_examples": ["thiếu hụt dinh dưỡng trẻ em", "trẻ em suy dinh dưỡng"]
+        },
+        "children_education": {
+            "name_vi": "Trẻ em thiếu hụt giáo dục",
+            "definition": "Số trẻ em bị thiếu hụt giáo dục (không tham gia nhà trường) trong hộ gia đình",
+            "base_table": "households",
+            "physical_columns": ["children.schoolAttendanceDeprivedCount"],
+            "default_aggregation": "sum",
+            "allowed_aggregations": ["sum", "avg", "min", "max"],
+            "query_examples": ["thiếu hụt giáo dục trẻ em", "trẻ em không đi học", "giáo dục hộ nghèo", "giáo dục hộ cận nghèo"]
         }
     }
     

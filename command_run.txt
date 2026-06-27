@@ -1,0 +1,8 @@
+0. Active env:
+.\venv\Scripts\activate
+
+1. Chatbot CLI: 
+python src/query_control/run_mvp_chatbot.py
+
+2. Chatbot Streamlit:
+streamlit.exe run app/streamlit_chatbot.py

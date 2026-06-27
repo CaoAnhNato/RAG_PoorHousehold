@@ -8,6 +8,7 @@ và các câu hỏi mẫu để sinh embedding, lưu trữ vào Qdrant Vector DB
 from __future__ import annotations
 import os
 import sys
+if hasattr(sys.stdout, 'reconfigure'): sys.stdout.reconfigure(encoding='utf-8')
 import json
 import uuid
 import argparse

@@ -34,12 +34,72 @@ class AgenticPipeline:
         print(f"\n--- [AgenticPipeline] Processing: {user_question} | Mode: {mode} ---")
         
         if mode == "Báo Cáo":
-            return {
-                "question": user_question,
-                "sql": "",
-                "answer": "Tính năng Báo Cáo đang phát triển.",
-                "data": None
-            }
+            from src.query_control.llm_helper import call_llm
+            from src.query_control.agentic.report_generator import ReportGenerator
+            import json
+            
+            # Trích xuất nhanh thông tin report_id, year, district bằng LLM
+            prompt = f"""Bạn là công cụ trích xuất thông tin báo cáo. Hãy phân tích câu hỏi sau để xác định:
+1. report_id: Mã số báo cáo (chọn từ 1 đến 15).
+   - 1: Tổng hợp kết quả rà soát mức sống trung bình (hoặc HC, CN, NL, NN có mức sống trung bình)
+   - 2: Tổng hợp diễn biến hộ nghèo
+   - 3: Tổng hợp diễn biến hộ cận nghèo
+   - 4: Phân tích chỉ số thiếu hụt dịch vụ xã hội cơ bản hộ nghèo (số lượng)
+   - 5: Phân tích tỷ lệ các chỉ số thiếu hụt dịch vụ xã hội cơ bản hộ nghèo (tỷ lệ %)
+   - 6: Phân tích chỉ số thiếu hụt dịch vụ xã hội cơ bản hộ cận nghèo (số lượng)
+   - 7: Phân tích tỷ lệ các chỉ số thiếu hụt dịch vụ xã hội cơ bản hộ cận nghèo (tỷ lệ %)
+   - 8: Tổng hợp phân loại hộ nghèo, hộ cận nghèo
+   - 9: Phân tích hộ nghèo, hộ cận nghèo theo dân tộc
+   - 10: Phân tích hộ nghèo, hộ cận nghèo theo nguyên nhân nghèo
+   - 11: Tổng hợp chỉ tiêu thiếu hụt của trẻ em thuộc hộ nghèo, hộ cận nghèo
+   - 12: Tổng hợp hộ nghèo đa chiều thiếu hụt theo các chỉ số đo lường
+   - 13: Tổng hợp hộ cận nghèo đa chiều thiếu hụt theo các chỉ số đo lường
+   - 14: Danh sách chi tiết hộ cận nghèo
+   - 15: Danh sách chi tiết hộ nghèo
+   Nếu câu hỏi không nói rõ, mặc định là 1.
+2. year: Năm thống kê (ví dụ 2023, 2024). Nếu không nêu rõ, mặc định là 2024.
+3. district: Tên Huyện/Thành phố muốn lọc (ví dụ: Gia Nghĩa, Cư Jút, Đắk Song, Đắk Mil, Đắk R'Lấp, Tuy Đức, Krông Nô, Đắk Glong). Nếu hỏi toàn tỉnh hoặc không nhắc đến huyện nào, để null.
+
+Trả về DUY NHẤT một chuỗi JSON hợp lệ với các key: "report_id" (int), "year" (int), "district" (str hoặc null). Không kèm markdown hay giải thích.
+Câu hỏi: {user_question}"""
+            
+            try:
+                res_raw = call_llm(system_prompt="Bạn là công cụ trích xuất JSON.", user_prompt=prompt, temperature=0.0, max_tokens=100, response_json=True)
+                # Parse JSON
+                if isinstance(res_raw, str):
+                    res_clean = res_raw.strip()
+                    if res_clean.startswith("```json"): res_clean = res_clean[7:]
+                    if res_clean.startswith("```"): res_clean = res_clean[3:]
+                    if res_clean.endswith("```"): res_clean = res_clean[:-3]
+                    info = json.loads(res_clean.strip())
+                else:
+                    info = res_raw
+                    
+                report_id = int(info.get("report_id", 1))
+                year = int(info.get("year", 2024))
+                district = info.get("district")
+            except Exception as e:
+                print(f"[AgenticPipeline] Lỗi trích xuất LLM Báo Cáo: {e}. Dùng mặc định.")
+                report_id, year, district = 1, 2024, None
+                
+            try:
+                rep_data = ReportGenerator.generate(report_id, year, district)
+                return {
+                    "question": user_question,
+                    "sql": rep_data["sql"],
+                    "answer": rep_data["answer"],
+                    "data": rep_data["df"],
+                    "chart_fig": None,
+                    "docx_path": str(rep_data["docx_path"]),
+                    "pdf_path": str(rep_data["pdf_path"])
+                }
+            except Exception as e:
+                return {
+                    "question": user_question,
+                    "sql": "",
+                    "answer": f"Lỗi khi tạo báo cáo số {report_id}: {str(e)}",
+                    "data": None
+                }
             
         # 0. Domain Gate: Chặn các câu hỏi ngoài luồng, không đủ thông tin hoặc câu hỏi lý thuyết
         gate_res = self.domain_gate.classify(user_question)

@@ -23,9 +23,11 @@ class AnswerGenerator:
         data_str = df.head(50).to_csv(index=False)
         
         system_prompt = """Bạn là trợ lý ảo phân tích dữ liệu chuyên nghiệp.
-Nhiệm vụ của bạn là dựa vào kết quả dữ liệu được cung cấp để trả lời câu hỏi của người dùng một cách chính xác, ngắn gọn và tự nhiên nhất.
-Không cần đề cập đến việc bạn lấy dữ liệu từ đâu hay bảng biểu nào, hãy trả lời thẳng vào câu hỏi.
-Nếu dữ liệu là danh sách (liệt kê), hãy trình bày dạng gạch đầu dòng rõ ràng.
+Nhiệm vụ của bạn là dựa vào kết quả dữ liệu được cung cấp để trả lời câu hỏi của người dùng một cách chính xác, tự nhiên và CÓ TÍNH PHÂN TÍCH. Yêu cầu bắt buộc:
+- BẮT BUỘC đề cập đến MỐC THỜI GIAN (ví dụ: "Trong năm 2024...", "Tính đến năm 2023...") ngay ở đầu câu trả lời dựa trên cột Năm (nếu có).
+- KHÔNG CHỈ BÁO CÁO SỐ LIỆU ĐƠN THUẦN: Hãy mở rộng câu trả lời bằng cách so sánh sự chênh lệch (gap) giữa đối tượng đứng nhất và phần còn lại, nhận xét về khoảng cách, tỷ trọng, hoặc xu hướng (nếu có dữ liệu qua các năm).
+- Không cần đề cập đến việc bạn lấy dữ liệu từ đâu hay bảng biểu nào, hãy trả lời thẳng vào câu hỏi một cách mượt mà và chuyên nghiệp.
+- Nếu dữ liệu là danh sách (liệt kê), hãy trình bày dạng gạch đầu dòng rõ ràng.
 """
         user_prompt = f"Câu hỏi: {user_question}\n\nKết quả dữ liệu (CSV format, max 50 rows):\n{data_str}\n\nHãy sinh câu trả lời tự nhiên dựa trên dữ liệu trên."
         

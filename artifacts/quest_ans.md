@@ -740,12 +740,12 @@ SELECT "family.hostGender" AS gender, COUNT(*) AS count FROM households WHERE "a
 ]
 ```
 
-
-## Chart Query
+# Chart Query
 
 ### Câu 1: Cho biết cơ cấu số lượng hộ nghèo theo từng huyện năm 2023
 
 **SQL:**
+
 ```sql
 SELECT "administrative.district" AS "Huyện", 
        SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) AS "Số hộ nghèo", 
@@ -757,18 +757,19 @@ GROUP BY "administrative.district";
 
 **DataFrame:**
 
-| Huyện               |   Số hộ nghèo |   Số hộ cận nghèo |
-|:--------------------|--------------:|------------------:|
-| Huyện Đắk RLấp      |           466 |               534 |
-| Huyện Đắk Mil       |           470 |               538 |
-| Huyện Đăk Glong     |          1344 |              2009 |
-| Huyện Krông Nô      |           370 |              1651 |
-| Huyện Tuy Đức       |          1674 |              1665 |
-| Huyện Đắk Song      |           458 |               893 |
-| Thành phố Gia Nghĩa |            88 |               167 |
-| Huyện Cư Jút        |           809 |               305 |
+| Huyện                 | Số hộ nghèo | Số hộ cận nghèo |
+| :--------------------- | -------------: | ------------------: |
+| Huyện Đắk RLấp     |            466 |                 534 |
+| Huyện Đắk Mil       |            470 |                 538 |
+| Huyện Đăk Glong     |           1344 |                2009 |
+| Huyện Krông Nô      |            370 |                1651 |
+| Huyện Tuy Đức       |           1674 |                1665 |
+| Huyện Đắk Song      |            458 |                 893 |
+| Thành phố Gia Nghĩa |             88 |                 167 |
+| Huyện Cư Jút        |            809 |                 305 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -819,6 +820,7 @@ GROUP BY "administrative.district";
 ### Câu 2: Cho biết cơ cấu giới tính là hộ nghèo của thành phố Gia Nghĩa năm 2024
 
 **SQL:**
+
 ```sql
 SELECT "family.hostGender" AS "Giới tính", COUNT(*) AS "Số hộ nghèo" 
 FROM households 
@@ -828,12 +830,13 @@ GROUP BY "family.hostGender";
 
 **DataFrame:**
 
-| Giới tính   |   Số hộ nghèo |
-|:------------|--------------:|
-| Nữ          |            31 |
-| Nam         |            20 |
+| Giới tính | Số hộ nghèo |
+| :---------- | -------------: |
+| Nữ         |             31 |
+| Nam         |             20 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -852,6 +855,7 @@ GROUP BY "family.hostGender";
 ### Câu 3: Top 5 huyện có số lượng hộ nghèo thấp nhất năm 2024
 
 **SQL:**
+
 ```sql
 SELECT "administrative.district" AS "Huyện", COUNT(*) AS "Số hộ nghèo" 
 FROM households 
@@ -863,15 +867,16 @@ LIMIT 5;
 
 **DataFrame:**
 
-| Huyện               |   Số hộ nghèo |
-|:--------------------|--------------:|
-| Thành phố Gia Nghĩa |            51 |
-| Huyện Đắk RLấp      |           135 |
-| Huyện Krông Nô      |           189 |
-| Huyện Cư Jút        |           204 |
-| Huyện Đắk Mil       |           221 |
+| Huyện                 | Số hộ nghèo |
+| :--------------------- | -------------: |
+| Thành phố Gia Nghĩa |             51 |
+| Huyện Đắk RLấp     |            135 |
+| Huyện Krông Nô      |            189 |
+| Huyện Cư Jút        |            204 |
+| Huyện Đắk Mil       |            221 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -902,6 +907,7 @@ LIMIT 5;
 ### Câu 4: Hiển thị biểu đồ xu hướng hộ nghèo và cận nghèo của thành phố gia nghĩa và huyện tuy đức qua các năm
 
 **SQL:**
+
 ```sql
 SELECT "administrative.year" AS "Năm", 
        SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) AS "Số hộ nghèo", 
@@ -914,12 +920,13 @@ ORDER BY "administrative.year";
 
 **DataFrame:**
 
-|   Năm |   Số hộ nghèo |   Số hộ cận nghèo |
-|------:|--------------:|------------------:|
-|  2023 |          1762 |              1832 |
-|  2024 |           880 |              1059 |
+| Năm | Số hộ nghèo | Số hộ cận nghèo |
+| ---: | -------------: | ------------------: |
+| 2023 |           1762 |                1832 |
+| 2024 |            880 |                1059 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -940,6 +947,7 @@ ORDER BY "administrative.year";
 ### Câu 5: Biểu đồ tỷ lệ hộ cận nghèo từ năm 2023 đến 2024 của thành phố gia nghĩa.
 
 **SQL:**
+
 ```sql
 SELECT "administrative.year" AS "Năm", COUNT(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 END) * 100.0 / COUNT(*) AS "Tỷ lệ hộ cận nghèo" 
 FROM households 
@@ -949,12 +957,13 @@ GROUP BY "administrative.year";
 
 **DataFrame:**
 
-|   Năm |   Tỷ lệ hộ cận nghèo |
-|------:|---------------------:|
-|  2023 |              65.4902 |
-|  2024 |              67.2986 |
+| Năm | Tỷ lệ hộ cận nghèo |
+| ---: | ----------------------: |
+| 2023 |                 65.4902 |
+| 2024 |                 67.2986 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -973,6 +982,7 @@ GROUP BY "administrative.year";
 ### Câu 6: Tôi muốn nhìn nhanh thông qua biểu đồ xem số hộ nghèo ở từng huyện thay đổi như thế nào từ 2023 sang 2024.
 
 **SQL:**
+
 ```sql
 SELECT "administrative.district" AS "Huyện", 
        COUNT(CASE WHEN "administrative.year" = 2023 AND classify = 'Hộ nghèo' THEN 1 END) AS "Số hộ nghèo 2023", 
@@ -984,18 +994,19 @@ GROUP BY "administrative.district";
 
 **DataFrame:**
 
-| Huyện               |   Số hộ nghèo 2023 |   Số hộ nghèo 2024 |
-|:--------------------|-------------------:|-------------------:|
-| Huyện Đắk RLấp      |                466 |                135 |
-| Huyện Đắk Mil       |                470 |                221 |
-| Huyện Cư Jút        |                809 |                204 |
-| Huyện Krông Nô      |                370 |                189 |
-| Huyện Đăk Glong     |               1344 |                538 |
-| Thành phố Gia Nghĩa |                 88 |                 51 |
-| Huyện Tuy Đức       |               1674 |                829 |
-| Huyện Đắk Song      |                458 |                279 |
+| Huyện                 | Số hộ nghèo 2023 | Số hộ nghèo 2024 |
+| :--------------------- | ------------------: | ------------------: |
+| Huyện Đắk RLấp     |                 466 |                 135 |
+| Huyện Đắk Mil       |                 470 |                 221 |
+| Huyện Cư Jút        |                 809 |                 204 |
+| Huyện Krông Nô      |                 370 |                 189 |
+| Huyện Đăk Glong     |                1344 |                 538 |
+| Thành phố Gia Nghĩa |                  88 |                  51 |
+| Huyện Tuy Đức       |                1674 |                 829 |
+| Huyện Đắk Song      |                 458 |                 279 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -1046,19 +1057,21 @@ GROUP BY "administrative.district";
 ### Câu 7: Hiện nay hộ nghèo và hộ cận nghèo đang chiếm tỷ trọng ra sao trên toàn tỉnh năm 2024?
 
 **SQL:**
+
 ```sql
 SELECT "classify" AS "Phân loại hộ", COUNT(*) AS "Số hộ" FROM households WHERE "administrative.year" = 2024 GROUP BY "classify";
 ```
 
 **DataFrame:**
 
-| Phân loại hộ   |   Số hộ |
-|:---------------|--------:|
-| Hộ nghèo       |    2446 |
+| Phân loại hộ   | Số hộ |
+| :---------------- | ------: |
+| Hộ nghèo        |    2446 |
 | Hộ cận nghèo   |    3683 |
 | Hộ không nghèo |    1343 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -1081,6 +1094,7 @@ SELECT "classify" AS "Phân loại hộ", COUNT(*) AS "Số hộ" FROM household
 ### Câu 8: Lập biểu đồ các huyện có số hộ nghèo cao nhất năm 2023, chỉ cần lấy vài huyện nổi bật thôi.
 
 **SQL:**
+
 ```sql
 SELECT "administrative.district" AS "Huyện", COUNT(*) AS "Số hộ nghèo"
 FROM households
@@ -1092,15 +1106,16 @@ LIMIT 5;
 
 **DataFrame:**
 
-| Huyện           |   Số hộ nghèo |
-|:----------------|--------------:|
-| Huyện Tuy Đức   |          1674 |
-| Huyện Đăk Glong |          1344 |
-| Huyện Cư Jút    |           809 |
-| Huyện Đắk Mil   |           470 |
-| Huyện Đắk RLấp  |           466 |
+| Huyện             | Số hộ nghèo |
+| :----------------- | -------------: |
+| Huyện Tuy Đức   |           1674 |
+| Huyện Đăk Glong |           1344 |
+| Huyện Cư Jút    |            809 |
+| Huyện Đắk Mil   |            470 |
+| Huyện Đắk RLấp |            466 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -1131,6 +1146,7 @@ LIMIT 5;
 ### Câu 9: Tôi muốn xem phân bố hộ nghèo và hộ cận nghèo qua các năm theo từng huyện để dễ so sánh.
 
 **SQL:**
+
 ```sql
 SELECT "administrative.year" AS "Năm", "administrative.district" AS "Huyện", 
        SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END) AS "Số hộ nghèo", 
@@ -1142,26 +1158,27 @@ GROUP BY "administrative.year", "administrative.district";
 
 **DataFrame:**
 
-|   Năm | Huyện               |   Số hộ nghèo |   Số hộ cận nghèo |
-|------:|:--------------------|--------------:|------------------:|
-|  2023 | Huyện Đắk RLấp      |           466 |               534 |
-|  2024 | Huyện Đắk Mil       |           221 |               466 |
-|  2023 | Huyện Đắk Mil       |           470 |               538 |
-|  2023 | Huyện Krông Nô      |           370 |              1651 |
-|  2024 | Huyện Cư Jút        |           204 |               304 |
-|  2024 | Huyện Tuy Đức       |           829 |               917 |
-|  2024 | Huyện Đắk Song      |           279 |               510 |
-|  2023 | Huyện Tuy Đức       |          1674 |              1665 |
-|  2023 | Huyện Đắk Song      |           458 |               893 |
-|  2023 | Huyện Cư Jút        |           809 |               305 |
-|  2024 | Huyện Krông Nô      |           189 |               588 |
-|  2023 | Huyện Đăk Glong     |          1344 |              2009 |
-|  2024 | Huyện Đắk RLấp      |           135 |               271 |
-|  2024 | Thành phố Gia Nghĩa |            51 |               142 |
-|  2023 | Thành phố Gia Nghĩa |            88 |               167 |
-|  2024 | Huyện Đăk Glong     |           538 |               485 |
+| Năm | Huyện                 | Số hộ nghèo | Số hộ cận nghèo |
+| ---: | :--------------------- | -------------: | ------------------: |
+| 2023 | Huyện Đắk RLấp     |            466 |                 534 |
+| 2024 | Huyện Đắk Mil       |            221 |                 466 |
+| 2023 | Huyện Đắk Mil       |            470 |                 538 |
+| 2023 | Huyện Krông Nô      |            370 |                1651 |
+| 2024 | Huyện Cư Jút        |            204 |                 304 |
+| 2024 | Huyện Tuy Đức       |            829 |                 917 |
+| 2024 | Huyện Đắk Song      |            279 |                 510 |
+| 2023 | Huyện Tuy Đức       |           1674 |                1665 |
+| 2023 | Huyện Đắk Song      |            458 |                 893 |
+| 2023 | Huyện Cư Jút        |            809 |                 305 |
+| 2024 | Huyện Krông Nô      |            189 |                 588 |
+| 2023 | Huyện Đăk Glong     |           1344 |                2009 |
+| 2024 | Huyện Đắk RLấp     |            135 |                 271 |
+| 2024 | Thành phố Gia Nghĩa |             51 |                 142 |
+| 2023 | Thành phố Gia Nghĩa |             88 |                 167 |
+| 2024 | Huyện Đăk Glong     |            538 |                 485 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -1268,6 +1285,7 @@ GROUP BY "administrative.year", "administrative.district";
 ### Câu 10: Trong huyện Tuy Đức, xã nào đang có nhiều hộ nghèo nhất?
 
 **SQL:**
+
 ```sql
 SELECT "administrative.commune" AS "Xã", COUNT(*) AS "Số hộ nghèo" 
 FROM households 
@@ -1279,11 +1297,12 @@ LIMIT 1;
 
 **DataFrame:**
 
-| Xã            |   Số hộ nghèo |
-|:--------------|--------------:|
-| Xã Đắk Búk So |           436 |
+| Xã               | Số hộ nghèo |
+| :---------------- | -------------: |
+| Xã Đắk Búk So |            436 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -1298,6 +1317,7 @@ LIMIT 1;
 ### Câu 11: Thành phố Gia Nghĩa có cải thiện tình hình hộ nghèo sau một năm không? Hiển thị giúp tôi dễ nhìn.
 
 **SQL:**
+
 ```sql
 SELECT "administrative.year" AS "Năm", 
        SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) AS "Số hộ nghèo" 
@@ -1308,12 +1328,13 @@ GROUP BY "administrative.year";
 
 **DataFrame:**
 
-|   Năm |   Số hộ nghèo |
-|------:|--------------:|
-|  2023 |            88 |
-|  2024 |            51 |
+| Năm | Số hộ nghèo |
+| ---: | -------------: |
+| 2023 |             88 |
+| 2024 |             51 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -1332,17 +1353,19 @@ GROUP BY "administrative.year";
 ### Câu 12: Những thiếu hụt nào xuất hiện nhiều nhất trong nhóm hộ nghèo?
 
 **SQL:**
+
 ```sql
 SELECT SUM(CAST("deprivation.cleanWater" AS INT)) AS "Thiếu nước sinh hoạt", SUM(CAST("deprivation.hygienicToilet" AS INT)) AS "Thiếu nhà tiêu hợp vệ sinh", SUM(CAST("reason.lackProductionLand" AS INT)) AS "Thiếu đất sản xuất", SUM(CAST("reason.lackCapital" AS INT)) AS "Thiếu vốn", SUM(CAST("reason.lackLabor" AS INT)) AS "Thiếu lao động", SUM(CAST("reason.illnessOrAccident" AS INT)) AS "Ốm đau hoặc tai nạn" FROM households WHERE classify = 'Hộ nghèo';
 ```
 
 **DataFrame:**
 
-|   Thiếu nước sinh hoạt |   Thiếu nhà tiêu hợp vệ sinh |   Thiếu đất sản xuất |   Thiếu vốn |   Thiếu lao động |   Ốm đau hoặc tai nạn |
-|-----------------------:|-----------------------------:|---------------------:|------------:|-----------------:|----------------------:|
-|                    468 |                         1997 |                 2792 |        3825 |             2968 |                  3816 |
+| Thiếu nước sinh hoạt | Thiếu nhà tiêu hợp vệ sinh | Thiếu đất sản xuất | Thiếu vốn | Thiếu lao động | Ốm đau hoặc tai nạn |
+| -----------------------: | ------------------------------: | ----------------------: | ----------: | ----------------: | ----------------------: |
+|                      468 |                            1997 |                    2792 |        3825 |              2968 |                    3816 |
 
 **Kết quả DB:**
+
 ```json
 [
   {
@@ -1357,4 +1380,3 @@ SELECT SUM(CAST("deprivation.cleanWater" AS INT)) AS "Thiếu nước sinh hoạ
 ```
 
 ---
-
