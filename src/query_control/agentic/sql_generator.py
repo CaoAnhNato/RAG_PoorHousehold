@@ -18,11 +18,17 @@ class SQLGenerator:
         tables = ", ".join(schema_info.get("relevant_tables", []))
         schema_context = schema_info.get("schema_context", "")
         
+        template_hint = ""
+        if "similar_sql_template" in schema_info:
+            t = schema_info["similar_sql_template"]
+            template_hint = f"\n[GỢI Ý QUAN TRỌNG TỪ SQL TEMPLATE CACHE]:\nCâu hỏi tương tự: {t.get('old_q', '')}\nSQL mẫu đã xác thực: {t.get('old_sql', '')}\nHãy tham khảo cấu trúc bảng/cột và cú pháp từ SQL mẫu trên để viết SQL cho câu hỏi mới.\n"
+        
         system_prompt = f"""Bạn là chuyên gia về DuckDB SQL. Hãy viết MỘT câu lệnh SQL để trả lời câu hỏi của người dùng.
 Thông tin Schema thu gọn:
 - Các bảng liên quan: {tables}
 
 {schema_context}
+{template_hint}
 
 Quy tắc sinh SQL:
 1. LUÔN LUÔN bọc tên cột có dấu chấm trong ngoặc kép. Ví dụ: "administrative.year" thay vì administrative.year.
@@ -173,8 +179,7 @@ Hãy trả về DUY NHẤT câu lệnh SQL đã được chỉnh sửa cho Câu 
             system_prompt=system_prompt,
             user_prompt=f"[CÂU HỎI MỚI]: {new_question}\n[SQL MỚI]:",
             temperature=0.0,
-            max_tokens=400,
-            model="gpt-4o-mini"
+            max_tokens=400
         )
         
         sql = raw_sql.strip()

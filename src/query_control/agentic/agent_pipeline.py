@@ -36,22 +36,73 @@ class AgenticPipeline:
         print(f"\n--- [AgenticPipeline] Processing: {user_question} | Mode: {mode} | Stream: {stream} ---")
         
         # 1. Route 1: Kiểm tra Exact Match Cache (Canonical Hash <1ms)
-        from src.query_control.agentic.semantic_cache import SemanticCacheManager
+        from src.query_control.agentic.semantic_cache import SemanticCacheManager, set_cached_result
         from src.query_control.agentic.chatbot_logger import log_chatbot_run
         
         cache_mgr = SemanticCacheManager(collection_name="agentic_semantic_cache", similarity_threshold=0.86)
-        cached_exact = cache_mgr.get_exact_cache(user_question)
-        if cached_exact:
-            ans = cached_exact.get("answer", "")
-            sql_val = cached_exact.get("sql", "")
-            elapsed = time.time() - t0
-            if stream:
-                def cache_stream_gen():
-                    yield ans
-                log_chatbot_run(user_question, f"{mode} (Route 1: Exact Hit)", sql_val, ans, stream=True, execution_time_sec=elapsed)
-                return {"question": user_question, "sql": sql_val, "answer": cache_stream_gen(), "data": None, "chart_fig": None}
-            log_chatbot_run(user_question, f"{mode} (Route 1: Exact Hit)", sql_val, ans, stream=False, execution_time_sec=elapsed)
-            return {"question": user_question, "sql": sql_val, "answer": ans, "data": None, "chart_fig": None}
+        if mode not in ("Báo Cáo",):
+            cached_exact = cache_mgr.get_exact_cache(user_question)
+            if cached_exact:
+                ans = cached_exact.get("answer", "")
+                sql_val = cached_exact.get("sql", "")
+                elapsed = time.time() - t0
+                
+                # Setting cứng format output của mode 'Biểu đồ' bao gồm text + chart + dataframe
+                if mode == "Biểu đồ" and sql_val:
+                    try:
+                        from src.query_control.agentic.utils import normalize_columns
+                        from src.query_control.agentic.chart_generator import AgentChartGenerator
+                        
+                        df_val, refined_sql = self.sql_refiner.execute_and_refine(sql_val, user_question, {})
+                        if df_val is not None and not df_val.empty:
+                            df_vi = normalize_columns(df_val)
+                            chart_dir = PROJECT_ROOT / "artifacts" / "charts"
+                            save_path = chart_dir / f"chart_{int(time.time())}.html"
+                            
+                            fig = None
+                            chart_ans = ans
+                            chart_code = cached_exact.get("chart_code", "")
+                            
+                            if chart_code:
+                                try:
+                                    local_vars = {"df": df_vi.copy()}
+                                    exec(chart_code, globals(), local_vars)
+                                    fig = local_vars.get("fig")
+                                    if fig is not None:
+                                        fig.write_html(str(save_path))
+                                        print("   [Visual Code Cache] HIT | Thực thi mã biểu đồ tức thì!")
+                                except Exception as e_exec:
+                                    print(f"   [Visual Code Cache Warning] Lỗi exec chart_code ({e_exec}). Fallback gọi LLM.")
+                                    fig = None
+                            
+                            if fig is None:
+                                chart_gen = AgentChartGenerator()
+                                fig, chart_ans, new_chart_code = chart_gen.generate(user_question, df_vi, save_path=save_path)
+                                if fig is not None and new_chart_code:
+                                    set_cached_result(user_question, refined_sql, chart_ans, chart_code=new_chart_code)
+                            
+                            log_chatbot_run(user_question, f"{mode} (Route 1: Exact Hit)", refined_sql, chart_ans, stream=False, execution_time_sec=elapsed)
+                            return {"question": user_question, "sql": refined_sql, "answer": chart_ans, "data": df_vi, "chart_fig": fig}
+                    except Exception as e:
+                        print(f"[Route 1 Chart Warning] Không thể sinh biểu đồ cho Route 1 ({e}). Chuyển về cache gốc.")
+                        try:
+                            from src.query_control.agentic.utils import normalize_columns
+                            df_val, refined_sql = self.sql_refiner.execute_and_refine(sql_val, user_question, {})
+                            df_vi = normalize_columns(df_val) if df_val is not None and not df_val.empty else None
+                        except Exception:
+                            df_vi = None
+                            refined_sql = sql_val
+                        log_chatbot_run(user_question, f"{mode} (Route 1: Exact Hit Fallback)", refined_sql, ans, stream=False, execution_time_sec=elapsed)
+                        return {"question": user_question, "sql": refined_sql, "answer": ans, "data": df_vi, "chart_fig": None}
+
+
+                if stream:
+                    def cache_stream_gen():
+                        yield ans
+                    log_chatbot_run(user_question, f"{mode} (Route 1: Exact Hit)", sql_val, ans, stream=True, execution_time_sec=elapsed)
+                    return {"question": user_question, "sql": sql_val, "answer": cache_stream_gen(), "data": None, "chart_fig": None}
+                log_chatbot_run(user_question, f"{mode} (Route 1: Exact Hit)", sql_val, ans, stream=False, execution_time_sec=elapsed)
+                return {"question": user_question, "sql": sql_val, "answer": ans, "data": None, "chart_fig": None}
             
         # 2. Pre-Processing: LLM Re-write (Chuẩn hóa câu hỏi, khử teencode, viết tắt)
         from src.query_control.llm_helper import call_llm
@@ -83,10 +134,32 @@ Nếu câu hỏi đã chuẩn, giữ nguyên. Trả về DUY NHẤT câu hỏi �
                 
                 # Thực thi SQL và tạo đáp án
                 try:
-                    db_res = self.sql_refiner.refine(rewritten_q, repaired_sql) # refiner sẽ execute và sửa lỗi nếu có
-                    final_sql = db_res.get("sql", repaired_sql)
-                    df = db_res.get("df")
+                    df, final_sql = self.sql_refiner.execute_and_refine(repaired_sql, rewritten_q, {})
                     
+                    # Setting cứng format output của mode 'Biểu đồ' bao gồm text + chart + dataframe
+                    if mode == "Biểu đồ" and df is not None and not df.empty:
+                        from src.query_control.agentic.utils import normalize_columns
+                        from src.query_control.agentic.chart_generator import AgentChartGenerator
+                        
+                        df_vi = normalize_columns(df)
+                        chart_gen = AgentChartGenerator()
+                        chart_dir = PROJECT_ROOT / "artifacts" / "charts"
+                        save_path = chart_dir / f"chart_{int(time.time())}.html"
+                        fig, chart_ans, chart_code = chart_gen.generate(user_question, df_vi, save_path=save_path)
+                        
+                        if fig is not None and chart_code:
+                            set_cached_result(user_question, final_sql, chart_ans, chart_code=chart_code)
+                            
+                        elapsed = time.time() - t0
+                        log_chatbot_run(user_question, f"{mode} (Route 2: Few-shot SQL Repair)", final_sql, chart_ans, stream=False, execution_time_sec=elapsed)
+                        return {
+                            "question": user_question,
+                            "sql": final_sql,
+                            "answer": chart_ans,
+                            "data": df_vi,
+                            "chart_fig": fig
+                        }
+
                     ans_res = self.answer_generator.generate(rewritten_q, final_sql, df, stream=stream)
                     ans = ans_res.get("answer", "")
                     
@@ -222,8 +295,17 @@ Câu hỏi: {user_question}"""
                 "data": None
             }
             
-        # 1. Schema Linking
+        # 1. Schema Linking & Planner Cache
         schema_info = self.schema_linker.link(user_question)
+        if mode not in ("Báo Cáo",):
+            similar_templates = cache_mgr.search_similar_questions(rewritten_q, threshold=0.75)
+            if similar_templates:
+                best_temp = similar_templates[0]
+                print(f"[Planner Cache] HIT | Tìm thấy câu tương tự (score: {best_temp['score']:.4f}) làm SQL Template Cache.")
+                schema_info["similar_sql_template"] = {
+                    "old_q": best_temp["question"],
+                    "old_sql": best_temp["sql"]
+                }
         
         # 2. SQL Generation
         sql_query = self.sql_generator.generate(user_question, schema_info)
@@ -250,9 +332,9 @@ Câu hỏi: {user_question}"""
             chart_dir = PROJECT_ROOT / "artifacts" / "charts"
             save_path = chart_dir / f"chart_{int(time.time())}.html"
             
-            fig, answer = chart_gen.generate(user_question, df_vi, save_path=save_path)
+            fig, answer, chart_code = chart_gen.generate(user_question, df_vi, save_path=save_path)
             data_out = df_vi
-            set_cached_result(user_question, final_sql, answer)
+            set_cached_result(user_question, final_sql, answer, chart_code=chart_code)
             log_chatbot_run(user_question, actual_mode, final_sql, answer, stream=False, execution_time_sec=time.time() - t0)
         else: # Hỏi - Đáp
             answer = self.answer_generator.generate(user_question, df, stream=stream)

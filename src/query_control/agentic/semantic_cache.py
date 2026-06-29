@@ -119,6 +119,7 @@ class SemanticCacheManager:
         Truy xuất bộ đệm Tier 1 (Exact Canonical Hash in Local Cache).
         Đảm bảo tốc độ Hit siêu tốc <1ms, phục vụ độc quyền cho Route 1.
         """
+        self._load_local_cache()
         if not question or not question.strip():
             return None
             
@@ -142,13 +143,22 @@ class SemanticCacheManager:
         if self.qclient and self.emb_client:
             try:
                 vector = self.emb_client.embed_text(question)
-                search_result = self.qclient.search(
-                    collection_name=self.collection_name,
-                    query_vector=vector,
-                    limit=2,
-                    score_threshold=threshold
-                )
+                if hasattr(self.qclient, 'query_points'):
+                    search_result = self.qclient.query_points(
+                        collection_name=self.collection_name,
+                        query=vector,
+                        limit=2
+                    ).points
+                else:
+                    search_result = self.qclient.search(
+                        collection_name=self.collection_name,
+                        query_vector=vector,
+                        limit=2,
+                        score_threshold=threshold
+                    )
                 for hit in search_result:
+                    if hit.score < threshold:
+                        continue
                     payload = hit.payload or {}
                     print(f"   [Semantic Cache] Found Similar (Qdrant DB) | Similarity Score: {hit.score:.4f} | Old Q: {payload.get('question', '')}")
                     results.append({
@@ -168,7 +178,7 @@ class SemanticCacheManager:
         """
         return self.get_exact_cache(question)
 
-    def set_cache(self, question: str, sql: str, answer: str) -> None:
+    def set_cache(self, question: str, sql: str, answer: str, chart_code: str = "") -> None:
         """Lưu trữ kết quả vào Local Cache và Qdrant Vector DB."""
         if not question or not question.strip():
             return
@@ -179,6 +189,8 @@ class SemanticCacheManager:
             "sql": sql,
             "answer": answer
         }
+        if chart_code:
+            cache_data["chart_code"] = chart_code
         
         # 1. Update Local Cache
         self.local_cache[key] = cache_data
@@ -208,5 +220,5 @@ cache_manager = SemanticCacheManager()
 def get_cached_result(question: str) -> dict[str, Any] | None:
     return cache_manager.get_cache(question)
 
-def set_cached_result(question: str, sql: str, answer: str) -> None:
-    cache_manager.set_cache(question, sql, answer)
+def set_cached_result(question: str, sql: str, answer: str, chart_code: str = "") -> None:
+    cache_manager.set_cache(question, sql, answer, chart_code=chart_code)
