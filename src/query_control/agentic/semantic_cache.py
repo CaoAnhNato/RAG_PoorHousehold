@@ -79,10 +79,10 @@ class SemanticCacheManager:
             try:
                 qconfig = load_qdrant_config()
                 qurl = qconfig.get("qdrant_url", "http://localhost:6333")
-                emb_model = os.environ.get("EMBEDDING_MODEL", qconfig.get("embedding_model", "BAAI/bge-m3"))
+                emb_model = os.environ.get("EMBEDDING_MODEL", qconfig.get("embedding_model", "text-embedding-3-small"))
             except Exception:
                 qurl = os.environ.get("QDRANT_URL", "http://localhost:6333")
-                emb_model = os.environ.get("EMBEDDING_MODEL", "BAAI/bge-m3")
+                emb_model = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
 
             self.qclient = QdrantClient(url=qurl, timeout=3.0)
             self.emb_client = EmbeddingClient(emb_model)
@@ -90,9 +90,13 @@ class SemanticCacheManager:
 
             # Kiểm tra hoặc tạo collection
             try:
-                self.qclient.get_collection(self.collection_name)
+                col_info = self.qclient.get_collection(self.collection_name)
+                if col_info.config.params.vectors.size != vector_size:
+                    print(f"[Cache Info] Kích thước vector thay đổi ({col_info.config.params.vectors.size} -> {vector_size}). Đang tạo lại collection '{self.collection_name}'...")
+                    self.qclient.delete_collection(self.collection_name)
+                    raise Exception("Force recreate")
             except Exception:
-                # Collection chưa tồn tại, khởi tạo mới
+                # Collection chưa tồn tại hoặc cần tạo lại
                 self.qclient.create_collection(
                     collection_name=self.collection_name,
                     vectors_config=qmodels.VectorParams(

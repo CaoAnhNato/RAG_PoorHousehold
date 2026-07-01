@@ -225,3 +225,15 @@
 - **lack_production_tools**: ready (Lý do: Đầy đủ cột vật lý)
 - **lack_production_knowledge**: ready (Lý do: Đầy đủ cột vật lý)
 - **lack_labor_skill**: ready (Lý do: Đầy đủ cột vật lý)
+
+## 4. Kết quả nạp chỉ mục ngữ nghĩa Qdrant
+- **Địa chỉ Qdrant:** `http://localhost:6333`
+- **Tên Collection:** `query_control_semantic`
+- **Mô hình Embedding:** `text-embedding-3-small`
+- **Kích thước vector:** 1536
+- **Tổng số điểm đã index:** 49
+  - Số chỉ số (metrics): 10
+  - Số chiều dữ liệu (dimensions): 27
+  - Số thuật ngữ nghiệp vụ (business terms): 8
+  - Số câu hỏi mẫu (query examples): 4
+- **Collection được tạo lại (recreated):** True

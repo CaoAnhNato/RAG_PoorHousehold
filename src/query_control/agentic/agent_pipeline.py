@@ -35,6 +35,25 @@ class AgenticPipeline:
         t0 = time.time()
         print(f"\n--- [AgenticPipeline] Processing: {user_question} | Mode: {mode} | Stream: {stream} ---")
         
+        # 0.5. Guardrail Input
+        try:
+            from src.query_control.agentic.guardrails import InputGuardrail
+            from src.query_control.agentic.chatbot_logger import log_chatbot_run
+            in_guard = InputGuardrail()
+            guard_res = in_guard.validate(user_question, mode)
+            if not guard_res.get("is_valid", True):
+                ans = guard_res.get("recommendation", "Câu hỏi bị từ chối bởi Guardrail.")
+                log_chatbot_run(user_question, f"{mode} (Guardrail Blocked)", "", ans, stream=stream, execution_time_sec=time.time() - t0)
+                return {
+                    "question": user_question,
+                    "sql": "",
+                    "answer": ans,
+                    "data": None
+                }
+        except Exception as e:
+            print(f"[AgenticPipeline] InputGuardrail bypass due to error: {e}")
+
+        
         # 1. Route 1: Kiểm tra Exact Match Cache (Canonical Hash <1ms)
         from src.query_control.agentic.semantic_cache import SemanticCacheManager, set_cached_result
         from src.query_control.agentic.chatbot_logger import log_chatbot_run
@@ -160,9 +179,31 @@ Nếu câu hỏi đã chuẩn, giữ nguyên. Trả về DUY NHẤT câu hỏi �
                             "chart_fig": fig
                         }
 
-                    ans_res = self.answer_generator.generate(rewritten_q, final_sql, df, stream=stream)
-                    ans = ans_res.get("answer", "")
+                    ans_res = self.answer_generator.generate(rewritten_q, df, stream=stream)
                     
+                    if stream:
+                        def stream_and_cache_wrapper(gen, q, sql, start_time):
+                            chunks = []
+                            for chunk in gen:
+                                chunks.append(chunk)
+                                yield chunk
+                            # Chuyển các chunk không phải chuỗi (như DataFrame) sang chuỗi để lưu cache/log
+                            str_chunks = [str(c) if not isinstance(c, str) else c for c in chunks]
+                            full_ans = "".join(str_chunks)
+                            set_cached_result(q, sql, full_ans)
+                            log_chatbot_run(q, f"{mode} (Route 2: Few-shot SQL Repair)", sql, full_ans, stream=True, execution_time_sec=time.time() - start_time)
+                        
+                        ans = stream_and_cache_wrapper(ans_res, user_question, final_sql, t0)
+                        return {
+                            "question": user_question,
+                            "sql": final_sql,
+                            "answer": ans,
+                            "data": df,
+                            "chart_fig": None
+                        }
+                    else:
+                        ans = ans_res
+                        
                     # Lưu lại Local Cache
                     if not stream and "lỗi" not in str(ans).lower() and "error" not in str(ans).lower():
                         cache_mgr.local_cache[cache_mgr.get_canonical_hash(user_question)] = {
@@ -237,6 +278,10 @@ Câu hỏi: {user_question}"""
                 report_id, year, district = 1, 2024, None
                 
             try:
+                import importlib
+                import src.query_control.agentic.report_generator as _rg_mod
+                importlib.reload(_rg_mod)
+                from src.query_control.agentic.report_generator import ReportGenerator
                 rep_data = ReportGenerator.generate(report_id, year, district)
                 elapsed = time.time() - t0
                 log_chatbot_run(user_question, mode, rep_data["sql"], rep_data["answer"], stream=stream, execution_time_sec=elapsed)
@@ -247,7 +292,8 @@ Câu hỏi: {user_question}"""
                     "data": rep_data["df"],
                     "chart_fig": None,
                     "docx_path": str(rep_data["docx_path"]),
-                    "pdf_path": str(rep_data["pdf_path"])
+                    "pdf_path": str(rep_data["pdf_path"]),
+                    "deep_analysis": rep_data.get("deep_analysis")
                 }
             except Exception as e:
                 err_ans = f"Lỗi khi tạo báo cáo số {report_id}: {str(e)}"
@@ -333,19 +379,61 @@ Câu hỏi: {user_question}"""
             save_path = chart_dir / f"chart_{int(time.time())}.html"
             
             fig, answer, chart_code = chart_gen.generate(user_question, df_vi, save_path=save_path)
+            
+            # 5.5 Guardrail Output (Fact-checking for Chart text)
+            try:
+                from src.query_control.agentic.guardrails import OutputGuardrail
+                out_guard = OutputGuardrail()
+                max_retries = 2
+                for attempt in range(max_retries):
+                    out_res = out_guard.validate_fact_checking(user_question, answer, df_vi)
+                    if out_res.get("is_valid", True):
+                        break
+                    else:
+                        reason = out_res.get('reason', 'Thông tin không khớp với dữ liệu gốc.')
+                        print(f"[Guardrail Warning Chart] Attempt {attempt+1} failed: {reason}. Rewriting...")
+                        if attempt < max_retries - 1:
+                            answer = out_guard.rewrite_answer(user_question, answer, reason, df_vi)
+                        else:
+                            answer += f"\n\n[Cảnh báo Guardrail]: {reason}"
+            except Exception as e:
+                pass
+                
             data_out = df_vi
             set_cached_result(user_question, final_sql, answer, chart_code=chart_code)
             log_chatbot_run(user_question, actual_mode, final_sql, answer, stream=False, execution_time_sec=time.time() - t0)
         else: # Hỏi - Đáp
             answer = self.answer_generator.generate(user_question, df, stream=stream)
             data_out = df
+            
+            # Guardrail Output (Fact-checking for Q&A)
+            if not stream:
+                try:
+                    from src.query_control.agentic.guardrails import OutputGuardrail
+                    out_guard = OutputGuardrail()
+                    max_retries = 2
+                    for attempt in range(max_retries):
+                        out_res = out_guard.validate_fact_checking(user_question, answer, df)
+                        if out_res.get("is_valid", True):
+                            break
+                        else:
+                            reason = out_res.get('reason', 'Thông tin không khớp với dữ liệu gốc.')
+                            print(f"[Guardrail Warning Q&A] Attempt {attempt+1} failed: {reason}. Rewriting...")
+                            if attempt < max_retries - 1:
+                                answer = out_guard.rewrite_answer(user_question, answer, reason, df)
+                            else:
+                                answer += f"\n\n[Cảnh báo Guardrail]: {reason}"
+                except Exception as e:
+                    pass
+
             if stream:
                 def stream_and_cache_wrapper(gen, q, sql, start_time):
                     chunks = []
                     for chunk in gen:
                         chunks.append(chunk)
                         yield chunk
-                    full_ans = "".join(chunks)
+                    str_chunks = [str(c) if not isinstance(c, str) else c for c in chunks]
+                    full_ans = "".join(str_chunks)
                     set_cached_result(q, sql, full_ans)
                     log_chatbot_run(q, actual_mode, sql, full_ans, stream=True, execution_time_sec=time.time() - start_time)
                 answer = stream_and_cache_wrapper(answer, user_question, final_sql, t0)

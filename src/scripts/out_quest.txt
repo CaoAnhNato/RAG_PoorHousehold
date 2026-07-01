@@ -1,0 +1,108 @@
+---
+
+### Câu 7: Hiện nay hộ nghèo và hộ cận nghèo đang chiếm tỷ trọng ra sao trên toàn tỉnh năm 2024?
+
+**SQL:**
+
+```sql
+SELECT "classify" AS "Phân loại hộ", COUNT(*) AS "Số hộ" FROM households WHERE "administrative.year" = 2024 GROUP BY "classify";
+```
+
+**DataFrame:**
+
+| Phân loại hộ   | Số hộ |
+| :---------------- | ------: |
+| Hộ nghèo        |    2446 |
+| Hộ cận nghèo   |    3683 |
+| Hộ không nghèo |    1343 |
+
+**Kết quả DB:**
+
+```json
+[
+  {
+    "Phân loại hộ": "Hộ nghèo",
+    "Số hộ": 2446
+  },
+  {
+---
+
+### Câu 14: Biểu đồ tròn thể hiện tỷ trọng hộ nghèo theo giới tính chủ hộ tại huyện Đắk Glong năm 2024
+
+**SQL:**
+
+```sql
+SELECT "family.hostGender" AS "Giới tính", COUNT(*) AS "Số hộ nghèo" 
+FROM households 
+WHERE classify = 'Hộ nghèo' AND "administrative.district" = 'Huyện Đăk Glong' AND "administrative.year" = 2024 
+GROUP BY "family.hostGender";
+```
+
+**DataFrame:**
+
+| Giới tính | Số hộ nghèo |
+| :---------- | -------------: |
+| Nam         |            365 |
+| Nữ         |            173 |
+
+**Kết quả DB:**
+
+```json
+[
+  { "Giới tính": "Nam", "Số hộ nghèo": 365 },
+  { "Giới tính": "Nữ", "Số hộ nghèo": 173 }
+]
+---
+
+### Câu 20: Cơ cấu tỷ trọng hộ nghèo dân tộc thiểu số và không phải dân tộc thiểu số tại huyện Đắk Song năm 2024
+
+**SQL:**
+
+```sql
+SELECT CASE WHEN "family.isDTTS" = true THEN 'Dân tộc thiểu số' ELSE 'Kinh / Khác' END AS "Nhóm dân tộc", COUNT(*) AS "Số hộ nghèo" 
+FROM households 
+WHERE classify = 'Hộ nghèo' AND "administrative.district" = 'Huyện Đắk Song' AND "administrative.year" = 2024 
+GROUP BY "family.isDTTS";
+```
+
+**DataFrame:**
+
+| Nhóm dân tộc      | Số hộ nghèo |
+| :------------------- | -------------: |
+| Dân tộc thiểu số |            182 |
+| Kinh / Khác         |             97 |
+
+**Kết quả DB:**
+
+```json
+[
+  { "Nhóm dân tộc": "Dân tộc thiểu số", "Số hộ nghèo": 182 },
+  { "Nhóm dân tộc": "Kinh / Khác", "Số hộ nghèo": 97 }
+]
+---
+
+### Câu 40: Cho tôi xem tỷ trọng cơ cấu các hộ nghèo bị thiếu hụt nguồn nước sinh hoạt hợp vệ sinh so với tổng số hộ nghèo trên địa bàn huyện Đắk Song năm 2024.
+
+**SQL:**
+
+```sql
+SELECT CASE WHEN "deprivation.cleanWater" = true THEN 'Thiếu nước sinh hoạt' ELSE 'Đảm bảo nước sinh hoạt' END AS "Trạng thái nguồn nước", COUNT(*) AS "Số hộ nghèo" 
+FROM households 
+WHERE classify = 'Hộ nghèo' AND "administrative.district" = 'Huyện Đắk Song' AND "administrative.year" = 2024 
+GROUP BY "deprivation.cleanWater";
+```
+
+**DataFrame:**
+
+| Trạng thái nguồn nước   | Số hộ nghèo |
+| :--------------------------- | -------------: |
+| Đảm bảo nước sinh hoạt |            234 |
+| Thiếu nước sinh hoạt     |             45 |
+
+**Kết quả DB:**
+
+```json
+[
+  { "Trạng thái nguồn nước": "Đảm bảo nước sinh hoạt", "Số hộ nghèo": 234 },
+  { "Trạng thái nguồn nước": "Thiếu nước sinh hoạt", "Số hộ nghèo": 45 }
+]

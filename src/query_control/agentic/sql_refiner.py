@@ -18,6 +18,17 @@ class SQLRefiner:
         """Thực thi SQL. Nếu lỗi, yêu cầu LLM sửa lại."""
         current_sql = sql_query
         
+        # Chuẩn hóa tên các huyện/thành phố trong SQL để khớp chính xác với CSDL DuckDB
+        replacements = {
+            "Đắk Glong": "Đăk Glong",
+            "Đăk Mil": "Đắk Mil",
+            "Đăk RLấp": "Đắk RLấp",
+            "Đăk Rlấp": "Đắk RLấp",
+            "Đăk Song": "Đắk Song"
+        }
+        for wrong, correct in replacements.items():
+            current_sql = current_sql.replace(wrong, correct)
+            
         for attempt in range(max_retries):
             try:
                 # Mở connection read-only để tránh file lock
@@ -34,11 +45,19 @@ class SQLRefiner:
                         gb_tokens = re.findall(r'"?([a-zA-Z0-9_\.]+)"?', group_by_clause)
                         gb_fields = [token for token in gb_tokens if not token.isnumeric() and token.lower() not in ('asc', 'desc')]
                         
-                        # So sánh số lượng trường được Group By với số lượng cột thực tế (trừ cột tổng)
-                        # Thông thường df trả về sẽ có các cột phân loại (String/Int) và cột tổng (thường mang tên hàm aggregations hoặc alias khác)
-                        # Để an toàn nhất: Đếm số cột trong df. Nếu số cột trong df < số trường trong group by -> Chắc chắn thiếu cột SELECT
-                        if len(df.columns) < len(gb_fields) + 1: # +1 là ít nhất 1 cột cho giá trị SUM/COUNT
-                            raise ValueError(f"LỖI LOGIC: SQL dùng GROUP BY với {len(gb_fields)} trường ({', '.join(gb_fields)}) nhưng DataFrame chỉ xuất ra {len(df.columns)} cột. Bạn đã QUÊN đưa các trường GROUP BY vào mệnh đề SELECT (kèm alias). Yêu cầu sửa ngay!")
+                        # Kiểm tra tổng quát: Từng trường trong GROUP BY phải xuất hiện trong mệnh đề SELECT
+                        select_clause = sql_upper.split("FROM")[0]
+                        missing_fields = []
+                        for field in gb_fields:
+                            clean_field = field.replace('"', '').strip()
+                            if clean_field not in select_clause:
+                                missing_fields.append(clean_field)
+                        if missing_fields:
+                            raise ValueError(f"LỖI LOGIC: SQL dùng GROUP BY với các trường ({', '.join(missing_fields)}) nhưng QUÊN đưa vào mệnh đề SELECT. Theo quy tắc hiển thị dữ liệu biểu đồ/báo cáo, tất cả các trường GROUP BY phải có mặt trong SELECT (kèm AS alias phù hợp). Yêu cầu thêm vào SELECT ngay!")
+
+                    # 2. Bắt lỗi truy vấn trả về 0 dòng dữ liệu (DataFrame rỗng)
+                    if df.empty:
+                        raise ValueError("LỖI LOGIC: Truy vấn thực thi thành công nhưng trả về 0 dòng dữ liệu (DataFrame rỗng)! Nguyên nhân do điều kiện WHERE lọc sai giá trị thực tế trong CSDL. LƯU Ý QUAN TRỌNG: Trong CSDL, cột administrative.district bắt buộc phải có chữ 'Huyện' hoặc 'Thành phố' phía trước (ví dụ: 'Huyện Cư Jút', 'Huyện Đắk Mil', 'Thành phố Gia Nghĩa'), cột administrative.commune phải có chữ 'Xã' hoặc 'Thị trấn' phía trước. Hãy sửa lại điều kiện WHERE cho đúng!")
 
                     return df, current_sql
             except Exception as e:
@@ -60,6 +79,7 @@ LƯU Ý QUAN TRỌNG:
   + Cột chứa dấu chấm (vd: administrative.year) phải bọc trong ngoặc kép: "administrative.year"
   + Kiểm tra lỗi chính tả tên cột. Bảng households có trạng thái nghèo là "classify", địa phương "administrative.district", "administrative.commune", "family.hostName". Bảng members có "member.fullName".
   + Các giá trị text khi so sánh phải dùng dấu nháy đơn.
+  + Tên huyện phải có chữ 'Huyện' hoặc 'Thành phố' (vd: 'Huyện Cư Jút', 'Huyện Đắk Mil'). Tên xã phải có chữ 'Xã' hoặc 'Thị trấn'.
 
 Câu lệnh SQL bị lỗi:
 {current_sql}
@@ -71,7 +91,7 @@ Thông báo lỗi từ hệ thống DuckDB:
                     system_prompt=system_prompt,
                     user_prompt="Hãy sửa câu SQL bị lỗi và chỉ trả về câu SQL đã sửa.",
                     temperature=0.0,
-                    max_tokens=400,
+                    max_tokens=1200,
                     response_json=False
                 )
                 

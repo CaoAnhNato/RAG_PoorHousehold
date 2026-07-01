@@ -41,7 +41,7 @@ def get_llm_config() -> dict[str, str]:
         "model": model
     }
 
-def _build_payload(config: dict[str, str], system_prompt: str, user_prompt: str, temperature: float, max_tokens: int, response_json: bool, stream: bool = False) -> tuple[str, dict[str, str], dict[str, Any]]:
+def _build_payload(config: dict[str, str], system_prompt: str, user_prompt: str, temperature: float, max_tokens: int, response_json: bool, stream: bool = False, model: str | None = None) -> tuple[str, dict[str, str], dict[str, Any]]:
     base = config['base_url']
     if base.endswith('/v1'):
         url = f"{base}/chat/completions"
@@ -54,7 +54,7 @@ def _build_payload(config: dict[str, str], system_prompt: str, user_prompt: str,
     }
     
     payload = {
-        "model": config["model"],
+        "model": model if model else config["model"],
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
@@ -75,11 +75,12 @@ def call_llm(
     user_prompt: str,
     temperature: float = 0.1,
     max_tokens: int = 1500,
-    response_json: bool = False
+    response_json: bool = False,
+    model: str | None = None
 ) -> str:
     """Gọi LLM đồng bộ với cơ chế retry."""
     config = get_llm_config()
-    url, headers, payload = _build_payload(config, system_prompt, user_prompt, temperature, max_tokens, response_json, stream=False)
+    url, headers, payload = _build_payload(config, system_prompt, user_prompt, temperature, max_tokens, response_json, stream=False, model=model)
     
     last_err = None
     for attempt in range(3):
@@ -103,15 +104,16 @@ async def call_llm_async(
     user_prompt: str,
     temperature: float = 0.1,
     max_tokens: int = 1500,
-    response_json: bool = False
+    response_json: bool = False,
+    model: str | None = None
 ) -> str:
     """Gọi LLM bất đồng bộ (Async) sử dụng httpx."""
     if httpx is None:
         loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(None, call_llm, system_prompt, user_prompt, temperature, max_tokens, response_json)
+        return await loop.run_in_executor(None, call_llm, system_prompt, user_prompt, temperature, max_tokens, response_json, model)
 
     config = get_llm_config()
-    url, headers, payload = _build_payload(config, system_prompt, user_prompt, temperature, max_tokens, response_json, stream=False)
+    url, headers, payload = _build_payload(config, system_prompt, user_prompt, temperature, max_tokens, response_json, stream=False, model=model)
     
     last_err = None
     async with httpx.AsyncClient(timeout=60.0) as client:
@@ -135,11 +137,12 @@ def stream_llm(
     system_prompt: str,
     user_prompt: str,
     temperature: float = 0.1,
-    max_tokens: int = 1500
+    max_tokens: int = 1500,
+    model: str | None = None
 ) -> Generator[str, None, None]:
     """Gọi LLM và stream kết quả trả về từng chunk (Server-Sent Events)."""
     config = get_llm_config()
-    url, headers, payload = _build_payload(config, system_prompt, user_prompt, temperature, max_tokens, response_json=False, stream=True)
+    url, headers, payload = _build_payload(config, system_prompt, user_prompt, temperature, max_tokens, response_json=False, stream=True, model=model)
     
     try:
         with requests.post(url, json=payload, headers=headers, stream=True, timeout=60.0) as resp:

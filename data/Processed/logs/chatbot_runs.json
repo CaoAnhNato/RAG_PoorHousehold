@@ -1,38 +1,65 @@
 [
   {
-    "timestamp": "2026-06-27T12:29:12.523515",
-    "user_question": "Thành phố Gia Nghĩa có cải thiện tình hình hộ nghèo sau một năm không? Hiển thị giúp tôi dễ nhìn.",
-    "mode": "Biểu đồ",
-    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \n       COUNT(CASE WHEN classify = 'Hộ nghèo' AND \"transition.beginningClassify\" ILIKE '%Nghèo%' AND NOT \"transition.beginningClassify\" ILIKE '%Cận nghèo%' THEN 1 END) AS \"Số hộ nghèo đầu kỳ\", \n       COUNT(CASE WHEN classify = 'Hộ nghèo' AND \"transition.endingClassify\" ILIKE '%Không nghèo%' THEN 1 END) AS \"Số hộ nghèo cuối kỳ\" \nFROM households \nWHERE \"administrative.district\" ILIKE '%Gia Nghĩa%' AND \"administrative.year\" IN (2023, 2024) \nGROUP BY \"administrative.year\";",
-    "answer": "Trong năm 2024, số hộ nghèo đầu kỳ giảm từ 49 xuống 0, cho thấy sự cải thiện rõ rệt trong tình hình hộ nghèo tại Thành phố Gia Nghĩa. Sự chênh lệch giữa số hộ nghèo đầu kỳ và cuối kỳ là 49 hộ, cho thấy nỗ lực đáng kể trong công tác giảm nghèo.",
+    "timestamp": "2026-07-01T12:51:56.894040",
+    "user_question": "Có bao nhiêu hộ nghèo ở Đắk Glong năm 2024?",
+    "mode": "Hỏi - Đáp",
+    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", COUNT(*) AS \"Số hộ nghèo\" FROM households WHERE classify = 'Hộ nghèo' AND \"administrative.district\" ILIKE '%Đăk Glong%' AND \"administrative.year\" = 2024 GROUP BY \"administrative.year\";",
+    "answer": "Trong năm 2024, huyện Đắk Glong ghi nhận có 538 hộ nghèo. So với các năm trước, nếu có dữ liệu, chúng ta có thể phân tích xu hướng giảm hoặc tăng của số hộ nghèo. Tuy nhiên, với con số hiện tại, có thể thấy rằng tình hình hộ nghèo tại Đắk Glong vẫn còn đáng quan tâm và cần các biện pháp hỗ trợ để cải thiện đời sống cho người dân.",
     "stream": false,
-    "execution_time_sec": 8.8078
+    "execution_time_sec": 13.9184
   },
   {
-    "timestamp": "2026-06-27T12:29:18.939799",
-    "user_question": "Thành phố Gia Nghĩa có cải thiện tình hình hộ nghèo sau một năm không? Hiển thị giúp tôi dễ nhìn.",
-    "mode": "Hỏi - Đáp",
-    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \n       COUNT(CASE WHEN classify = 'Hộ nghèo' AND \"transition.beginningClassify\" ILIKE '%Nghèo%' AND NOT \"transition.beginningClassify\" ILIKE '%Cận nghèo%' THEN 1 END) AS \"Số hộ nghèo đầu kỳ\", \n       COUNT(CASE WHEN classify = 'Hộ nghèo' AND \"transition.endingClassify\" ILIKE '%Không nghèo%' THEN 1 END) AS \"Số hộ nghèo cuối kỳ\" \nFROM households \nWHERE \"administrative.district\" ILIKE '%Gia Nghĩa%' AND \"administrative.year\" IN (2023, 2024) \nGROUP BY \"administrative.year\";",
-    "answer": "Trong năm 2024, thành phố Gia Nghĩa đã có sự cải thiện rõ rệt trong tình hình hộ nghèo. Cụ thể:\n\n- **Số hộ nghèo đầu kỳ (2023)**: 64 hộ\n- **Số hộ nghèo cuối kỳ (2023)**: 0 hộ\n- **Số hộ nghèo đầu kỳ (2024)**: 49 hộ\n- **Số hộ nghèo cuối kỳ (2024)**: 0 hộ\n\nSo với năm 2023, số hộ nghèo đã giảm từ 64 xuống 0, cho thấy một sự chuyển biến tích cực. Mặc dù trong năm 2024, số hộ nghèo đầu kỳ là 49 hộ, nhưng cuối năm cũng đã giảm xuống 0 hộ. \n\nĐiều này cho thấy rằng các chính sách và chương trình hỗ trợ đã phát huy hiệu quả, giúp giảm tỷ lệ hộ nghèo một cách đáng kể. Sự cải thiện này không chỉ thể hiện nỗ lực của chính quyền địa phương mà còn phản ánh sự thay đổi tích cực trong đời sống của người dân.",
+    "timestamp": "2026-07-01T12:52:32.861731",
+    "user_question": "So sánh hộ nghèo và cận nghèo của huyện Tuy Đức năm 2024",
+    "mode": "Auto (Route 2: Few-shot SQL Repair)",
+    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \n       COUNT(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) AS \"Số hộ nghèo\", \n       COUNT(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 END) AS \"Số hộ cận nghèo\" \nFROM households \nWHERE \"administrative.district\" ILIKE '%Tuy Đức%' AND \"administrative.year\" = 2024 \nGROUP BY \"administrative.year\";",
+    "answer": "Trong năm 2024, tại huyện Tuy Đức, số hộ nghèo là 829 hộ, trong khi số hộ cận nghèo là 917 hộ. \n\nĐiều này cho thấy số hộ cận nghèo vượt trội hơn so với số hộ nghèo, với khoảng cách lên đến 88 hộ. Tỷ trọng hộ cận nghèo chiếm khoảng 52,6% tổng số hộ nghèo và cận nghèo, cho thấy rằng tình trạng cận nghèo đang là một vấn đề đáng lưu ý tại địa phương này. Sự chênh lệch này có thể phản ánh những thách thức trong việc cải thiện điều kiện sống và phát triển kinh tế cho các hộ gia đình tại huyện Tuy Đức.",
     "stream": false,
-    "execution_time_sec": 6.4143
+    "execution_time_sec": 11.0497
   },
   {
-    "timestamp": "2026-06-27T12:29:36.965090",
-    "user_question": "Những thiếu hụt nào xuất hiện nhiều nhất trong nhóm hộ nghèo?",
-    "mode": "Hỏi - Đáp",
-    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \n       SUM(CASE WHEN \"deprivation.employment\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt việc làm\",\n       SUM(CASE WHEN \"deprivation.dependentPerson\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt người phụ thuộc\",\n       SUM(CASE WHEN \"deprivation.nutrition\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt dinh dưỡng\",\n       SUM(CASE WHEN \"deprivation.healthInsurance\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt bảo hiểm y tế\",\n       SUM(CASE WHEN \"deprivation.adultEducation\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt giáo dục người lớn\",\n       SUM(CASE WHEN \"deprivation.childSchoolAttendance\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt giáo dục trẻ em\",\n       SUM(CASE WHEN \"deprivation.housingQuality\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt chất lượng nhà ở\",\n       SUM(CASE WHEN \"deprivation.housingArea\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt diện tích nhà ở\",\n       SUM(CASE WHEN \"deprivation.cleanWater\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt nước sạch\",\n       SUM(CASE WHEN \"deprivation.hygienicToilet\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt nhà tiêu hợp vệ sinh\",\n       SUM(CASE WHEN \"deprivation.telecommunication\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt viễn thông\",\n       SUM(CASE WHEN \"deprivation.informationAccessAssets\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt tiếp cận",
-    "answer": "Tôi không tìm thấy dữ liệu phù hợp hoặc hệ thống gặp lỗi khi truy xuất dữ liệu.",
+    "timestamp": "2026-07-01T12:54:05.557304",
+    "user_question": "Biểu đồ so sánh số hộ nghèo năm 2024 của các huyện",
+    "mode": "Biểu đồ (Route 1: Exact Hit)",
+    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \"administrative.district\" AS \"Huyện\", COUNT(*) AS \"Số hộ nghèo\" \nFROM households \nWHERE classify = 'Hộ nghèo' AND \"administrative.year\" = 2024 \nGROUP BY \"administrative.year\", \"administrative.district\";",
+    "answer": "Trong năm 2024, số hộ nghèo của các huyện được ghi nhận như sau: Huyện Cư Jút có 204 hộ nghèo, Huyện Đắk RLấp có 135 hộ nghèo, Huyện Đắk Mil có 221 hộ nghèo, Thành phố Gia Nghĩa có 51 hộ nghèo, Huyện Đăk Glong có 538 hộ nghèo, Huyện Tuy Đức có 829 hộ nghèo, Huyện Đắk Song có 279 hộ nghèo, và Huyện Krông Nô có 189 hộ nghèo. Huyện Tuy Đức có số hộ nghèo cao nhất với 829 hộ, trong khi Thành phố Gia Nghĩa có số hộ nghèo thấp nhất chỉ với 51 hộ. Sự chênh lệch này cho thấy mức độ nghèo đói giữa các huyện là rất khác nhau.",
     "stream": false,
-    "execution_time_sec": 18.0233
+    "execution_time_sec": 2.5993
   },
   {
-    "timestamp": "2026-06-27T12:29:53.444032",
-    "user_question": "Những thiếu hụt nào xuất hiện nhiều nhất trong nhóm hộ nghèo?",
-    "mode": "Hỏi - Đáp",
-    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \n       SUM(CASE WHEN \"deprivation.cleanWater\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt nước sạch\",\n       SUM(CASE WHEN \"deprivation.hygienicToilet\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt nhà tiêu hợp vệ sinh\",\n       SUM(CASE WHEN \"reason.lackProductionLand\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt đất sản xuất\",\n       SUM(CASE WHEN \"reason.lackCapital\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt vốn\",\n       SUM(CASE WHEN \"reason.lackLabor\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt lao động\",\n       SUM(CASE WHEN \"reason.illnessOrAccident\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt do ốm đau hoặc tai nạn\",\n       SUM(CASE WHEN \"reason.lackProductionTools\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt công cụ sản xuất\",\n       SUM(CASE WHEN \"reason.lackProductionKnowledge\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt kiến thức sản xuất\",\n       SUM(CASE WHEN \"reason.lackLaborSkill\" = true THEN 1 ELSE 0 END) AS \"Thiếu hụt kỹ năng lao động\"\nFROM households \nWHERE classify = 'Hộ nghèo' AND \"administrative.year\" IN (2023, 2024)\nGROUP BY \"administrative.year\"",
-    "answer": "Tính đến năm 2024, nhóm hộ nghèo đã trải qua những thay đổi đáng kể về các loại thiếu hụt. Cụ thể, trong năm 2023, thiếu hụt vốn là vấn đề lớn nhất với 2,684 trường hợp, tiếp theo là thiếu hụt lao động (2,091) và thiếu hụt do ốm đau hoặc tai nạn (2,669). Tuy nhiên, đến năm 2024, các con số này đã giảm mạnh, cho thấy sự cải thiện trong tình hình.\n\nCụ thể, các thiếu hụt phổ biến nhất trong năm 2024 là:\n- Thiếu hụt lao động: 877\n- Thiếu hụt do ốm đau hoặc tai nạn: 1,147\n- Thiếu hụt vốn: 1,141\n\nSo với năm 2023, khoảng cách giữa thiếu hụt lao động và các loại thiếu hụt khác đã thu hẹp rõ rệt. Điều này cho thấy rằng mặc dù tình hình đã cải thiện, nhưng thiếu hụt lao động vẫn là một vấn đề đáng lưu ý, chiếm tỷ trọng lớn trong tổng thể các thiếu hụt. Sự giảm sút này có thể phản ánh những nỗ lực trong việc cải thiện điều kiện sống và làm việc cho nhóm hộ nghèo.",
+    "timestamp": "2026-07-01T12:54:43.324225",
+    "user_question": "Biểu đồ top 3 huyện có nhiều hộ nghèo nhất 2024",
+    "mode": "Biểu đồ (Route 1: Exact Hit)",
+    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \"administrative.district\" AS \"Huyện\", COUNT(*) AS \"Số hộ nghèo\" \nFROM households \nWHERE classify = 'Hộ nghèo' AND \"administrative.year\" = 2024 \nGROUP BY \"administrative.year\", \"administrative.district\" \nORDER BY \"Số hộ nghèo\" DESC \nLIMIT 3;",
+    "answer": "Trong năm 2024, Huyện Tuy Đức dẫn đầu với 829 hộ nghèo, cao hơn hẳn so với Huyện Đăk Glong với 538 hộ nghèo và Huyện Đắk Song với 279 hộ nghèo. Sự chênh lệch giữa Huyện Tuy Đức và hai huyện còn lại cho thấy tình hình hộ nghèo tại đây đang ở mức nghiêm trọng hơn.",
     "stream": false,
-    "execution_time_sec": 16.4764
+    "execution_time_sec": 1.8192
+  },
+  {
+    "timestamp": "2026-07-01T12:55:29.004673",
+    "user_question": "Huyện nào có ít hộ cận nghèo nhất năm 2024?",
+    "mode": "Hỏi - Đáp (Route 2: Few-shot SQL Repair)",
+    "sql_query": "SELECT \"administrative.district\" AS \"Huyện\", COUNT(*) AS \"Số hộ cận nghèo\" \nFROM households \nWHERE classify = 'Hộ cận nghèo' AND \"administrative.year\" = 2024 \nGROUP BY \"administrative.district\" \nORDER BY \"Số hộ cận nghèo\" ASC;",
+    "answer": "Dữ liệu chi tiết:\n\n| Huyện               |   Số hộ cận nghèo |\n|:--------------------|------------------:|\n| Thành phố Gia Nghĩa |               142 |\n| Huyện Đắk RLấp      |               271 |\n| Huyện Cư Jút        |               304 |\n| Huyện Đắk Mil       |               466 |\n| Huyện Đăk Glong     |               485 |\n| Huyện Đắk Song      |               510 |\n| Huyện Krông Nô      |               588 |\n| Huyện Tuy Đức       |               917 |",
+    "stream": false,
+    "execution_time_sec": 8.7624
+  },
+  {
+    "timestamp": "2026-07-01T12:56:00.895186",
+    "user_question": "Có bao nhiêu hộ nghèo ở Đắk Glong năm 2024?",
+    "mode": "Auto (Route 1: Exact Hit)",
+    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", COUNT(*) AS \"Số hộ nghèo\" FROM households WHERE classify = 'Hộ nghèo' AND \"administrative.district\" ILIKE '%Đăk Glong%' AND \"administrative.year\" = 2024 GROUP BY \"administrative.year\";",
+    "answer": "Trong năm 2024, huyện Đắk Glong ghi nhận có 538 hộ nghèo. So với các năm trước, nếu có dữ liệu, chúng ta có thể phân tích xu hướng giảm hoặc tăng của số hộ nghèo. Tuy nhiên, với con số hiện tại, có thể thấy rằng tình hình hộ nghèo tại Đắk Glong vẫn còn đáng quan tâm và cần các biện pháp hỗ trợ để cải thiện đời sống cho người dân.",
+    "stream": false,
+    "execution_time_sec": 1.8081
+  },
+  {
+    "timestamp": "2026-07-01T12:56:42.842725",
+    "user_question": "So sánh hộ nghèo và cận nghèo của huyện Tuy Đức năm 2024",
+    "mode": "Auto (Route 1: Exact Hit)",
+    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \n       COUNT(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) AS \"Số hộ nghèo\", \n       COUNT(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 END) AS \"Số hộ cận nghèo\" \nFROM households \nWHERE \"administrative.district\" ILIKE '%Tuy Đức%' AND \"administrative.year\" = 2024 \nGROUP BY \"administrative.year\";",
+    "answer": "Trong năm 2024, tại huyện Tuy Đức, số hộ nghèo là 829 hộ, trong khi số hộ cận nghèo là 917 hộ. \n\nĐiều này cho thấy số hộ cận nghèo vượt trội hơn so với số hộ nghèo, với khoảng cách lên đến 88 hộ. Tỷ trọng hộ cận nghèo chiếm khoảng 52,6% tổng số hộ nghèo và cận nghèo, cho thấy rằng tình trạng cận nghèo đang là một vấn đề đáng lưu ý tại địa phương này. Sự chênh lệch này có thể phản ánh những thách thức trong việc cải thiện điều kiện sống và phát triển kinh tế cho các hộ gia đình tại huyện Tuy Đức.",
+    "stream": false,
+    "execution_time_sec": 4.9466
   }
 ]

@@ -23,6 +23,11 @@ import streamlit as st
 import plotly.io as pio
 import pandas as pd
 
+try:
+    from streamlit_pdf_viewer import pdf_viewer
+except ImportError:
+    pdf_viewer = None
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
@@ -183,7 +188,10 @@ def make_session_id() -> str:
 
 @st.cache_resource(show_spinner=False)
 def get_shared_pipeline() -> Any:
-    # Busted cache to reload DomainGate changes
+    # Busted cache to reload Narrative Engine changes v3
+    import importlib
+    import src.query_control.agentic.agent_pipeline as _ap_mod
+    importlib.reload(_ap_mod)
     from src.query_control.agentic.agent_pipeline import AgenticPipeline
     return AgenticPipeline()
 
@@ -227,8 +235,10 @@ def load_session_into_state(session_id: str, history_store: UIHistoryStore) -> N
         if turn.get("data_json"):
             try:
                 import pandas as pd
-                assistant_msg["data"] = pd.read_json(turn.get("data_json"), orient="split")
-            except Exception:
+                raw_df = pd.read_json(turn.get("data_json"), orient="split")
+                assistant_msg["data"] = format_dataframe(raw_df)
+            except Exception as e:
+                print(f"[UI Warning] read_json data thất bại: {e}")
                 pass
                 
         if turn.get("docx_path"):
@@ -449,7 +459,7 @@ def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
             underlying_df = getattr(formatted_data, "data", formatted_data)
             hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
             st.dataframe(formatted_data, hide_index=hide_idx)
-            response["data"] = formatted_data
+            response["formatted_data"] = formatted_data
 
         if response.get("docx_path") and response.get("pdf_path"):
             docx_p = Path(response["docx_path"])
@@ -460,6 +470,9 @@ def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
                     st.download_button(label="📥 Tải báo cáo (Word / .docx)", data=docx_p.read_bytes(), file_name=docx_p.name, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key="current_docx_dl")
                 with col2:
                     st.download_button(label="📥 Tải báo cáo (PDF)", data=pdf_p.read_bytes(), file_name=pdf_p.name, mime="application/pdf", key="current_pdf_dl")
+                if pdf_viewer:
+                    st.markdown("### 📄 Xem trước Báo cáo PDF")
+                    pdf_viewer(str(pdf_p), height=700)
 
     assistant_msg = {"role": "assistant", "content": final_text}
     chart_json_str = None
@@ -476,10 +489,14 @@ def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
             
     if response.get("data") is not None and not getattr(getattr(response.get("data"), "data", response.get("data")), "empty", True):
         try:
+            assistant_msg["data"] = response.get("formatted_data", response["data"])
             underlying_df = getattr(response["data"], "data", response["data"])
-            assistant_msg["data"] = response["data"]
-            data_json_str = underlying_df.to_json(orient="split")
-        except Exception:
+            clean_df = underlying_df.copy()
+            clean_df.columns = [str(c) for c in clean_df.columns]
+            clean_df = clean_df.reset_index(drop=True)
+            data_json_str = clean_df.to_json(orient="split")
+        except Exception as e:
+            print(f"[UI Warning] to_json data thất bại: {e}")
             pass
 
     if docx_path_str: assistant_msg["docx_path"] = docx_path_str
@@ -542,6 +559,9 @@ def main() -> None:
                         st.download_button(label="📥 Tải báo cáo (Word / .docx)", data=docx_p.read_bytes(), file_name=docx_p.name, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key=f"hist_docx_{idx}")
                     with col2:
                         st.download_button(label="📥 Tải báo cáo (PDF)", data=pdf_p.read_bytes(), file_name=pdf_p.name, mime="application/pdf", key=f"hist_pdf_{idx}")
+                    if pdf_viewer:
+                        st.markdown("### 📄 Xem trước Báo cáo PDF")
+                        pdf_viewer(str(pdf_p), height=700)
 
     render_pending_options(history_store)
 

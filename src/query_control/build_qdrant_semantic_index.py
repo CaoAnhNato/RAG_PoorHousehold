@@ -33,27 +33,22 @@ QDRANT_CONFIG_PATH = QUERY_CONTROL_METADATA_DIR / "qdrant_index_config.json"
 REPORT_PATH = QUERY_CONTROL_METADATA_DIR / "metadata_build_report.md"
 
 class EmbeddingClient:
-    """Client sinh Vector Embedding, hỗ trợ cả API (như ShopAPI) và SentenceTransformers cục bộ."""
+    """Client sinh Vector Embedding 100% qua API (ShopAPI). Tuyệt đối không chạy local."""
     def __init__(self, model_name: str):
-        self.model_name = model_name
         self.shopapi_api_key = os.environ.get("SHOPAPI_LLM_API_KEY", "").strip()
         self.shopapi_base_url = os.environ.get("SHOPAPI_BASE_URL", "").strip()
         
-        self.use_shopapi = False
-        # Nếu cấu hình ShopAPI đầy đủ và model không phải local, sử dụng API
-        if self.shopapi_api_key and self.shopapi_base_url:
-            if "text-embedding" in model_name or ("intfloat" not in model_name and "BAAI" not in model_name):
-                self.use_shopapi = True
-                
+        if not self.shopapi_api_key or not self.shopapi_base_url:
+            raise RuntimeError("Lỗi: Thiếu cấu hình API (SHOPAPI_LLM_API_KEY / SHOPAPI_BASE_URL) trong .env. Không cho phép chạy mô hình local.")
+            
+        # Tự động chuyển sang model API nếu model_name là tên model local cũ hoặc rỗng
+        if "intfloat" in model_name or "BAAI" in model_name or not model_name:
+            self.model_name = os.environ.get("SHOPAPI_EMBEDDING", "text-embedding-3-small")
+        else:
+            self.model_name = model_name
+            
+        self.use_shopapi = True
         self.local_model = None
-        if not self.use_shopapi:
-            print(f"Khởi tạo mô hình local SentenceTransformer: {model_name}...")
-            try:
-                from sentence_transformers import SentenceTransformer
-                self.local_model = SentenceTransformer(model_name)
-            except ImportError:
-                print("Lỗi: Không tìm thấy thư viện sentence-transformers. Vui lòng cài đặt qua requirements.txt.")
-                sys.exit(1)
                 
     def get_dimension(self) -> int:
         """Lấy kích thước vector embedding động từ mô hình."""

@@ -1,0 +1,17 @@
+{
+  "q36_hash": "ee94f5d7dcd86a152b6a9baaa917b7ed",
+  "q36_in_cache": true,
+  "q36_sql": "SELECT \"administrative.year\" AS \"Năm\", \n       SUM(CASE WHEN \"reason.lackCapital\" = true THEN 1 ELSE 0 END) AS \"Thiếu vốn\", \n       SUM(CASE WHEN \"reason.lackProductionLand\" = true THEN 1 ELSE 0 END) AS \"Thiếu đất sản xuất\" \nFROM households \nWHERE \"administrative.district\" ILIKE '%Đắk Mil%' AND \"administrative.year\" = 2024 \nGROUP BY \"administrative.year\";",
+  "q37_hash": "49240adc8ee4785eef7ac0d56ff5ebc4",
+  "q37_in_cache": true,
+  "q37_sql": "SELECT \"administrative.year\" AS \"Năm\", \"administrative.commune\" AS \"Xã\", \n       COUNT(CASE WHEN classify = 'Hộ nghèo' THEN 1 END) AS \"Số hộ nghèo\", \n       COUNT(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 END) AS \"Số hộ cận nghèo\" \nFROM households \nWHERE \"administrative.year\" = 2024 AND \"administrative.district\" ILIKE '%Gia Nghĩa%' \nGROUP BY \"administrative.year\", \"administrative.commune\";",
+  "q38_hash": "6d26287c5b0469ea0551cc8c855e4847",
+  "q38_in_cache": true,
+  "q38_sql": "SELECT \"administrative.district\" AS \"Huyện\", COUNT(*) AS \"Tổng số hộ nghèo và cận nghèo\" \nFROM households \nWHERE \"administrative.year\" = 2024 \nGROUP BY \"administrative.district\" \nORDER BY \"Tổng số hộ nghèo và cận nghèo\" DESC \nLIMIT 5;",
+  "q39_hash": "f44c89a787b7dc05145af4394c5e735d",
+  "q39_in_cache": true,
+  "q39_sql": "SELECT \"administrative.commune\" AS \"Xã\", COUNT(*) AS \"Số hộ cận nghèo\" \nFROM households \nWHERE classify = 'Hộ cận nghèo' AND \"administrative.district\" ILIKE '%Tuy Đức%' AND \"administrative.year\" = 2024 \nGROUP BY \"administrative.commune\";",
+  "q40_hash": "392170757981daa74dd711da4a974f82",
+  "q40_in_cache": true,
+  "q40_sql": "SELECT \"administrative.year\" AS \"Năm\", ROUND(COUNT(CASE WHEN classify = 'Hộ nghèo' AND \"deprivation.cleanWater\" = true THEN 1 END) * 100.0 / COUNT(CASE WHEN classify = 'Hộ nghèo' THEN 1 END), 2) AS \"Tỷ trọng hộ nghèo thiếu hụt nước sinh hoạt hợp vệ sinh (%)\" FROM households WHERE \"administrative.district\" ILIKE '%Đắk Song%' AND \"administrative.year\" = 2024 GROUP BY \"administrative.year\";"
+}

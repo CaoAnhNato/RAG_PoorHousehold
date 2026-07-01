@@ -140,17 +140,22 @@ def build_massive_knowledge_base():
             from qdrant_client.http import models as qmodels
             points = []
             print(f"   => Đang tạo embeddings cho {len(harvested_qa)} câu hỏi để nạp vào Qdrant...")
-            for idx, (q_key, data) in enumerate(harvested_qa.items()):
-                vector = cache_mgr.emb_client.embed_text(data["question"])
-                points.append(qmodels.PointStruct(
-                    id=idx + 1,
-                    vector=vector,
-                    payload={
-                        "question": data["question"],
-                        "sql": data["sql"],
-                        "answer": data["answer"]
-                    }
-                ))
+            items_list = list(harvested_qa.items())
+            batch_emb_size = 50
+            for i in range(0, len(items_list), batch_emb_size):
+                chunk = items_list[i:i + batch_emb_size]
+                questions = [data["question"] for _, data in chunk]
+                vectors = cache_mgr.emb_client.embed_batch(questions)
+                for j, (q_key, data) in enumerate(chunk):
+                    points.append(qmodels.PointStruct(
+                        id=i + j + 1,
+                        vector=vectors[j],
+                        payload={
+                            "question": data["question"],
+                            "sql": data["sql"],
+                            "answer": data["answer"]
+                        }
+                    ))
             # Batch upsert
             batch_size = 100
             for i in range(0, len(points), batch_size):

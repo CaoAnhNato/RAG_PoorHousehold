@@ -99,6 +99,7 @@ class MetaMCPServer:
         self.initialized = False
         self.initialize_client_req = None
         self.stdin_queue = None
+        self.chart_http_server = None
 
     def load_config(self):
         config_path = r"C:\Users\Admin\.gemini\antigravity\mcp_config.json"
@@ -490,7 +491,7 @@ class MetaMCPServer:
             tool_name = params.get("name")
             arguments = params.get("arguments", {})
 
-            if tool_name in ["meta_deep_context", "meta_explore_structure", "meta_safe_edit_preview", "meta_trace_flow", "meta_research_idea"]:
+            if tool_name in ["meta_deep_context", "meta_explore_structure", "meta_safe_edit_preview", "meta_trace_flow", "meta_research_idea", "visual_start_chart_server", "visual_playwright_screenshot", "visual_extract_dom_boxes", "visual_check_wcag_contrast"]:
                 async def run_with_timeout():
                     try:
                         if tool_name == "meta_deep_context":
@@ -503,6 +504,14 @@ class MetaMCPServer:
                             await asyncio.wait_for(self.handle_meta_trace_flow(msg_id, arguments), timeout=180.0)
                         elif tool_name == "meta_research_idea":
                             await asyncio.wait_for(self.handle_meta_research_idea(msg_id, arguments), timeout=180.0)
+                        elif tool_name == "visual_start_chart_server":
+                            await asyncio.wait_for(self.handle_visual_start_chart_server(msg_id, arguments), timeout=60.0)
+                        elif tool_name == "visual_playwright_screenshot":
+                            await asyncio.wait_for(self.handle_visual_playwright_screenshot(msg_id, arguments), timeout=120.0)
+                        elif tool_name == "visual_extract_dom_boxes":
+                            await asyncio.wait_for(self.handle_visual_extract_dom_boxes(msg_id, arguments), timeout=120.0)
+                        elif tool_name == "visual_check_wcag_contrast":
+                            await asyncio.wait_for(self.handle_visual_check_wcag_contrast(msg_id, arguments), timeout=60.0)
                     except asyncio.TimeoutError:
                         log(f"Meta-tool {tool_name} timed out for {msg_id}")
                         await self.send_to_client({
@@ -515,6 +524,14 @@ class MetaMCPServer:
                         })
                     except Exception as e:
                         log(f"Error in {tool_name}: {e}\n{traceback.format_exc()}")
+                        await self.send_to_client({
+                            "jsonrpc": "2.0",
+                            "id": msg_id,
+                            "error": {
+                                "code": -32603,
+                                "message": f"Error in {tool_name}: {e}"
+                            }
+                        })
                         
                 asyncio.create_task(run_with_timeout())
                 return
@@ -1167,6 +1184,65 @@ class MetaMCPServer:
                     },
                     "required": ["error_symbol"]
                 }
+            },
+            {
+                "name": "visual_start_chart_server",
+                "description": "Khởi tạo HTTP server nội trú tại port 3000 phục vụ thư mục chứa file biểu đồ .html. Chỉ bật khi có yêu cầu sử dụng sub-agent.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "directory": {
+                            "type": "string",
+                            "description": "Thư mục phục vụ file (mặc định 'artifacts/charts')."
+                        }
+                    }
+                }
+            },
+            {
+                "name": "visual_playwright_screenshot",
+                "description": "Dùng Playwright mở headless browser truy cập http://localhost:3000/{filename}, chụp screenshot toàn bộ trang và trả về ảnh dạng chuỗi Base64.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "filename": {
+                            "type": "string",
+                            "description": "Tên file html biểu đồ cần chụp (ví dụ: 'chart_1782189356.html')."
+                        }
+                    },
+                    "required": ["filename"]
+                }
+            },
+            {
+                "name": "visual_extract_dom_boxes",
+                "description": "Trích xuất DOM Bounding Box của các nhãn trên trục X/Y, legend, title để xác định tình trạng chồng chéo (overlap).",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "filename": {
+                            "type": "string",
+                            "description": "Tên file html biểu đồ cần kiểm tra (ví dụ: 'chart_1782189356.html')."
+                        }
+                    },
+                    "required": ["filename"]
+                }
+            },
+            {
+                "name": "visual_check_wcag_contrast",
+                "description": "Nhận thông tin mã màu (hoặc trích xuất từ phần tử DOM) và tính toán tỷ lệ tương phản theo công thức WCAG 2.x, trả về đánh giá đạt/không đạt.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "text_color": {
+                            "type": "string",
+                            "description": "Mã màu chữ (hex hoặc rgb, ví dụ: '#ffffff' hoặc 'rgb(255,255,255)')."
+                        },
+                        "bg_color": {
+                            "type": "string",
+                            "description": "Mã màu nền (hex hoặc rgb, ví dụ: '#000000' hoặc 'rgb(0,0,0)')."
+                        }
+                    },
+                    "required": ["text_color", "bg_color"]
+                }
             }
         ]
         all_tools.extend(meta_tools)
@@ -1265,6 +1341,231 @@ class MetaMCPServer:
                     {"type": "text", "text": merged_text},
                     {"type": "text", "text": f"\n\n---\n### 💡 Smart Hints\n```json\n{json.dumps(hints, indent=2, ensure_ascii=False)}\n```"}
                 ]
+            }
+        })
+
+    async def handle_visual_start_chart_server(self, client_id, arguments):
+        directory = arguments.get("directory", "artifacts/charts")
+        log(f"Handling visual_start_chart_server for directory={directory}")
+        import threading
+        import http.server
+        import socketserver
+        
+        if self.chart_http_server is not None:
+            await self.send_to_client({
+                "jsonrpc": "2.0",
+                "id": client_id,
+                "result": {
+                    "content": [{"type": "text", "text": f"HTTP Server is already running on port 3000 (Serving {directory})."}]
+                }
+            })
+            return
+
+        os.makedirs(directory, exist_ok=True)
+        PORT = 3000
+        
+        class Handler(http.server.SimpleHTTPRequestHandler):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, directory=directory, **kwargs)
+            def log_message(self, format, *args):
+                log(f"[HTTP Server] {format%args}")
+
+        try:
+            httpd = socketserver.TCPServer(("", PORT), Handler)
+            self.chart_http_server = httpd
+            
+            def serve_forever():
+                try:
+                    httpd.serve_forever()
+                except Exception as e:
+                    log(f"HTTP Server stopped: {e}")
+                    
+            threading.Thread(target=serve_forever, daemon=True).start()
+            msg = f"✅ Khởi tạo thành công HTTP Server nội trú tại http://localhost:{PORT} phục vụ thư mục '{directory}'."
+        except Exception as e:
+            msg = f"⚠️ Không thể khởi tạo HTTP Server tại port {PORT}: {e}"
+
+        await self.send_to_client({
+            "jsonrpc": "2.0",
+            "id": client_id,
+            "result": {
+                "content": [{"type": "text", "text": msg}]
+            }
+        })
+
+    async def handle_visual_playwright_screenshot(self, client_id, arguments):
+        filename = arguments.get("filename")
+        log(f"Handling visual_playwright_screenshot for filename={filename}")
+        import base64
+        
+        url = f"http://localhost:3000/{filename}"
+        base64_image = ""
+        error_msg = ""
+        
+        try:
+            from playwright.async_api import async_playwright
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(headless=True)
+                page = await browser.new_page()
+                await page.goto(url, timeout=30000)
+                await page.wait_for_timeout(2000) # Wait for chart animations & rendering
+                screenshot_bytes = await page.screenshot(full_page=True)
+                base64_image = base64.b64encode(screenshot_bytes).decode('utf-8')
+                await browser.close()
+        except Exception as e:
+            log(f"Playwright screenshot failed: {e}")
+            error_msg = str(e)
+
+        if error_msg:
+            result_data = {"error": f"Failed to capture screenshot for {url}: {error_msg}"}
+        else:
+            result_data = {"url": url, "base64_image": base64_image, "status": "success"}
+
+        await self.send_to_client({
+            "jsonrpc": "2.0",
+            "id": client_id,
+            "result": {
+                "content": [{"type": "text", "text": json.dumps(result_data, indent=2, ensure_ascii=False)}]
+            }
+        })
+
+    async def handle_visual_extract_dom_boxes(self, client_id, arguments):
+        filename = arguments.get("filename")
+        log(f"Handling visual_extract_dom_boxes for filename={filename}")
+        
+        url = f"http://localhost:3000/{filename}"
+        bounding_boxes = []
+        has_overlap = False
+        error_msg = ""
+        
+        try:
+            from playwright.async_api import async_playwright
+            async with async_playwright() as p:
+                browser = await p.chromium.launch(headless=True)
+                page = await browser.new_page()
+                await page.goto(url, timeout=30000)
+                await page.wait_for_timeout(2000)
+                
+                # Extract text elements bounding boxes
+                script = """() => {
+                    const texts = Array.from(document.querySelectorAll('text'));
+                    return texts.map(t => {
+                        const rect = t.getBoundingClientRect();
+                        const style = window.getComputedStyle(t);
+                        return {
+                            text: t.textContent.trim(),
+                            x: rect.x,
+                            y: rect.y,
+                            width: rect.width,
+                            height: rect.height,
+                            color: style.color,
+                            backgroundColor: style.backgroundColor,
+                            fontSize: style.fontSize,
+                            transform: t.getAttribute('transform') || ''
+                        };
+                    }).filter(item => item.text.length > 0);
+                }"""
+                bounding_boxes = await page.evaluate(script)
+                await browser.close()
+                
+                # Basic overlap check heuristic on X axis items (items with roughly same Y)
+                y_groups = {}
+                for box in bounding_boxes:
+                    y_key = round(box['y'] / 10) * 10 # Group by near Y
+                    if y_key not in y_groups:
+                        y_groups[y_key] = []
+                    y_groups[y_key].append(box)
+                
+                for y_key, items in y_groups.items():
+                    if len(items) > 1:
+                        items.sort(key=lambda b: b['x'])
+                        for i in range(len(items)-1):
+                            curr = items[i]
+                            nxt = items[i+1]
+                            # Check horizontal overlap
+                            if curr['x'] + curr['width'] > nxt['x']:
+                                has_overlap = True
+                                break
+                    if has_overlap:
+                        break
+                        
+        except Exception as e:
+            log(f"Playwright DOM extraction failed: {e}")
+            error_msg = str(e)
+
+        if error_msg:
+            result_data = {"error": f"Failed to extract DOM boxes for {url}: {error_msg}"}
+        else:
+            result_data = {
+                "url": url,
+                "total_text_elements": len(bounding_boxes),
+                "has_overlap": has_overlap,
+                "overlap_details": "Phát hiện nhãn trục X bị chồng chéo (overlap). Đề xuất sửa code Plotly: xoay nhãn tickangle=45 hoặc ẩn bớt nhãn." if has_overlap else "Các nhãn hiển thị rõ ràng, không bị chồng chéo.",
+                "bounding_boxes": bounding_boxes
+            }
+
+        await self.send_to_client({
+            "jsonrpc": "2.0",
+            "id": client_id,
+            "result": {
+                "content": [{"type": "text", "text": json.dumps(result_data, indent=2, ensure_ascii=False)}]
+            }
+        })
+
+    async def handle_visual_check_wcag_contrast(self, client_id, arguments):
+        text_color = arguments.get("text_color", "#ffffff").strip()
+        bg_color = arguments.get("bg_color", "#000000").strip()
+        log(f"Handling visual_check_wcag_contrast for text={text_color}, bg={bg_color}")
+        
+        def parse_color(c):
+            c = c.lower().strip()
+            if c.startswith("rgb"):
+                import re
+                vals = re.findall(r"\d+", c)
+                if len(vals) >= 3:
+                    return int(vals[0]), int(vals[1]), int(vals[2])
+            elif c.startswith("#"):
+                c = c.lstrip("#")
+                if len(c) == 3:
+                    c = "".join([x*2 for x in c])
+                if len(c) == 6:
+                    return int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16)
+            # Default fallback
+            return 0, 0, 0
+
+        def get_luminance(r, g, b):
+            a = [x / 255.0 for x in (r, g, b)]
+            a = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in a]
+            return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2]
+
+        r1, g1, b1 = parse_color(text_color)
+        r2, g2, b2 = parse_color(bg_color)
+        
+        l1 = get_luminance(r1, g1, b1)
+        l2 = get_luminance(r2, g2, b2)
+        
+        if l1 < l2:
+            l1, l2 = l2, l1
+            
+        contrast = (l1 + 0.05) / (l2 + 0.05)
+        
+        normal_pass = contrast >= 4.5
+        large_pass = contrast >= 3.0
+        
+        result_data = {
+            "text_color": text_color,
+            "bg_color": bg_color,
+            "contrast_ratio": round(contrast, 2),
+            "normal_text_wcag_pass": normal_pass,
+            "large_text_wcag_pass": large_pass,
+            "evaluation": "Đạt chuẩn WCAG 2.x (Độ tương phản tốt, dễ đọc)." if normal_pass else ("Chỉ đạt chuẩn cho text lớn (>=18pt hoặc bold >=14pt)." if large_pass else "⚠️ Không đạt chuẩn WCAG (Độ tương phản quá thấp, khó đọc). Đề xuất thay đổi màu nền hoặc màu chữ.")
+        }
+
+        await self.send_to_client({
+            "jsonrpc": "2.0",
+            "id": client_id,
+            "result": {
+                "content": [{"type": "text", "text": json.dumps(result_data, indent=2, ensure_ascii=False)}]
             }
         })
 

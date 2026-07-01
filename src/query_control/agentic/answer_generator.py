@@ -24,9 +24,11 @@ class AnswerGenerator:
         if df.shape[0] > 5:
             from src.query_control.agentic.utils import normalize_columns
             tbl = normalize_columns(df)
+            md_table = tbl.to_markdown(index=False)
+            msg = f"Dữ liệu chi tiết:\n\n{md_table}"
             if stream:
-                return (chunk for chunk in [tbl])
-            return tbl
+                return (chunk for chunk in [msg])
+            return msg
             
         # Limit rows to avoid token overflow
         data_str = df.head(50).to_csv(index=False)
