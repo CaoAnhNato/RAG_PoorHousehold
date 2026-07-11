@@ -3022,5 +3022,32 @@
     "answer": "### Đã tạo thành công Báo cáo số 4: **PHÂN TÍCH CÁC CHỈ SỐ THIẾU HỤT DỊCH VỤ XÃ HỘI CƠ BẢN CỦA HỘ NGHÈO NĂM 2024**\n\n- **Năm thống kê:** 2024\n- **Tổng số dòng dữ liệu:** 79 dòng\n\nHệ thống đã tự động xuất báo cáo ra 2 định dạng chuẩn văn bản Chính phủ (Word `.docx` và `PDF`) với phông chữ Times New Roman, căn lề 0.5 inch, layout Landscape chuyên nghiệp. Khối tiêu đề hành chính Quốc hiệu, Cơ quan ban hành cùng cấu trúc Multi-tier header đã được tích hợp đầy đủ. Các cột không có dữ liệu trong dataset đã được gán giá trị 0/trống theo đúng tiêu chuẩn biểu mẫu.\n\nXin mời bạn bấm nút tải về ở bên dưới để lưu báo cáo.",
     "stream": false,
     "execution_time_sec": 16.7624
+  },
+  {
+    "timestamp": "2026-07-11T10:50:07.539220",
+    "user_question": "Vẽ biểu đồ cột so sánh số lượng hộ nghèo và cận nghèo tại huyện Lắk năm 2023",
+    "mode": "Biểu đồ",
+    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \n       SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS \"Số hộ nghèo\", \n       SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS \"Số hộ cận nghèo\" \nFROM households \nWHERE \"administrative.year\" = 2023 \n  AND \"administrative.district\" ILIKE '%Lắk%' \nGROUP BY \"administrative.year\";",
+    "answer": "Không có dữ liệu để vẽ biểu đồ.",
+    "stream": false,
+    "execution_time_sec": 5.2747
+  },
+  {
+    "timestamp": "2026-07-11T10:50:30.756949",
+    "user_question": "Có bao nhiêu hộ nghèo tại huyện Lắk trong năm 2023?",
+    "mode": "Hỏi - Đáp",
+    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \"administrative.district\" AS \"Huyện\", COUNT(*) AS \"Số hộ nghèo\" \nFROM households \nWHERE \"administrative.year\" = 2023 AND \"administrative.district\" ILIKE '%Lắk%' AND \"classify\" = 'Hộ nghèo' \nGROUP BY \"administrative.year\", \"administrative.district\" \nORDER BY \"administrative.year\";",
+    "answer": "Tôi không tìm thấy dữ liệu phù hợp hoặc hệ thống gặp lỗi khi truy xuất dữ liệu.",
+    "stream": false,
+    "execution_time_sec": 3.06
+  },
+  {
+    "timestamp": "2026-07-11T10:50:34.354406",
+    "user_question": "Tạo báo cáo tổng hợp thực trạng hộ nghèo tại huyện Lắk năm 2023",
+    "mode": "Báo Cáo",
+    "sql_query": "\n        SELECT \n            \"administrative.district\" AS \"District\",\n            \"administrative.commune\" AS \"Phường/Xã\",\n            COUNT(*) AS \"Số hộ\",\n            SUM(COALESCE(\"family.numberOfMembers\", 1)) AS \"Nhân khẩu\",\n            SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END) AS \"Tổng số hộ nghèo\",\n            SUM(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS \"Tổng số hộ cận nghèo\",\n            SUM(CASE WHEN \"family.isAgricultureForestryFisherySaltMediumLivingStandard\" = true THEN 1 ELSE 0 END) AS \"Tổng số hộ nông, lâm, ngư nghiệp\",\n            SUM(CASE WHEN classify = 'Hộ nghèo' THEN COALESCE(\"family.numberOfMembers\", 1) ELSE 0 END) AS \"Tổng số khẩu nghèo\",\n            SUM(CASE WHEN classify = 'Hộ cận nghèo' THEN COALESCE(\"family.numberOfMembers\", 1) ELSE 0 END) AS \"Tổng số khẩu cận nghèo\",\n            SUM(CASE WHEN \"family.isAgricultureForestryFisherySaltMediumLivingStandard\" = true THEN COALESCE(\"family.numberOfMembers\", 1) ELSE 0 END) AS \"Tổng số khẩu nông, lâm, ngư nghiệp\"\n        FROM households\n        WHERE \"administrative.year\" = 2023 AND (\"administrative.district\" ILIKE '%Lắk%' OR \"administrative.commune\" ILIKE '%Lắk%')\n        GROUP BY \"administrative.district\", \"administrative.commune\"\n        ORDER BY \"administrative.district\", \"administrative.commune\";\n        ",
+    "answer": "Không tìm thấy dữ liệu cho báo cáo số 1 với điều kiện đã chọn.",
+    "stream": false,
+    "execution_time_sec": 2.5529
   }
 ]

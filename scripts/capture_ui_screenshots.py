@@ -16,8 +16,8 @@ async def capture_screenshots():
     )
     
     try:
-        print("Waiting 12 seconds for Streamlit process to warm up...")
-        time.sleep(12)
+        print("Waiting 15 seconds for Streamlit process to warm up...")
+        time.sleep(15)
         
         async with async_playwright() as p:
             print("Launching Chromium headless...")
@@ -25,21 +25,33 @@ async def capture_screenshots():
             page = await browser.new_page(viewport={"width": 1440, "height": 950})
             
             print("Navigating to Streamlit app (http://localhost:8502)...")
-            await page.goto("http://localhost:8502", timeout=60000)
+            await page.goto("http://localhost:8502", timeout=90000)
             
-            # 1. Chờ 25s để hệ thống load xong model, DuckDB, Qdrant và render xong giao diện ban đầu
-            print("Waiting 25 seconds for initial system & models loading...")
-            await page.wait_for_timeout(25000)
+            # Chờ 45 giây theo yêu cầu để hệ thống tải hoàn tất mô hình AITeamVN/Vietnamese_Embedding & Qdrant
+            print("Waiting 45 seconds for initial system & AI models loading...")
+            await page.wait_for_timeout(45000)
             
-            # Gửi 1 câu hỏi mẫu trong chế độ Hỏi - Đáp ban đầu
+            # Kiểm tra thêm nếu vẫn còn dòng "Đang nạp mô hình AI" thì chờ tiếp đến khi hoàn tất
+            for _ in range(30):
+                loading_text = page.locator('text="Đang nạp mô hình AI & khởi tạo hệ thống"')
+                if await loading_text.count() > 0 and await loading_text.is_visible():
+                    print("Still loading AI model... waiting another 3 seconds...")
+                    await page.wait_for_timeout(3000)
+                else:
+                    break
+            
+            print("System fully loaded! Chờ thêm 3s để giao diện ổn định...")
+            await page.wait_for_timeout(3000)
+            
+            # 1. Gửi câu hỏi mẫu trong chế độ Hỏi - Đáp
             print("Submitting sample Q&A query...")
             try:
                 chat_input = page.locator('textarea[data-testid="stChatInputTextArea"]')
                 if await chat_input.count() > 0:
                     await chat_input.fill("Có bao nhiêu hộ nghèo tại huyện Lắk trong năm 2023?")
                     await page.keyboard.press("Enter")
-                    print("Waiting 12 seconds for Q&A result...")
-                    await page.wait_for_timeout(12000)
+                    print("Waiting 20 seconds for Q&A result to stream and render completely...")
+                    await page.wait_for_timeout(20000)
             except Exception as e:
                 print(f"Error submitting Q&A query: {e}")
 
@@ -52,8 +64,8 @@ async def capture_screenshots():
                 sidebar = page.locator('[data-testid="stSidebar"]')
                 if await sidebar.count() > 0:
                     await sidebar.get_by_text("Vẽ biểu đồ").first.click()
-                    print("Waiting 4 seconds for mode switch...")
-                    await page.wait_for_timeout(4000)
+                    print("Waiting 5 seconds for mode switch...")
+                    await page.wait_for_timeout(5000)
             except Exception as e:
                 print(f"Error switching to Chart Mode: {e}")
 
@@ -63,8 +75,8 @@ async def capture_screenshots():
                 if await chat_input.count() > 0:
                     await chat_input.fill("Vẽ biểu đồ cột so sánh số lượng hộ nghèo và cận nghèo tại huyện Lắk năm 2023")
                     await page.keyboard.press("Enter")
-                    print("Waiting 15 seconds for Plotly chart to generate and render...")
-                    await page.wait_for_timeout(15000)
+                    print("Waiting 25 seconds for Plotly chart to generate and render...")
+                    await page.wait_for_timeout(25000)
             except Exception as e:
                 print(f"Error submitting Chart prompt: {e}")
 
@@ -77,8 +89,8 @@ async def capture_screenshots():
                 sidebar = page.locator('[data-testid="stSidebar"]')
                 if await sidebar.count() > 0:
                     await sidebar.get_by_text("Báo cáo tổng hợp").first.click()
-                    print("Waiting 4 seconds for mode switch...")
-                    await page.wait_for_timeout(4000)
+                    print("Waiting 5 seconds for mode switch...")
+                    await page.wait_for_timeout(5000)
             except Exception as e:
                 print(f"Error switching to Report Mode: {e}")
 
@@ -88,8 +100,8 @@ async def capture_screenshots():
                 if await chat_input.count() > 0:
                     await chat_input.fill("Tạo báo cáo tổng hợp thực trạng hộ nghèo tại huyện Lắk năm 2023")
                     await page.keyboard.press("Enter")
-                    print("Waiting 15 seconds for Comprehensive Report to render...")
-                    await page.wait_for_timeout(15000)
+                    print("Waiting 25 seconds for Comprehensive Report to render...")
+                    await page.wait_for_timeout(25000)
             except Exception as e:
                 print(f"Error submitting Report prompt: {e}")
 
@@ -97,7 +109,7 @@ async def capture_screenshots():
             await page.screenshot(path="docs/images/ui_report_mode.png", full_page=True)
             
             await browser.close()
-            print("All screenshots captured successfully with proper wait times!")
+            print("All screenshots captured successfully with 45s+ startup wait time!")
             
     finally:
         print("Terminating Streamlit server process...")
