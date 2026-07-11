@@ -128,17 +128,27 @@ SHOPAPI_LLM_API_KEY=your_openrouter_api_key_here
 SHOPAPI_BASE_URL=https://openrouter.ai/api/v1
 SHOPAPI_MODEL_LLM=google/gemma-4-26b-a4b-it:free
 
-# 4. DUCKDB DATABASE PATH
-DUCKDB_PATH=Runtime/duckdb/poor_household.duckdb
+# 4. DUCKDB DATABASE PATH (Bắt buộc chuẩn đường dẫn này)
+DUCKDB_PATH=data/Processed/intern_chatbot.duckdb
 ```
 
-### 4. Khởi tạo & Tái tạo Kho Vector DB (Qdrant & Semantic Cache)
+### 4. Chuẩn bị Cơ sở dữ liệu DuckDB (`intern_chatbot.duckdb`)
+Do chính sách bảo mật và giới hạn kích thước Git (`.gitignore`), các tệp dữ liệu thô (`*.xlsx`) và tệp cơ sở dữ liệu (`*.duckdb`) **không được đính kèm trực tiếp trên repository**. Trước khi khởi chạy hệ thống, bạn cần đảm bảo tệp dữ liệu DuckDB đã sẵn sàng:
+- **Cách 1 (Khuyến nghị cho người dùng mới)**: Chép tệp dữ liệu chuẩn `intern_chatbot.duckdb` (được cung cấp nội bộ bởi đội ngũ dự án) vào đúng đường dẫn:
+  `data/Processed/intern_chatbot.duckdb`
+- **Cách 2 (Tự nạp lại từ dữ liệu Excel thô)**: Nếu bạn có bộ dữ liệu điều tra hộ nghèo gốc (Excel `2023/`, `2024/`), hãy đặt vào `data/Processed/` và chạy lệnh chuyển đổi:
+  ```bash
+  python src/query_control/duckdb_loader.py --rebuild
+  ```
+
+### 5. Khởi tạo & Tái tạo Kho Vector DB (Qdrant & Semantic Cache)
 
 Để tận dụng cơ chế **Cache Hit siêu tốc (<1ms đến 10ms)** ngay khi vừa clone dự án về máy, hãy khởi chạy dịch vụ Qdrant và tái tạo bộ đệm ngữ nghĩa:
 
 **Bước 1: Khởi chạy Qdrant Vector Database bằng Docker (nếu chưa chạy)**
+Bạn có thể khởi chạy nhanh bằng lệnh Docker trực tiếp dưới đây (hoặc dùng `docker compose up -d qdrant` nếu có file compose):
 ```bash
-docker compose up -d qdrant
+docker run -d -p 6333:6333 -p 6334:6334 -v $(pwd)/qdrant_storage:/qdrant/storage --name qdrant-local qdrant/qdrant:latest
 ```
 
 **Bước 2: Tái tạo chỉ mục ngữ nghĩa (Semantic Layer Index) & Mồi (Prime) dữ liệu kiểm định**
@@ -206,9 +216,11 @@ RAG_PoorHousehold/
 │       ├── agentic/                  # Multi-Route Pipeline (Q&A, Charting, Reporting, Guardrails)
 │       ├── run_mvp_chatbot.py        # CLI interactive runner
 │       └── build_qdrant_semantic_index.py # Script xây dựng chỉ mục vector nhúng
-├── Runtime/                          # Thư mục lưu trữ database DuckDB & cache nhúng local
-│   └── duckdb/
-│       └── poor_household.duckdb     # Cơ sở dữ liệu DuckDB thô chính thức
+├── data/
+│   └── Processed/
+│       ├── intern_chatbot.duckdb     # Cơ sở dữ liệu DuckDB chuẩn chính thức
+│       ├── metadata/                 # Cấu hình Semantic Layer & định nghĩa nghiệp vụ
+│       └── cache/                    # Local Tier 1 Canonical Cache (thời gian phản hồi <1ms)
 ├── docs/
 │   └── images/                       # Hình ảnh chụp giao diện UI bằng Playwright
 ├── tests/                            # Bộ kiểm thử tự động UI & độ chính xác RAG
