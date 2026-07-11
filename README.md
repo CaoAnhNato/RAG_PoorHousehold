@@ -132,6 +132,27 @@ SHOPAPI_MODEL_LLM=google/gemma-4-26b-a4b-it:free
 DUCKDB_PATH=Runtime/duckdb/poor_household.duckdb
 ```
 
+### 4. Khởi tạo & Tái tạo Kho Vector DB (Qdrant & Semantic Cache)
+
+Để tận dụng cơ chế **Cache Hit siêu tốc (<1ms đến 10ms)** ngay khi vừa clone dự án về máy, hãy khởi chạy dịch vụ Qdrant và tái tạo bộ đệm ngữ nghĩa:
+
+**Bước 1: Khởi chạy Qdrant Vector Database bằng Docker (nếu chưa chạy)**
+```bash
+docker compose up -d qdrant
+```
+
+**Bước 2: Tái tạo chỉ mục ngữ nghĩa (Semantic Layer Index) & Mồi (Prime) dữ liệu kiểm định**
+```bash
+# 1. Xây dựng lại chỉ mục Semantic Layer (Metrics, Dimensions, Business Terms)
+python src/query_control/build_qdrant_semantic_index.py --recreate
+
+# 2. Mồi hàng trăm cặp câu hỏi vàng vào Qdrant & Local Canonical Cache
+python src/scripts/prime_semantic_cache.py
+```
+
+> [!TIP]
+> **💡 LƯU Ý VỀ TIER 1 LOCAL CACHE**: Ngay cả khi bạn **chưa khởi chạy Qdrant Docker**, file bộ đệm Tier 1 (`data/Processed/cache/semantic_sql_cache.json`) vẫn đi kèm 100% khi clone repo. Hệ thống vẫn tự động **Hit Cache (<1ms)** với các câu hỏi chuẩn hoặc tương đương (chỉ sai khác khoảng trắng, hoa thường, dấu câu) mà không cần chờ đợi Qdrant!
+
 ---
 
 ## 🚀 Hướng dẫn Chạy Hệ thống (Usage)
