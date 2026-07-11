@@ -104,3 +104,14 @@ Evaluation/golden_questions/evaluation_report.md
 
 # --- Gemini/AI agent internal ---
 .gemini/
+
+# --- Generated charts & runtime artifacts ---
+artifacts/charts/
+artifacts/test_results/
+artifacts/test_*.txt
+artifacts/validation_*.md
+artifacts/report_*.md
+artifacts/prompt_*.json
+artifacts/prompt_*.md
+
+

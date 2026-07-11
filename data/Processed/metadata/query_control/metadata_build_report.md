@@ -237,3 +237,29 @@
   - Số thuật ngữ nghiệp vụ (business terms): 8
   - Số câu hỏi mẫu (query examples): 4
 - **Collection được tạo lại (recreated):** True
+
+
+## 4. Kết quả nạp chỉ mục ngữ nghĩa Qdrant
+- **Địa chỉ Qdrant:** `http://localhost:6333`
+- **Tên Collection:** `query_control_semantic`
+- **Mô hình Embedding:** `AITeamVN/Vietnamese_Embedding`
+- **Kích thước vector:** 1024
+- **Tổng số điểm đã index:** 61
+  - Số chỉ số (metrics): 10
+  - Số chiều dữ liệu (dimensions): 39
+  - Số thuật ngữ nghiệp vụ (business terms): 8
+  - Số câu hỏi mẫu (query examples): 4
+- **Collection được tạo lại (recreated):** True
+
+
+## 4. Kết quả nạp chỉ mục ngữ nghĩa Qdrant
+- **Địa chỉ Qdrant:** `http://localhost:6333`
+- **Tên Collection:** `query_control_semantic`
+- **Mô hình Embedding:** `AITeamVN/Vietnamese_Embedding`
+- **Kích thước vector:** 1024
+- **Tổng số điểm đã index:** 61
+  - Số chỉ số (metrics): 10
+  - Số chiều dữ liệu (dimensions): 39
+  - Số thuật ngữ nghiệp vụ (business terms): 8
+  - Số câu hỏi mẫu (query examples): 4
+- **Collection được tạo lại (recreated):** True

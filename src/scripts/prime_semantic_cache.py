@@ -10,6 +10,7 @@ import sys
 import json
 import time
 import re
+import duckdb
 from pathlib import Path
 
 if hasattr(sys.stdout, 'reconfigure'):
@@ -24,6 +25,18 @@ from src.query_control.agentic.semantic_cache import cache_manager, get_cached_r
 cache_manager.initialized_qdrant = True # Bỏ qua init_qdrant để tránh timeout load mô hình
 cache_manager.qclient = None
 cache_manager.emb_client = None
+
+def validate_sql_entry(q_text: str, sql: str, conn: duckdb.DuckDBPyConnection) -> bool:
+    """Kiểm tra tính hợp lệ của câu truy vấn SQL trước khi đưa vào cache."""
+    if not sql or not sql.strip():
+        return False
+    sql_clean = re.sub(r'^```sql\s*|\s*```$', '', sql, flags=re.IGNORECASE).strip()
+    try:
+        conn.execute(sql_clean).fetchall()
+        return True
+    except Exception as e:
+        print(f"[Validation Warning] Bỏ qua câu hỏi do lỗi SQL: '{q_text[:50]}...' | Lỗi: {e}")
+        return False
 
 def load_all_passed_qa() -> dict[str, dict[str, str]]:
     """Tổng hợp toàn bộ các cặp Question - SQL - Answer đã passed từ các nguồn."""
@@ -111,12 +124,20 @@ def main():
         print("[LỖI] Không tìm thấy dữ liệu để mồi cache!")
         return
 
+    # Kết nối DuckDB để kiểm định SQL trước khi cache
+    db_path = PROJECT_ROOT / "data/Processed/intern_chatbot.duckdb"
+    conn = duckdb.connect(str(db_path))
+
     # --- TIER 1: MỒI LOCAL CANONICAL HASH CACHE ---
-    print("\n[Tier 1: Local Cache] Đang mồi dữ liệu vào Local Canonical Hash Cache (semantic_sql_cache.json)...")
+    print("\n[Tier 1: Local Cache] Đang kiểm định và mồi dữ liệu vào Local Canonical Hash Cache (semantic_sql_cache.json)...")
     t_start_local = time.time()
     
     local_count = 0
+    skipped_count = 0
     for q_text, data in qa_pairs.items():
+        if not validate_sql_entry(q_text, data["sql"], conn):
+            skipped_count += 1
+            continue
         key = cache_manager.get_canonical_hash(q_text)
         cache_manager.local_cache[key] = {
             "question": q_text,
@@ -126,8 +147,9 @@ def main():
         local_count += 1
         
     cache_manager._save_local_cache()
+    conn.close()
     elapsed_local = time.time() - t_start_local
-    print(f"[Tier 1: Local Cache] => Đã mồi thành công {local_count} câu hỏi vào Local Cache (Thời gian: {elapsed_local:.4f}s).")
+    print(f"[Tier 1: Local Cache] => Đã mồi thành công {local_count} câu hỏi vào Local Cache (Đã bỏ qua {skipped_count} câu không hợp lệ | Thời gian: {elapsed_local:.4f}s).")
     print(f"[Tier 2: Qdrant Vector DB] Bỏ qua init Qdrant trong lượt MCP để tránh timeout. Hệ thống sẵn sàng với Tier 1 hoạt động 100%.")
 
     # --- VERIFICATION DEMO: KIỂM CHỨNG CACHE HIT ---

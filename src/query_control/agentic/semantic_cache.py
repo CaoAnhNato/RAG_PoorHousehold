@@ -79,10 +79,10 @@ class SemanticCacheManager:
             try:
                 qconfig = load_qdrant_config()
                 qurl = qconfig.get("qdrant_url", "http://localhost:6333")
-                emb_model = os.environ.get("EMBEDDING_MODEL", qconfig.get("embedding_model", "text-embedding-3-small"))
+                emb_model = qconfig.get("embedding_model") or os.environ.get("EMBEDDING_MODEL", "AITeamVN/Vietnamese_Embedding")
             except Exception:
                 qurl = os.environ.get("QDRANT_URL", "http://localhost:6333")
-                emb_model = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
+                emb_model = os.environ.get("EMBEDDING_MODEL", "AITeamVN/Vietnamese_Embedding")
 
             self.qclient = QdrantClient(url=qurl, timeout=3.0)
             self.emb_client = EmbeddingClient(emb_model)
@@ -185,6 +185,17 @@ class SemanticCacheManager:
     def set_cache(self, question: str, sql: str, answer: str, chart_code: str = "") -> None:
         """Lưu trữ kết quả vào Local Cache và Qdrant Vector DB."""
         if not question or not question.strip():
+            return
+            
+        ans_str = str(answer or "")
+        sql_str = str(sql or "").strip()
+        
+        # Ngăn chặn cache poisoning: Tuyệt đối không cache nếu truy vấn thất bại, không có SQL, hoặc đáp án báo lỗi
+        bad_phrases = [
+            "Tôi không tìm thấy dữ liệu", "Lỗi khi", "Hệ thống gặp lỗi", 
+            "không có khả năng lao động đạt 100", "chưa có thông tin", "không thể xác định"
+        ]
+        if not sql_str or "SELECT" not in sql_str.upper() or any(p in ans_str for p in bad_phrases):
             return
 
         key = self.get_canonical_hash(question)

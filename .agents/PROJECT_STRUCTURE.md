@@ -4,9 +4,17 @@
 Dự án RAG_PoorHousehold tập trung vào hệ thống hỏi đáp tự động và phân tích thống kê (NL2SQL / RAG) trên bộ dữ liệu về hộ nghèo và cận nghèo.
 Hệ thống sử dụng DuckDB để xử lý các truy vấn vật lý và Qdrant làm cơ sở dữ liệu vector cho Semantic Layer nhằm liên kết các Dimension và Measure linh hoạt, cho phép tác tử (Agent) tạo truy vấn SQL chính xác và đồng nhất với engine xuất báo cáo tự động (ReportGenerator).
 
-## 2. Cấu Trúc Thư Mục (Directory Structure)
+## 2. Cấu Trúc Thư Mục & Quản Trị Dự Án (Directory Structure & Governance)
 ```
 RAG_PoorHousehold/
+├── .agents/                    # Cấu hình tri thức và điều phối tác tử AI
+│   ├── AGENTS.md               # Chỉ dẫn tích hợp Code Intelligence (GitNexus & CodeGraphContext)
+│   ├── LEAN-CTX.md             # Chỉ dẫn kỹ thuật nén ngữ cảnh vật lý (lean-ctx)
+│   ├── PROJECT_STRUCTURE.md    # File này (Bản đồ cấu trúc và trạng thái dự án)
+│   ├── rules/
+│   │   ├── project_rules.md    # Bộ 16 Quy tắc phát triển dự án bắt buộc (Governance Framework)
+│   │   └── strict-follow.md    # Ràng buộc phạm vi thực thi khắt khe cho AI Agent
+│   └── skills/                 # Các bộ kỹ năng hành vi chuyên sâu (intent-orch, v.v.)
 ├── app/                        # Giao diện người dùng Streamlit (streamlit_chatbot.py)
 ├── artifacts/                  # Các báo cáo đánh giá, file markdown lưu trữ kết quả và tài liệu kiến trúc
 ├── data/                       # Dữ liệu gốc (raw) và dữ liệu đã qua tiền xử lý (Processed)
@@ -19,6 +27,8 @@ RAG_PoorHousehold/
 │   └── scripts/                # Các tiện ích kịch bản phụ trợ
 └── test/                       # Scripts kiểm thử và bộ câu hỏi chuẩn (golden_questions, debug)
 ```
+
+> **Lưu ý Quản trị:** Bộ quy tắc phát triển của dự án đã được khôi phục và tổng hợp đầy đủ thành **16 Quy tắc Vàng** tại tệp `.agents/rules/project_rules.md`. Các file hướng dẫn AI lặp lại (như `CLAUDE.md`) đã được dọn dẹp, thống nhất sử dụng `AGENTS.md` làm điểm truy xuất duy nhất.
 
 ## 3. Trạng Thái Hiện Tại Của Dự Án (Current Project Status)
 * **Tích hợp Cơ chế Ghi Log Tự động cho CLI và Streamlit Chatbot (Chatbot Logging Mechanism):**

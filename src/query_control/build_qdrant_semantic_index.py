@@ -20,6 +20,48 @@ from qdrant_client import QdrantClient
 from qdrant_client.http import models as qmodels
 from qdrant_client.http.exceptions import UnexpectedResponse
 
+import os
+import warnings
+import logging
+
+os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+os.environ["HF_HUB_DISABLE_EXPERIMENTAL_WARNING"] = "1"
+os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "0"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["TRANSFORMERS_VERBOSITY"] = "error"
+os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"
+
+warnings.filterwarnings("ignore", message=".*unauthenticated requests.*")
+warnings.filterwarnings("ignore", message=".*Accessing.*__path__.*")
+warnings.filterwarnings("ignore", message=".*The following layers were not sharded.*")
+warnings.filterwarnings("ignore", category=UserWarning, module="transformers.*")
+warnings.filterwarnings("ignore", category=FutureWarning, module="transformers.*")
+warnings.filterwarnings("ignore", category=UserWarning, module="huggingface_hub.*")
+warnings.filterwarnings("ignore")
+
+for _log_name in ["transformers", "transformers.modeling_utils", "transformers.configuration_utils",
+                  "transformers.tokenization_utils_base", "transformers.models", "transformers.utils",
+                  "transformers.utils.import_utils", "huggingface_hub", "huggingface_hub.file_download",
+                  "huggingface_hub.utils", "sentence_transformers", "torch"]:
+    _logger = logging.getLogger(_log_name)
+    _logger.setLevel(logging.ERROR)
+    _logger.propagate = False
+
+try:
+    import transformers
+    transformers.utils.logging.set_verbosity_error()
+    transformers.utils.logging.disable_default_handler()
+    transformers.utils.logging.disable_progress_bar()
+except Exception:
+    pass
+
+try:
+    import huggingface_hub.utils as _hf_utils
+    _hf_utils.logging.set_verbosity_error()
+    _hf_utils.logging.disable_progress_bars()
+except Exception:
+    pass
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 # Load file .env trước khi chạy từ thư mục gốc của project
 dotenv_path = PROJECT_ROOT / ".env"
@@ -33,28 +75,64 @@ QDRANT_CONFIG_PATH = QUERY_CONTROL_METADATA_DIR / "qdrant_index_config.json"
 REPORT_PATH = QUERY_CONTROL_METADATA_DIR / "metadata_build_report.md"
 
 class EmbeddingClient:
-    """Client sinh Vector Embedding 100% qua API (ShopAPI). Tuyệt đối không chạy local."""
+    """Client sinh Vector Embedding hỗ trợ cả Cloud API (ShopAPI) và Local Model (HuggingFace/SentenceTransformer)."""
+    _MODEL_CACHE = {}
+
     def __init__(self, model_name: str):
         self.shopapi_api_key = os.environ.get("SHOPAPI_LLM_API_KEY", "").strip()
         self.shopapi_base_url = os.environ.get("SHOPAPI_BASE_URL", "").strip()
         
-        if not self.shopapi_api_key or not self.shopapi_base_url:
-            raise RuntimeError("Lỗi: Thiếu cấu hình API (SHOPAPI_LLM_API_KEY / SHOPAPI_BASE_URL) trong .env. Không cho phép chạy mô hình local.")
-            
-        # Tự động chuyển sang model API nếu model_name là tên model local cũ hoặc rỗng
-        if "intfloat" in model_name or "BAAI" in model_name or not model_name:
-            self.model_name = os.environ.get("SHOPAPI_EMBEDDING", "text-embedding-3-small")
+        # Tự động chọn chế độ: Nếu model bắt đầu bằng text-embedding hoặc có shopapi -> Cloud API. Ngược lại -> Local Model.
+        if not model_name or "text-embedding" in model_name or "shopapi" in model_name.lower():
+            if not self.shopapi_api_key or not self.shopapi_base_url:
+                raise RuntimeError("Lỗi: Thiếu cấu hình API (SHOPAPI_LLM_API_KEY / SHOPAPI_BASE_URL) trong .env khi dùng Cloud Embedding.")
+            self.model_name = os.environ.get("SHOPAPI_EMBEDDING", model_name or "text-embedding-3-small")
+            self.use_shopapi = True
+            self.local_model = None
+            self.encode_mode = "api"
         else:
             self.model_name = model_name
-            
-        self.use_shopapi = True
-        self.local_model = None
+            self.use_shopapi = False
+            if self.model_name in EmbeddingClient._MODEL_CACHE:
+                cached_item = EmbeddingClient._MODEL_CACHE[self.model_name]
+                self.encode_mode = cached_item["encode_mode"]
+                if self.encode_mode == "sentence_transformers":
+                    self.local_model = cached_item["model"]
+                else:
+                    self.tokenizer = cached_item["tokenizer"]
+                    self.hf_model = cached_item["model"]
+                return
+            # print(f"[EmbeddingClient] Đang khởi tạo mô hình Local/HuggingFace: {self.model_name}...")
+            try:
+                from sentence_transformers import SentenceTransformer
+                self.local_model = SentenceTransformer(self.model_name)
+                self.encode_mode = "sentence_transformers"
+                EmbeddingClient._MODEL_CACHE[self.model_name] = {
+                    "encode_mode": "sentence_transformers",
+                    "model": self.local_model
+                }
+            except Exception as e1:
+                # print(f"[Warning] SentenceTransformer lỗi ({e1}). Chuyển sang transformers + torch...")
+                import torch
+                from transformers import AutoTokenizer, AutoModel
+                self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+                self.hf_model = AutoModel.from_pretrained(self.model_name)
+                self.hf_model.eval()
+                self.encode_mode = "transformers"
+                EmbeddingClient._MODEL_CACHE[self.model_name] = {
+                    "encode_mode": "transformers",
+                    "tokenizer": self.tokenizer,
+                    "model": self.hf_model
+                }
                 
     def get_dimension(self) -> int:
         """Lấy kích thước vector embedding động từ mô hình."""
+        if "text-embedding-3-small" in self.model_name or "text-embedding-ada-002" in self.model_name:
+            return 1536
+        if "text-embedding-3-large" in self.model_name:
+            return 3072
         if self.use_shopapi:
             try:
-                # Gửi thử một từ để lấy kích thước vector trả về
                 test_emb = self.embed_text("test")
                 return len(test_emb)
             except Exception as e:
@@ -62,7 +140,13 @@ class EmbeddingClient:
                 print("Vui lòng kiểm tra lại SHOPAPI_LLM_API_KEY và SHOPAPI_BASE_URL trong tệp .env.")
                 sys.exit(1)
         else:
-            return self.local_model.get_sentence_embedding_dimension()
+            if self.encode_mode == "transformers":
+                return self.hf_model.config.hidden_size
+            else:
+                try:
+                    return self.local_model.get_embedding_dimension()
+                except AttributeError:
+                    return self.local_model.get_sentence_embedding_dimension()
             
     def embed_text(self, text: str) -> list[float]:
         return self.embed_batch([text])[0]
@@ -83,17 +167,29 @@ class EmbeddingClient:
                 "encoding_format": "float"
             }
             try:
-                resp = requests.post(url, json=payload, headers=headers, timeout=30)
+                resp = requests.post(url, json=payload, headers=headers, timeout=3.0)
                 resp.raise_for_status()
                 data = resp.json()
                 # Định dạng chuẩn OpenAI: data['data'] = [{'embedding': [...]}, ...]
                 return [item["embedding"] for item in data["data"]]
             except Exception as e:
                 print(f"Lỗi khi gọi API Embedding: {e}")
-                sys.exit(1)
+                raise RuntimeError(f"Lỗi khi gọi API Embedding: {e}")
         else:
-            embeddings = self.local_model.encode(texts, show_progress_bar=False)
-            return embeddings.tolist()
+            if self.encode_mode == "transformers":
+                import torch
+                if isinstance(texts, str):
+                    texts = [texts]
+                encoded_input = self.tokenizer(texts, padding=True, truncation=True, return_tensors='pt')
+                with torch.no_grad():
+                    model_output = self.hf_model(**encoded_input)
+                token_embeddings = model_output[0]
+                input_mask_expanded = encoded_input['attention_mask'].unsqueeze(-1).expand(token_embeddings.size()).float()
+                embeddings = torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+                return embeddings.numpy().tolist()
+            else:
+                embeddings = self.local_model.encode(texts, show_progress_bar=False)
+                return embeddings.tolist()
 
 def load_qdrant_config() -> dict[str, Any]:
     if not QDRANT_CONFIG_PATH.exists():
@@ -232,10 +328,8 @@ def main() -> None:
     # 1. Tải cấu hình Qdrant
     qdrant_config = load_qdrant_config()
     
-    # Đọc model cấu hình từ biến môi trường nếu có, nếu không lấy từ file config hoặc .env
-    embedding_model = os.environ.get("EMBEDDING_MODEL")
-    if not embedding_model:
-        embedding_model = os.environ.get("SHOPAPI_EMBEDDING", qdrant_config.get("embedding_model"))
+    # Đọc model cấu hình từ file config ưu tiên
+    embedding_model = qdrant_config.get("embedding_model") or os.environ.get("EMBEDDING_MODEL", "AITeamVN/Vietnamese_Embedding")
         
     qdrant_url = qdrant_config.get("qdrant_url", "http://localhost:6333")
     collection_name = qdrant_config.get("collection_name", "query_control_semantic")

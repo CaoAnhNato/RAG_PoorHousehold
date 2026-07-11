@@ -41,6 +41,23 @@ def get_llm_config() -> dict[str, str]:
         "model": model
     }
 
+def get_research_llm_config() -> dict[str, str]:
+    """Lấy cấu hình kết nối LLM cho Deep Research (CHIASEGPU) từ tệp .env."""
+    base_url = os.environ.get("CHIASEGPU_BASE_URL", "").strip()
+    auth_token = os.environ.get("CHIASEGPU_API_KEY", "").strip()
+    model = os.environ.get("CHIASEGPU_MODEL", "").strip()
+    
+    if not auth_token or not base_url:
+        raise RuntimeError("Lỗi: Thiếu cấu hình CHIASEGPU_API_KEY hoặc CHIASEGPU_BASE_URL trong tệp .env cho Deep Research.")
+    if not model:
+        raise RuntimeError("Lỗi: Thiếu cấu hình CHIASEGPU_MODEL trong tệp .env cho Deep Research.")
+        
+    return {
+        "base_url": base_url.rstrip("/"),
+        "auth_token": auth_token,
+        "model": model
+    }
+
 def _build_payload(config: dict[str, str], system_prompt: str, user_prompt: str, temperature: float, max_tokens: int, response_json: bool, stream: bool = False, model: str | None = None) -> tuple[str, dict[str, str], dict[str, Any]]:
     base = config['base_url']
     if base.endswith('/v1'):
@@ -76,14 +93,16 @@ def call_llm(
     temperature: float = 0.1,
     max_tokens: int = 1500,
     response_json: bool = False,
-    model: str | None = None
+    model: str | None = None,
+    config: dict[str, str] | None = None
 ) -> str:
     """Gọi LLM đồng bộ với cơ chế retry."""
-    config = get_llm_config()
+    if config is None:
+        config = get_llm_config()
     url, headers, payload = _build_payload(config, system_prompt, user_prompt, temperature, max_tokens, response_json, stream=False, model=model)
     
     last_err = None
-    for attempt in range(3):
+    for attempt in range(8):
         try:
             resp = requests.post(url, json=payload, headers=headers, timeout=60.0)
             if resp.status_code in {429, 500, 502, 503, 504}:
@@ -97,7 +116,7 @@ def call_llm(
             last_err = str(e)
             time.sleep(min(2 ** attempt, 5))
             
-    raise RuntimeError(f"Gọi API LLM thất bại sau 3 lần thử. Lỗi cuối: {last_err}")
+    raise RuntimeError(f"Gọi API LLM thất bại sau 8 lần thử. Lỗi cuối: {last_err}")
 
 async def call_llm_async(
     system_prompt: str,
@@ -105,19 +124,21 @@ async def call_llm_async(
     temperature: float = 0.1,
     max_tokens: int = 1500,
     response_json: bool = False,
-    model: str | None = None
+    model: str | None = None,
+    config: dict[str, str] | None = None
 ) -> str:
     """Gọi LLM bất đồng bộ (Async) sử dụng httpx."""
     if httpx is None:
         loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(None, call_llm, system_prompt, user_prompt, temperature, max_tokens, response_json, model)
+        return await loop.run_in_executor(None, call_llm, system_prompt, user_prompt, temperature, max_tokens, response_json, model, config)
 
-    config = get_llm_config()
+    if config is None:
+        config = get_llm_config()
     url, headers, payload = _build_payload(config, system_prompt, user_prompt, temperature, max_tokens, response_json, stream=False, model=model)
     
     last_err = None
     async with httpx.AsyncClient(timeout=60.0) as client:
-        for attempt in range(3):
+        for attempt in range(8):
             try:
                 resp = await client.post(url, json=payload, headers=headers)
                 if resp.status_code in {429, 500, 502, 503, 504}:
@@ -131,17 +152,19 @@ async def call_llm_async(
                 last_err = str(e)
                 await asyncio.sleep(min(2 ** attempt, 5))
                 
-    raise RuntimeError(f"Gọi API LLM Async thất bại sau 3 lần thử. Lỗi cuối: {last_err}")
+    raise RuntimeError(f"Gọi API LLM Async thất bại sau 8 lần thử. Lỗi cuối: {last_err}")
 
 def stream_llm(
     system_prompt: str,
     user_prompt: str,
     temperature: float = 0.1,
     max_tokens: int = 1500,
-    model: str | None = None
+    model: str | None = None,
+    config: dict[str, str] | None = None
 ) -> Generator[str, None, None]:
     """Gọi LLM và stream kết quả trả về từng chunk (Server-Sent Events)."""
-    config = get_llm_config()
+    if config is None:
+        config = get_llm_config()
     url, headers, payload = _build_payload(config, system_prompt, user_prompt, temperature, max_tokens, response_json=False, stream=True, model=model)
     
     try:

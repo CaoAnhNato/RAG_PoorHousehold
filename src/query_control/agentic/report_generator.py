@@ -3606,17 +3606,35 @@ class ReportGenerator:
         }
 
     @staticmethod
-    def generate(report_id: int, year: int = 2024, district: str | None = None) -> dict:
+    def generate(report_id: int, year: int = 2024, district: str | None = None, event_queue: Any = None) -> dict:
         """
         Khởi chạy tạo báo cáo hoàn chỉnh (Query SQL -> Căn chỉnh -> Word + PDF).
         """
         from src.query_control.agentic.report_queries import execute_report_query
+        from concurrent.futures import ThreadPoolExecutor
         
+        if event_queue:
+            event_queue.put(f"[Báo Cáo] Đang truy vấn dữ liệu DuckDB cho Báo cáo số {report_id}...")
+            
         df, sql, title = execute_report_query(report_id, year, district)
+        
+        if df.empty:
+            return {
+                "df": df,
+                "sql": sql,
+                "title": title,
+                "docx_path": "",
+                "pdf_path": "",
+                "answer": f"Không tìm thấy dữ liệu cho báo cáo số {report_id} với điều kiện đã chọn.",
+                "deep_analysis": None
+            }
         
         prefix = f"bao_cao_{report_id}_{year}"
         if district:
             prefix += f"_{district.lower()}"
+            
+        if event_queue:
+            event_queue.put(f"[Báo Cáo] Đang tổng hợp phân tích chuyên sâu & tạo biểu đồ cho Báo cáo số {report_id}...")
             
         deep_analysis = None
         if report_id == 1:
@@ -3649,17 +3667,33 @@ class ReportGenerator:
         docx_path = REPORTS_DIR / f"{prefix}.docx"
         pdf_path = REPORTS_DIR / f"{prefix}.pdf"
         
-        try:
-            ReportGenerator.generate_docx(df, title, docx_path, report_id=report_id, deep_analysis=deep_analysis)
-        except PermissionError:
-            docx_path = REPORTS_DIR / f"{prefix}_alt.docx"
-            ReportGenerator.generate_docx(df, title, docx_path, report_id=report_id, deep_analysis=deep_analysis)
+        if event_queue:
+            event_queue.put(f"[Báo Cáo] Đang song song kết xuất file Word (.docx) và PDF chuẩn Chính phủ...")
             
-        try:
-            ReportGenerator.generate_pdf(df, title, pdf_path, report_id=report_id, deep_analysis=deep_analysis)
-        except PermissionError:
-            pdf_path = REPORTS_DIR / f"{prefix}_alt.pdf"
-            ReportGenerator.generate_pdf(df, title, pdf_path, report_id=report_id, deep_analysis=deep_analysis)
+        def _build_docx():
+            try:
+                ReportGenerator.generate_docx(df, title, docx_path, report_id=report_id, deep_analysis=deep_analysis)
+                return docx_path
+            except PermissionError:
+                alt_path = REPORTS_DIR / f"{prefix}_alt.docx"
+                ReportGenerator.generate_docx(df, title, alt_path, report_id=report_id, deep_analysis=deep_analysis)
+                return alt_path
+
+        def _build_pdf():
+            try:
+                ReportGenerator.generate_pdf(df, title, pdf_path, report_id=report_id, deep_analysis=deep_analysis)
+                return pdf_path
+            except PermissionError:
+                alt_path = REPORTS_DIR / f"{prefix}_alt.pdf"
+                ReportGenerator.generate_pdf(df, title, alt_path, report_id=report_id, deep_analysis=deep_analysis)
+                return alt_path
+
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            fut_docx = executor.submit(_build_docx)
+            fut_pdf = executor.submit(_build_pdf)
+            final_docx_path = fut_docx.result()
+            final_pdf_path = fut_pdf.result()
+
 
         
         answer = f"### Đã tạo thành công Báo cáo số {report_id}: **{title}**\n\n"
@@ -3674,8 +3708,8 @@ class ReportGenerator:
             "df": df,
             "sql": sql,
             "title": title,
-            "docx_path": docx_path,
-            "pdf_path": pdf_path,
+            "docx_path": final_docx_path,
+            "pdf_path": final_pdf_path,
             "answer": answer,
             "deep_analysis": deep_analysis
         }

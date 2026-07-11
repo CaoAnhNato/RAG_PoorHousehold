@@ -87,9 +87,10 @@ class SchemaLinker:
         if any(kw in q_lower for kw in ["xã", "thị trấn", "phường", "commune", "đắk", "krông", "nam", "quảng", "thuận", "đức", "tâm", "nhân", "đạo", "nghĩa", "long", "soi", "bút"]):
             active_keys.add("commune")
             
-        # Kích hoạt household_id nếu câu hỏi nhắc đến định danh hộ, mã hộ, chủ hộ, danh sách chi tiết
-        if any(kw in q_lower for kw in ["mã", "id", "code", "hộ số", "danh sách hộ", "liệt kê hộ", "chủ hộ", "tìm hộ", "từng hộ", "chi tiết hộ", "mã hộ"]):
+        # Kích hoạt household_id và host_name nếu câu hỏi nhắc đến định danh hộ, mã hộ, chủ hộ, tên hộ, hộ cụ thể hoặc danh sách chi tiết
+        if any(kw in q_lower for kw in ["mã", "id", "code", "hộ số", "danh sách hộ", "liệt kê hộ", "chủ hộ", "tìm hộ", "từng hộ", "chi tiết hộ", "mã hộ", "hộ gia đình", "hộ "]) or any(w in q_lower for w in ["nguyễn", "trần", "lê", "phạm", "phùng", "hoàng", "huỳnh", "phan", "vũ", "võ", "đặng", "bùi", "đỗ", "hồ", "ngô", "dương", "lý", "giàng", "lầu", "hầu", "vàng", "sùng", "sung", "thị", "văn"]):
             active_keys.add("household_id")
+            active_keys.update(gender_keys)
         
         # Kích hoạt cụm đo lường nếu câu hỏi có ý định thống kê tổng hợp / tỷ lệ / quy mô
         measure_keywords = ["tỷ lệ", "bao nhiêu hộ", "tổng số hộ", "rate", "count", "sll", "phần trăm", "%", "bao nhiêu"]
@@ -106,7 +107,7 @@ class SchemaLinker:
         if any(w in q_lower for w in ["dân tộc", "kinh", "dtts", "thiểu số", "tại chỗ", "m'nông", "mạ", "tày", "mường", "dao", "mông", "thái", "nùng"]):
             active_keys.update(ethnicity_keys)
             
-        if any(w in q_lower for w in ["nữ", "nam", "giới tính", "chủ hộ", "phụ nữ", "đàn ông"]):
+        if any(w in q_lower for w in ["nữ", "nam", "giới tính", "chủ hộ", "phụ nữ", "đàn ông", "hộ gia đình", "hộ "]):
             active_keys.update(gender_keys)
             
         if any(w in q_lower for w in ["tuổi", "độ tuổi", "năm sinh", "già", "trẻ", "bình quân tuổi"]):

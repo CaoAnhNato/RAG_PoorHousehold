@@ -52,9 +52,7 @@ def main():
         
     qdrant_url = qdrant_config.get("qdrant_url", "http://localhost:6333")
     collection_name = qdrant_config.get("collection_name", "query_control_semantic")
-    embedding_model = os.environ.get("EMBEDDING_MODEL")
-    if not embedding_model:
-        embedding_model = os.environ.get("FPT_EMBEDDING_MODEL_NAME", qdrant_config.get("embedding_model"))
+    embedding_model = qdrant_config.get("embedding_model") or os.environ.get("EMBEDDING_MODEL", "AITeamVN/Vietnamese_Embedding")
         
     # 2. Khởi tạo các thành phần bổ trợ
     print("[1/2] Khởi tạo các thành phần hệ thống...")

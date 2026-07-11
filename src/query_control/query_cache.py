@@ -36,7 +36,7 @@ class QueryCache:
 
         # Tự động invalidate nếu database DuckDB bị rebuild
         if self.config.get("invalidate_on_data_rebuild", True):
-            db_path = PROJECT_ROOT / "Runtime" / "duckdb" / "intern_chatbot.duckdb"
+            db_path = PROJECT_ROOT / "data" / "Processed" / "intern_chatbot.duckdb"
             if db_path.exists():
                 db_mtime = str(db_path.stat().st_mtime)
                 self.invalidate_if_data_changed(db_mtime)

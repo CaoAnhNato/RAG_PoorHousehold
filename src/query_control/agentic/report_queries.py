@@ -33,8 +33,14 @@ def get_report_sql(report_id: int, year: int = 2024, district: str | None = None
     bổ sung trường administrative.district để phục vụ phân cấp Huyện -> Xã.
     """
     where_clause = f'WHERE "administrative.year" = {year}'
+    if district and str(district).strip().lower() in ["none", "null", "toàn tỉnh", "all", "tỉnh đắk nông", ""]:
+        district = None
     if district:
-        where_clause += f' AND "administrative.district" ILIKE \'%{district}%\''
+        from src.query_control.agentic.canonical_normalizer import CanonicalNormalizer
+        district = CanonicalNormalizer().normalize(district)
+        clean_dist = district.replace("'", "").replace("''", "").strip()
+        if clean_dist.lower() not in ["none", "null", "toàn tỉnh", "all", "tỉnh đắk nông", ""]:
+            where_clause += f' AND ("administrative.district" ILIKE \'%{clean_dist}%\' OR "administrative.commune" ILIKE \'%{clean_dist}%\')'
 
     if report_id == 1:
         return f"""
@@ -368,10 +374,18 @@ def execute_report_query(report_id: int, year: int = 2024, district: str | None 
     Thực thi câu truy vấn SQL trên DuckDB, thực hiện phân cấp Huyện -> Xã (Hierarchical Rollup),
     tính toán các dòng tổng Huyện và định dạng DataFrame chuẩn biểu mẫu Chính phủ.
     """
+    if district and str(district).strip().lower() in ["none", "null", "toàn tỉnh", "all", "tỉnh đắk nông", ""]:
+        district = None
     sql = get_report_sql(report_id, year, district)
     title = REPORT_TITLES.get(report_id, f"BÁO CÁO SỐ {report_id}")
     if district:
-        title += f" - HUYỆN/THÀNH PHỐ {district.upper()}"
+        from src.query_control.agentic.canonical_normalizer import CanonicalNormalizer
+        district = CanonicalNormalizer().normalize(district)
+        dist_upper = district.upper()
+        if any(w in dist_upper for w in ["XÃ ", "PHƯỜNG ", "THỊ TRẤN ", "HUYỆN ", "THÀNH PHỐ ", "THỊ XÃ "]):
+            title += f" - {dist_upper}"
+        else:
+            title += f" - HUYỆN/THÀNH PHỐ/XÃ {dist_upper}"
     title += f" NĂM {year}"
     
     with duckdb.connect(str(DB_PATH), read_only=True) as con:

@@ -7,6 +7,7 @@ if sys.stdout.encoding != 'utf-8':
     except Exception:
         pass
 
+import io
 import json
 import os
 import queue
@@ -22,9 +23,52 @@ from typing import Any
 import streamlit as st
 import plotly.io as pio
 import pandas as pd
+import os
+import warnings
+import logging
+
+os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+os.environ["HF_HUB_DISABLE_EXPERIMENTAL_WARNING"] = "1"
+os.environ["HF_HUB_ENABLE_HF_TRANSFER"] = "0"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["TRANSFORMERS_VERBOSITY"] = "error"
+os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"
+
+warnings.filterwarnings("ignore", message=".*unauthenticated requests.*")
+warnings.filterwarnings("ignore", message=".*Accessing.*__path__.*")
+warnings.filterwarnings("ignore", message=".*The following layers were not sharded.*")
+warnings.filterwarnings("ignore", category=UserWarning, module="transformers.*")
+warnings.filterwarnings("ignore", category=FutureWarning, module="transformers.*")
+warnings.filterwarnings("ignore", category=UserWarning, module="huggingface_hub.*")
+warnings.filterwarnings("ignore")
+
+for _log_name in ["transformers", "transformers.modeling_utils", "transformers.configuration_utils",
+                  "transformers.tokenization_utils_base", "transformers.models", "transformers.utils",
+                  "transformers.utils.import_utils", "huggingface_hub", "huggingface_hub.file_download",
+                  "huggingface_hub.utils", "sentence_transformers", "torch"]:
+    _logger = logging.getLogger(_log_name)
+    _logger.setLevel(logging.ERROR)
+    _logger.propagate = False
 
 try:
-    from streamlit_pdf_viewer import pdf_viewer
+    import transformers
+    transformers.utils.logging.set_verbosity_error()
+    transformers.utils.logging.disable_default_handler()
+    transformers.utils.logging.disable_progress_bar()
+except Exception:
+    pass
+
+try:
+    import huggingface_hub.utils as _hf_utils
+    _hf_utils.logging.set_verbosity_error()
+    _hf_utils.logging.disable_progress_bars()
+except Exception:
+    pass
+
+try:
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message=".*streamlit-pdf-viewer.*")
+        from streamlit_pdf_viewer import pdf_viewer
 except ImportError:
     pdf_viewer = None
 
@@ -114,7 +158,7 @@ class UIHistoryStore:
             encoding="utf-8",
         )
 
-    def append_turn(self, session_id: str, question: str, answer: str, chart_json: str | None = None, data_json: str | None = None, docx_path: str | None = None, pdf_path: str | None = None) -> None:
+    def append_turn(self, session_id: str, question: str, answer: str, chart_json: str | None = None, data_json: str | None = None, docx_path: str | None = None, pdf_path: str | None = None, parts_json: str | None = None) -> None:
         session_data = self.load(session_id)
         session_data["turns"].append(
             {
@@ -124,6 +168,7 @@ class UIHistoryStore:
                 "data_json": data_json,
                 "docx_path": docx_path,
                 "pdf_path": pdf_path,
+                "parts_json": parts_json,
                 "timestamp": self._now(),
             }
         )
@@ -186,7 +231,7 @@ def make_session_id() -> str:
     return f"streamlit_{time.strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
 
 
-@st.cache_resource(show_spinner=False)
+@st.cache_resource(show_spinner="⚡ Đang nạp mô hình AI & khởi tạo hệ thống (chỉ 1 lần duy nhất)...")
 def get_shared_pipeline() -> Any:
     # Busted cache to reload Narrative Engine changes v3
     import importlib
@@ -197,10 +242,15 @@ def get_shared_pipeline() -> Any:
 
 def build_engine(session_id: str, event_queue: queue.Queue[str] | None = None) -> Any:
     # AgenticPipeline is stateless, reuse the shared instance
-    return get_shared_pipeline()
+    pipeline = get_shared_pipeline()
+    if event_queue is not None:
+        pipeline.event_queue = event_queue
+    return pipeline
 
 
 def bootstrap_state(history_store: UIHistoryStore) -> None:
+    # Pre-load và warm-up AgenticPipeline & Embedding model ngay khi khởi động UI
+    get_shared_pipeline()
     if "current_session_id" not in st.session_state:
         st.session_state.current_session_id = make_session_id()
     if "loaded_session_id" not in st.session_state:
@@ -235,7 +285,7 @@ def load_session_into_state(session_id: str, history_store: UIHistoryStore) -> N
         if turn.get("data_json"):
             try:
                 import pandas as pd
-                raw_df = pd.read_json(turn.get("data_json"), orient="split")
+                raw_df = pd.read_json(io.StringIO(turn.get("data_json")), orient="split")
                 assistant_msg["data"] = format_dataframe(raw_df)
             except Exception as e:
                 print(f"[UI Warning] read_json data thất bại: {e}")
@@ -245,6 +295,28 @@ def load_session_into_state(session_id: str, history_store: UIHistoryStore) -> N
             assistant_msg["docx_path"] = turn.get("docx_path")
         if turn.get("pdf_path"):
             assistant_msg["pdf_path"] = turn.get("pdf_path")
+        if turn.get("parts_json"):
+            try:
+                parts_raw = json.loads(turn.get("parts_json"))
+                loaded_parts = []
+                for p in parts_raw:
+                    loaded_p = {"question": p.get("question"), "answer": p.get("answer")}
+                    if p.get("chart_json"):
+                        try:
+                            loaded_p["chart_fig"] = pio.from_json(p["chart_json"])
+                        except Exception:
+                            pass
+                    if p.get("data_json"):
+                        try:
+                            import pandas as pd
+                            raw_df = pd.read_json(io.StringIO(p["data_json"]), orient="split")
+                            loaded_p["data"] = format_dataframe(raw_df)
+                        except Exception:
+                            pass
+                    loaded_parts.append(loaded_p)
+                assistant_msg["parts"] = loaded_parts
+            except Exception:
+                pass
                 
         st.session_state.messages.append(assistant_msg)
 
@@ -308,7 +380,7 @@ def stream_text(text: str):
     for chunk in re.split(r"(\s+)", text):
         if chunk:
             yield chunk
-            time.sleep(0.015)
+            time.sleep(0)
 
 
 def resolve_option_input(option: dict[str, Any], session_id: str) -> str:
@@ -356,14 +428,14 @@ def render_status_lines(stages: list[str], pulse_index: int) -> str:
     return "\n\n".join(lines)
 
 
-def run_pipeline(user_prompt: str, session_id: str, mode: str) -> dict[str, Any]:
+def run_pipeline(user_prompt: str, session_id: str, mode: str, history: list[dict] | None = None) -> dict[str, Any]:
     event_queue: queue.Queue[str] = queue.Queue()
     status_placeholder = st.empty()
     stages: list[str] = []
 
     def _worker() -> dict[str, Any]:
         engine = build_engine(session_id=session_id, event_queue=event_queue)
-        return engine.process(user_prompt, mode=mode)
+        return engine.process(user_prompt, mode=mode, history=history, event_queue=event_queue)
 
     with ThreadPoolExecutor(max_workers=1) as executor:
         future = executor.submit(_worker)
@@ -375,11 +447,23 @@ def run_pipeline(user_prompt: str, session_id: str, mode: str) -> dict[str, Any]
             pulse_index += 1
 
         drain_stage_queue(event_queue, stages)
-        status_placeholder.markdown(render_status_lines(stages + ["final"], pulse_index))
         response = future.result()
-        time.sleep(0.25)
         status_placeholder.empty()
         return response
+
+
+def ensure_arrow_compat(df: pd.DataFrame) -> pd.DataFrame:
+    """Ensure DataFrame is compatible with PyArrow by converting mixed object columns to strings."""
+    if df is None or getattr(df, "empty", True):
+        return df
+    try:
+        df_clean = df.copy()
+        for col in df_clean.columns:
+            if df_clean[col].dtype == 'object':
+                df_clean[col] = df_clean[col].astype(str).replace({'nan': '', 'None': '', '<NA>': '', 'NoneType': ''})
+        return df_clean
+    except Exception:
+        return df
 
 
 def format_dataframe(df: pd.DataFrame) -> Any:
@@ -411,6 +495,8 @@ def format_dataframe(df: pd.DataFrame) -> Any:
         if idx_cols:
             df = df.set_index(idx_cols)
         
+    df = ensure_arrow_compat(df)
+        
     # Áp dụng Pandas Styler để bôi đậm giá trị lớn nhất (đối với các cột số)
     if len(df) <= 100 and df.index.is_unique and df.columns.is_unique:
         def highlight_max(s):
@@ -436,30 +522,56 @@ def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
         st.markdown(user_prompt)
 
     with st.chat_message("assistant"):
-        response = run_pipeline(user_prompt=user_prompt, session_id=session_id, mode=mode)
+        history = st.session_state.messages[:-1] if len(st.session_state.messages) > 1 else None
+        response = run_pipeline(user_prompt=user_prompt, session_id=session_id, mode=mode, history=history)
         
-        ans = assistant_text_from_response(response)
-        
-        if hasattr(ans, 'to_markdown'):
-            formatted_ans = format_dataframe(ans)
-            underlying_df = getattr(formatted_ans, "data", formatted_ans)
-            hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
-            st.dataframe(formatted_ans, hide_index=hide_idx)
-            final_text = "Kết quả bảng dữ liệu."
-            response["data"] = formatted_ans
+        parts = response.get("parts", [])
+        if parts and len(parts) > 1:
+            for idx, p in enumerate(parts):
+                st.markdown(f"### Ý {idx+1}: {p.get('question', '')}")
+                ans = assistant_text_from_response(p)
+                if hasattr(ans, 'to_markdown'):
+                    formatted_ans = format_dataframe(ans)
+                    underlying_df = getattr(formatted_ans, "data", formatted_ans)
+                    hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
+                    st.dataframe(formatted_ans, hide_index=hide_idx)
+                    p["formatted_data"] = formatted_ans
+                else:
+                    st.markdown(str(ans))
+                    
+                if p.get("chart_fig"):
+                    st.plotly_chart(p["chart_fig"], width="stretch", key=f"curr_chart_p_{idx}_{len(st.session_state.messages)}")
+                    
+                if p.get("data") is not None and not getattr(getattr(p.get("data"), "data", p.get("data")), "empty", True) and not hasattr(ans, 'to_markdown'):
+                    formatted_data = format_dataframe(p["data"])
+                    underlying_df = getattr(formatted_data, "data", formatted_data)
+                    hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
+                    st.dataframe(formatted_data, hide_index=hide_idx)
+                    p["formatted_data"] = formatted_data
+            final_text = response.get("answer", "")
         else:
-            streamed_text = st.write_stream(stream_text(str(ans)))
-            final_text = streamed_text if isinstance(streamed_text, str) else str(ans)
+            ans = assistant_text_from_response(response)
             
-        if response.get("chart_fig"):
-            st.plotly_chart(response["chart_fig"], width="stretch", key="current_chart")
-            
-        if response.get("data") is not None and not response.get("data").empty and not hasattr(ans, 'to_markdown'):
-            formatted_data = format_dataframe(response["data"])
-            underlying_df = getattr(formatted_data, "data", formatted_data)
-            hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
-            st.dataframe(formatted_data, hide_index=hide_idx)
-            response["formatted_data"] = formatted_data
+            if hasattr(ans, 'to_markdown'):
+                formatted_ans = format_dataframe(ans)
+                underlying_df = getattr(formatted_ans, "data", formatted_ans)
+                hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
+                st.dataframe(formatted_ans, hide_index=hide_idx)
+                final_text = "Kết quả bảng dữ liệu."
+                response["data"] = formatted_ans
+            else:
+                streamed_text = st.write_stream(stream_text(str(ans)))
+                final_text = streamed_text if isinstance(streamed_text, str) else str(ans)
+                
+            if response.get("chart_fig"):
+                st.plotly_chart(response["chart_fig"], width="stretch", key=f"current_chart_{len(st.session_state.messages)}")
+                
+            if response.get("data") is not None and not response.get("data").empty and not hasattr(ans, 'to_markdown'):
+                formatted_data = format_dataframe(response["data"])
+                underlying_df = getattr(formatted_data, "data", formatted_data)
+                hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
+                st.dataframe(formatted_data, hide_index=hide_idx)
+                response["formatted_data"] = formatted_data
 
         if response.get("docx_path") and response.get("pdf_path"):
             docx_p = Path(response["docx_path"])
@@ -479,6 +591,29 @@ def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
     data_json_str = None
     docx_path_str = response.get("docx_path")
     pdf_path_str = response.get("pdf_path")
+    parts_json_str = None
+    
+    if response.get("parts") and len(response["parts"]) > 1:
+        assistant_msg["parts"] = response["parts"]
+        parts_to_save = []
+        for p in response["parts"]:
+            p_dict = {"question": p.get("question"), "answer": str(p.get("answer", ""))}
+            if p.get("chart_fig"):
+                try:
+                    p_dict["chart_json"] = p["chart_fig"].to_json()
+                except Exception:
+                    pass
+            if p.get("data") is not None and not getattr(getattr(p.get("data"), "data", p.get("data")), "empty", True):
+                try:
+                    underlying_df = getattr(p["data"], "data", p["data"])
+                    clean_df = underlying_df.copy()
+                    clean_df.columns = [str(c) for c in clean_df.columns]
+                    clean_df = clean_df.reset_index(drop=True)
+                    p_dict["data_json"] = clean_df.to_json(orient="split")
+                except Exception:
+                    pass
+            parts_to_save.append(p_dict)
+        parts_json_str = json.dumps(parts_to_save, ensure_ascii=False)
     
     if response.get("chart_fig"):
         try:
@@ -504,7 +639,7 @@ def handle_prompt(user_prompt: str, history_store: UIHistoryStore) -> None:
 
     st.session_state.messages.append(assistant_msg)
     st.session_state.pending_options = []
-    history_store.append_turn(session_id=session_id, question=user_prompt, answer=final_text, chart_json=chart_json_str, data_json=data_json_str, docx_path=docx_path_str, pdf_path=pdf_path_str)
+    history_store.append_turn(session_id=session_id, question=user_prompt, answer=final_text, chart_json=chart_json_str, data_json=data_json_str, docx_path=docx_path_str, pdf_path=pdf_path_str, parts_json=parts_json_str)
 
 
 def render_pending_options(history_store: UIHistoryStore) -> None:
@@ -542,33 +677,45 @@ def main() -> None:
 
     for idx, message in enumerate(st.session_state.messages):
         with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-            if message.get("chart_fig"):
-                st.plotly_chart(message["chart_fig"], width="stretch", key=f"history_chart_{idx}")
-            if "data" in message and message.get("data") is not None and not getattr(getattr(message.get("data"), "data", message.get("data")), "empty", True):
-                df = message["data"]
-                underlying_df = getattr(df, "data", df)
-                hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
-                st.dataframe(df, hide_index=hide_idx)
-            if message.get("docx_path") and message.get("pdf_path"):
-                docx_p = Path(message["docx_path"])
-                pdf_p = Path(message["pdf_path"])
-                if docx_p.exists() and pdf_p.exists():
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.download_button(label="📥 Tải báo cáo (Word / .docx)", data=docx_p.read_bytes(), file_name=docx_p.name, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key=f"hist_docx_{idx}")
-                    with col2:
-                        st.download_button(label="📥 Tải báo cáo (PDF)", data=pdf_p.read_bytes(), file_name=pdf_p.name, mime="application/pdf", key=f"hist_pdf_{idx}")
-                    if pdf_viewer:
-                        st.markdown("### 📄 Xem trước Báo cáo PDF")
-                        pdf_viewer(str(pdf_p), height=700)
+            parts = message.get("parts", [])
+            if parts and len(parts) > 1:
+                for p_idx, p in enumerate(parts):
+                    st.markdown(f"### Ý {p_idx+1}: {p.get('question', '')}")
+                    st.markdown(p.get("answer", ""))
+                    if p.get("chart_fig"):
+                        st.plotly_chart(p["chart_fig"], width="stretch", key=f"hist_chart_{idx}_{p_idx}")
+                    if "data" in p and p.get("data") is not None and not getattr(getattr(p.get("data"), "data", p.get("data")), "empty", True):
+                        df = p["data"]
+                        underlying_df = getattr(df, "data", df)
+                        hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
+                        st.dataframe(ensure_arrow_compat(df), hide_index=hide_idx)
+            else:
+                st.markdown(message["content"])
+                if message.get("chart_fig"):
+                    st.plotly_chart(message["chart_fig"], width="stretch", key=f"history_chart_{idx}")
+                if "data" in message and message.get("data") is not None and not getattr(getattr(message.get("data"), "data", message.get("data")), "empty", True):
+                    df = message["data"]
+                    underlying_df = getattr(df, "data", df)
+                    hide_idx = True if underlying_df.index.name is None and not isinstance(underlying_df.index, pd.MultiIndex) else False
+                    st.dataframe(ensure_arrow_compat(df), hide_index=hide_idx)
+                if message.get("docx_path") and message.get("pdf_path"):
+                    docx_p = Path(message["docx_path"])
+                    pdf_p = Path(message["pdf_path"])
+                    if docx_p.exists() and pdf_p.exists():
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.download_button(label="📥 Tải báo cáo (Word / .docx)", data=docx_p.read_bytes(), file_name=docx_p.name, mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key=f"hist_docx_{idx}")
+                        with col2:
+                            st.download_button(label="📥 Tải báo cáo (PDF)", data=pdf_p.read_bytes(), file_name=pdf_p.name, mime="application/pdf", key=f"hist_pdf_{idx}")
+                        if pdf_viewer:
+                            st.markdown("### 📄 Xem trước Báo cáo PDF")
+                            pdf_viewer(str(pdf_p), height=700)
 
     render_pending_options(history_store)
 
     user_prompt = st.chat_input("Nhập câu hỏi về nghiệp vụ hoặc số liệu rà soát hộ nghèo...")
     if user_prompt:
         handle_prompt(user_prompt, history_store)
-        st.rerun()
 
 
 if __name__ == "__main__":
