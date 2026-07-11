@@ -3765,5 +3765,15 @@
     "question": "Vẽ biểu đồ cột so sánh số lượng hộ nghèo và cận nghèo tại huyện Lắk năm 2023",
     "sql": "SELECT \"administrative.year\" AS \"Năm\", \n       SUM(CASE WHEN \"classify\" = 'Hộ nghèo' THEN 1 ELSE 0 END) AS \"Số hộ nghèo\", \n       SUM(CASE WHEN \"classify\" = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS \"Số hộ cận nghèo\" \nFROM households \nWHERE \"administrative.year\" = 2023 \n  AND \"administrative.district\" ILIKE '%Lắk%' \nGROUP BY \"administrative.year\";",
     "answer": "Không có dữ liệu để vẽ biểu đồ."
+  },
+  "6e24c42cbb950c310029a3d3bca2fb84": {
+    "question": "Thống kê số lượng hộ cận nghèo tại Huyện Đăk Glong năm 2023",
+    "sql": "SELECT \"administrative.year\" AS \"Năm\", COUNT(*) AS \"Số hộ cận nghèo\" \nFROM households \nWHERE \"administrative.year\" = 2023 AND \"classify\" = 'Hộ cận nghèo' AND \"administrative.district\" ILIKE '%Đăk Glong%' \nGROUP BY \"administrative.year\";",
+    "answer": "Trong năm 2023, theo kết quả rà soát từ cơ sở dữ liệu hộ nghèo và cận nghèo tỉnh Đắk Nông, số hộ cận nghèo đạt 2009. Đây là số liệu thống kê chính xác theo tiêu chí truy vấn của bạn."
+  },
+  "aaa15819feaf7645118a0507c4f94385": {
+    "question": "Thống kê số lượng hộ nghèo tại Huyện Đăk Glong năm 2023",
+    "sql": "SELECT \"administrative.year\" AS \"Năm\", \"administrative.district\" AS \"Huyện\", COUNT(*) AS \"Số hộ nghèo\" \nFROM households \nWHERE \"administrative.year\" = 2023 AND \"administrative.district\" ILIKE '%Đăk Glong%' AND \"classify\" = 'Hộ nghèo' \nGROUP BY \"administrative.year\", \"administrative.district\";",
+    "answer": "Trong năm 2023, theo kết quả rà soát từ cơ sở dữ liệu hộ nghèo và cận nghèo tỉnh Đắk Nông, huyện đạt Huyện Đăk Glong, số hộ nghèo đạt 1344. Đây là số liệu thống kê chính xác theo tiêu chí truy vấn của bạn."
   }
 }

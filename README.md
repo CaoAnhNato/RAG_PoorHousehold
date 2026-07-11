@@ -111,7 +111,7 @@ Sau đó, mở file `.env` và tiến hành cấu hình theo các lưu ý quan t
 > [!NOTE]
 > **💡 LƯU Ý VỀ MODEL LLM (TÙY Ý LỰA CHỌN)**:
 > Ngược lại với Embedding, **Model LLM** (tạo lời giải, viết SQL, sinh mã biểu đồ) hoàn toàn **linh hoạt tùy theo nhu cầu và API Key bạn có**:
-> - **OpenAI / Compatible API (ShopAPI / Direct API)**: Cấu hình `SHOPAPI_LLM_API_KEY`, `SHOPAPI_BASE_URL` (`https://direct.shopaikey.com/v1`), và `SHOPAPI_MODEL_LLM=gpt-4o-mini` (hoặc `gpt-4o`).
+> - **OpenRouter / Compatible API**: Cấu hình `SHOPAPI_LLM_API_KEY`, `SHOPAPI_BASE_URL` (`https://openrouter.ai/api/v1`), và `SHOPAPI_MODEL_LLM=google/gemma-4-26b-a4b-it:free`.
 > - **Google Gemini**: Cấu hình `GEMINI_API_KEY=AIzaSy...`.
 > - **OpenAI gốc**: Cấu hình `OPENAI_API_KEY=sk-...`.
 
@@ -123,10 +123,10 @@ EMBEDDING_MODEL=AITeamVN/Vietnamese_Embedding
 # 2. VECTOR DATABASE
 QDRANT_URL=http://localhost:6333
 
-# 3. LLM PROVIDER (Ví dụ dùng ShopAPI / OpenAI compatible)
-SHOPAPI_LLM_API_KEY=your_api_key_here
-SHOPAPI_BASE_URL=https://direct.shopaikey.com/v1
-SHOPAPI_MODEL_LLM=gpt-4o-mini
+# 3. LLM PROVIDER (Ví dụ dùng OpenRouter / OpenAI compatible)
+SHOPAPI_LLM_API_KEY=your_openrouter_api_key_here
+SHOPAPI_BASE_URL=https://openrouter.ai/api/v1
+SHOPAPI_MODEL_LLM=google/gemma-4-26b-a4b-it:free
 
 # 4. DUCKDB DATABASE PATH
 DUCKDB_PATH=Runtime/duckdb/poor_household.duckdb
@@ -159,14 +159,14 @@ python src/query_control/run_mvp_chatbot.py
 Bạn có thể copy-paste các câu hỏi mẫu sau ngay khi khởi chạy hệ thống để trải nghiệm:
 
 - **💬 Chế độ Hỏi - Đáp:**
-  - *"Có bao nhiêu hộ nghèo tại huyện Lắk trong năm 2023?"*
+  - *"Có bao nhiêu hộ nghèo tại huyện Đăk Glong trong năm 2023?"*
   - *"Liệt kê thông tin chủ hộ và địa chỉ của các hộ nghèo tại xã Đắk Wil, huyện Cư Jút."*
   - *"Hộ gia đình có mã số 12345 đang bị thiếu hụt những chỉ số nào về bảo hiểm y tế hoặc nước sạch?"*
 
 - **📊 Chế độ Vẽ biểu đồ:**
   - *"Vẽ biểu đồ cột so sánh số lượng hộ nghèo và hộ cận nghèo giữa các huyện năm 2023."*
   - *"Tạo biểu đồ tròn thể hiện tỷ lệ các dân tộc của hộ nghèo tại huyện Krông Nô."*
-  - *"Vẽ biểu đồ đường thể hiện xu hướng giảm nghèo qua 2 năm 2023 - 2024 tại huyện Lắk."*
+  - *"Vẽ biểu đồ cột thể hiện số lượng hộ nghèo qua 2 năm 2023 - 2024 tại huyện Đăk Glong."*
 
 - **📑 Chế độ Sinh Báo cáo:**
   - *"Tạo báo cáo tổng hợp thực trạng và nguyên nhân nghèo tại huyện Đắk Mil năm 2023."*
