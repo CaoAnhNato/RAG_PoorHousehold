@@ -3049,5 +3049,32 @@
     "answer": "Không tìm thấy dữ liệu cho báo cáo số 1 với điều kiện đã chọn.",
     "stream": false,
     "execution_time_sec": 2.5529
+  },
+  {
+    "timestamp": "2026-07-11T11:02:25.192330",
+    "user_question": "Thống kê số lượng hộ cận nghèo tại huyện Đăk Glong năm 2023",
+    "mode": "Hỏi - Đáp",
+    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", COUNT(*) AS \"Số hộ cận nghèo\" \nFROM households \nWHERE \"administrative.year\" = 2023 AND \"classify\" = 'Hộ cận nghèo' AND \"administrative.district\" ILIKE '%Đăk Glong%' \nGROUP BY \"administrative.year\";",
+    "answer": "Trong năm 2023, theo kết quả rà soát từ cơ sở dữ liệu hộ nghèo và cận nghèo tỉnh Đắk Nông, số hộ cận nghèo đạt 2009. Đây là số liệu thống kê chính xác theo tiêu chí truy vấn của bạn.",
+    "stream": false,
+    "execution_time_sec": 4.1905
+  },
+  {
+    "timestamp": "2026-07-11T11:02:25.456777",
+    "user_question": "Thống kê số lượng hộ nghèo tại huyện Đăk Glong năm 2023",
+    "mode": "Hỏi - Đáp",
+    "sql_query": "SELECT \"administrative.year\" AS \"Năm\", \"administrative.district\" AS \"Huyện\", COUNT(*) AS \"Số hộ nghèo\" \nFROM households \nWHERE \"administrative.year\" = 2023 AND \"administrative.district\" ILIKE '%Đăk Glong%' AND \"classify\" = 'Hộ nghèo' \nGROUP BY \"administrative.year\", \"administrative.district\";",
+    "answer": "Trong năm 2023, theo kết quả rà soát từ cơ sở dữ liệu hộ nghèo và cận nghèo tỉnh Đắk Nông, huyện đạt Huyện Đăk Glong, số hộ nghèo đạt 1344. Đây là số liệu thống kê chính xác theo tiêu chí truy vấn của bạn.",
+    "stream": false,
+    "execution_time_sec": 4.457
+  },
+  {
+    "timestamp": "2026-07-11T11:03:23.928275",
+    "user_question": "Tạo báo cáo tổng hợp thực trạng hộ nghèo tại huyện Đăk Glong năm 2023",
+    "mode": "Báo Cáo",
+    "sql_query": "\n        SELECT \n            \"administrative.district\" AS \"District\",\n            \"administrative.commune\" AS \"Phường/Xã\",\n            COUNT(*) AS \"Số hộ\",\n            SUM(COALESCE(\"family.numberOfMembers\", 1)) AS \"Nhân khẩu\",\n            SUM(CASE WHEN classify = 'Hộ nghèo' THEN 1 ELSE 0 END) AS \"Tổng số hộ nghèo\",\n            SUM(CASE WHEN classify = 'Hộ cận nghèo' THEN 1 ELSE 0 END) AS \"Tổng số hộ cận nghèo\",\n            SUM(CASE WHEN \"family.isAgricultureForestryFisherySaltMediumLivingStandard\" = true THEN 1 ELSE 0 END) AS \"Tổng số hộ nông, lâm, ngư nghiệp\",\n            SUM(CASE WHEN classify = 'Hộ nghèo' THEN COALESCE(\"family.numberOfMembers\", 1) ELSE 0 END) AS \"Tổng số khẩu nghèo\",\n            SUM(CASE WHEN classify = 'Hộ cận nghèo' THEN COALESCE(\"family.numberOfMembers\", 1) ELSE 0 END) AS \"Tổng số khẩu cận nghèo\",\n            SUM(CASE WHEN \"family.isAgricultureForestryFisherySaltMediumLivingStandard\" = true THEN COALESCE(\"family.numberOfMembers\", 1) ELSE 0 END) AS \"Tổng số khẩu nông, lâm, ngư nghiệp\"\n        FROM households\n        WHERE \"administrative.year\" = 2023 AND (\"administrative.district\" ILIKE '%Huyện Đăk Glong%' OR \"administrative.commune\" ILIKE '%Huyện Đăk Glong%')\n        GROUP BY \"administrative.district\", \"administrative.commune\"\n        ORDER BY \"administrative.district\", \"administrative.commune\";\n        ",
+    "answer": "### Đã tạo thành công Báo cáo số 1: **TỔNG HỢP KẾT QUẢ CHÍNH THỨC RÀ SOÁT HỘ NGHÈO; HỘ CẬN NGHÈO; HỘ LÀM NÔNG, LÂM, NGƯ NGHIỆP CÓ MỨC SỐNG TRUNG BÌNH - HUYỆN ĐĂK GLONG NĂM 2023**\n\n- **Năm thống kê:** 2023\n- **Địa bàn lọc:** Huyện/Thành phố Đăk Glong\n- **Tổng số dòng dữ liệu:** 8 dòng\n\nHệ thống đã tự động xuất báo cáo ra 2 định dạng chuẩn văn bản Chính phủ (Word `.docx` và `PDF`) với phông chữ Times New Roman, căn lề 0.5 inch, layout Landscape chuyên nghiệp. Khối tiêu đề hành chính Quốc hiệu, Cơ quan ban hành cùng cấu trúc Multi-tier header đã được tích hợp đầy đủ. Các cột không có dữ liệu trong dataset đã được gán giá trị 0/trống theo đúng tiêu chuẩn biểu mẫu.\n\nXin mời bạn bấm nút tải về ở bên dưới để lưu báo cáo.",
+    "stream": false,
+    "execution_time_sec": 10.1137
   }
 ]
