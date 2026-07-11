@@ -159,14 +159,14 @@ python src/query_control/run_mvp_chatbot.py
 Bạn có thể copy-paste các câu hỏi mẫu sau ngay khi khởi chạy hệ thống để trải nghiệm:
 
 - **💬 Chế độ Hỏi - Đáp:**
-  - *"Có bao nhiêu hộ nghèo tại huyện Lắk trong năm 2023?"*
+  - *"Có bao nhiêu hộ nghèo tại huyện Đăk Glong trong năm 2023?"*
   - *"Liệt kê thông tin chủ hộ và địa chỉ của các hộ nghèo tại xã Đắk Wil, huyện Cư Jút."*
   - *"Hộ gia đình có mã số 12345 đang bị thiếu hụt những chỉ số nào về bảo hiểm y tế hoặc nước sạch?"*
 
 - **📊 Chế độ Vẽ biểu đồ:**
   - *"Vẽ biểu đồ cột so sánh số lượng hộ nghèo và hộ cận nghèo giữa các huyện năm 2023."*
   - *"Tạo biểu đồ tròn thể hiện tỷ lệ các dân tộc của hộ nghèo tại huyện Krông Nô."*
-  - *"Vẽ biểu đồ đường thể hiện xu hướng giảm nghèo qua 2 năm 2023 - 2024 tại huyện Lắk."*
+  - *"Vẽ biểu đồ cột thể hiện số lượng hộ nghèo qua 2 năm 2023 - 2024 tại huyện Đăk Glong."*
 
 - **📑 Chế độ Sinh Báo cáo:**
   - *"Tạo báo cáo tổng hợp thực trạng và nguyên nhân nghèo tại huyện Đắk Mil năm 2023."*
