@@ -51,7 +51,7 @@ YÊU CẦU CHO MÃ PYTHON:
 - `fig = px.bar(...)` hoặc `fig = go.Figure(...)`. Không được dùng `fig.show()`. Biến cuối cùng phải là `fig`.
 - QUY TẮC CÚ PHÁP PLOTLY [CRITICAL - CHỐNG LỖI POSITIONAL ARGUMENT]: Khi gọi các hàm Plotly (như px.bar, px.line, px.pie...), sau tham số đầu tiên là df, BẮT BUỘC bạn phải gọi bằng Keyword Arguments rõ ràng (ví dụ: px.bar(df, x='Huyện', y='Số hộ nghèo', color='Huyện')). TUYỆT ĐỐI KHÔNG được truyền tham số theo vị trí không có tên (ví dụ sai: px.bar(df, 'Huyện', 'Số hộ nghèo')).
 - ĐẶC BIỆT QUAN TRỌNG: BẮT BUỘC phải đọc năm từ dữ liệu và đưa vào tham số `title` của biểu đồ để người dùng biết biểu đồ này dành cho năm nào (Ví dụ: `title='Tỷ lệ hộ nghèo theo từng Huyện năm 2024'`).
-- ĐỐI VỚI YÊU CẦU SO SÁNH NHẤT, TOP, SO SÁNH QUY MÔ: BẮT BUỘC dùng biểu đồ cột (Bar chart). BẮT BUỘC gán tham số `color` (vd `color='Xã'` hoặc `color='Năm'`) để các cột có màu sắc khác nhau, TUYỆT ĐỐI không để biểu đồ chỉ có 1 màu duy nhất! QUY TẮC CHỌN TRỤC X: Trục x (hoặc trục y nếu biểu đồ ngang) BẮT BUỘC phải là cột danh mục phân loại chính (ví dụ: 'Huyện', 'Xã', 'Giới tính', 'Nhóm dân tộc', 'Chỉ số', 'Nguyên nhân'...). NẾU dữ liệu chỉ có số liệu của MỘT NĂM DUY NHẤT (ví dụ cột 'Năm' chỉ toàn giá trị 2024), TUYỆT ĐỐI KHÔNG ĐƯỢC gán `x='Năm'` hoặc `color='Năm'` vì sẽ làm biểu đồ bị gộp sai! CHỈ gán `x='Năm'` khi câu hỏi yêu cầu xem XU HƯỚNG qua nhiều năm. NẾU dữ liệu có chứa NHIỀU NĂM, BẮT BUỘC thêm `barmode='group'` và `color='Năm'` để hiển thị các năm đứng cạnh nhau. LƯU Ý ĐẢO CHIỀU TRỤC: NẾU danh sách tên danh mục (như Xã, Huyện) có HƠN 5 ĐỐI TƯỢNG và tên dài, bạn BẮT BUỘC dùng biểu đồ thanh ngang (`orientation='h'`, `y='Danh Mục'`, `x='CộtSốLiệu'`) để không bị đè chữ; ngược lại dùng thanh đứng (`x='Danh Mục'`, `y='CộtSốLiệu'`). ĐỊNH DẠNG SỐ: Bắt buộc định dạng nhãn có dấu phẩy phân cách hàng nghìn bằng `text_auto='.2s'` hoặc `texttemplate='%{y:,.0f}'` (hoặc `%{x:,.0f}` nếu thanh ngang).
+- ĐỐI VỚI YÊU CẦU SO SÁNH NHẤT, TOP, SO SÁNH QUY MÔ: BẮT BUỘC dùng biểu đồ cột (Bar chart). BẮT BUỘC gán tham số `color` (vd `color='Xã'` hoặc `color='Huyện'` hoặc `color='Chỉ số'`) để các cột có màu sắc khác nhau, TUYỆT ĐỐI không để biểu đồ chỉ có 1 màu duy nhất! QUY TẮC CHỌN TRỤC X/Y: Trục x (hoặc trục y nếu biểu đồ ngang) BẮT BUỘC phải là cột danh mục phân loại chính (ví dụ: 'Huyện', 'Xã', 'Giới tính', 'Nhóm dân tộc', 'Chỉ số', 'Nguyên nhân'...). NẾU dữ liệu chỉ có số liệu của MỘT NĂM DUY NHẤT (ví dụ cột 'Năm' chỉ toàn giá trị 2024), TUYỆT ĐỐI KHÔNG ĐƯỢC gán `x='Năm'` hoặc `color='Năm'` vì sẽ làm biểu đồ bị gộp sai! CHỈ gán `x='Năm'` khi câu hỏi yêu cầu xem XU HƯỚNG qua nhiều năm. NẾU dữ liệu có chứa NHIỀU NĂM, BẮT BUỘC thêm `barmode='group'` và `color='Năm'` để hiển thị các năm đứng cạnh nhau. LƯU Ý QUAN TRỌNG VỀ ĐẢO CHIỀU TRỤC VÀ SẮP XẾP (INSIGHT RÕ RÀNG): NẾU danh sách tên danh mục (như Xã, Huyện, Nguyên nhân) có từ 5 ĐỐI TƯỢNG TRỞ LÊN hoặc có nhiều cột số liệu so sánh, bạn BẮT BUỘC dùng biểu đồ thanh ngang (`orientation='h'`, `y='Danh Mục'`, `x='CộtSốLiệu'`) để tên địa phương/chỉ số không bị đè chữ hay cắt xén; ngược lại nếu dưới 5 đối tượng dùng thanh đứng (`x='Danh Mục'`, `y='CộtSốLiệu'`). ĐỊNH DẠNG SỐ: Bắt buộc định dạng nhãn có dấu phẩy phân cách hàng nghìn bằng `text_auto='.2s'` hoặc `texttemplate='%{y:,.0f}'` (hoặc `%{x:,.0f}` nếu thanh ngang).
 - ĐỐI VỚI YÊU CẦU SO SÁNH QUA CÁC NĂM (nhưng không nhắc đến "xu hướng"): BẮT BUỘC dùng biểu đồ cột đứng (`px.bar`) với trục `x` là cột Danh Mục, `y` là cột Số Liệu, thuộc tính `barmode='group'` và BẮT BUỘC sử dụng tham số `color='Năm'` để phân tách các năm thành các cột đứng cạnh nhau. TUYỆT ĐỐI KHÔNG gán `color` bằng cột Danh Mục (như `Xã` hay `Huyện`) vì nó sẽ làm gộp dữ liệu các năm lại với nhau thành 1 cột.
 - QUY TẮC TÁCH BIỂU ĐỒ KHI CÓ NHIỀU NĂM (CRITICAL): NẾU DataFrame có cột 'Năm' chứa từ 2 năm trở lên (ví dụ có cả năm 2023 và 2024) và câu hỏi KHÔNG yêu cầu vẽ biểu đồ đường xu hướng (line chart): Bạn BẮT BUỘC phải dùng tham số `facet_col='Năm'` (hoặc `facet_row='Năm'` nếu là biểu đồ ngang `orientation='h'`) trong hàm `px.bar` / `px.pie` để tách rõ ràng số liệu của từng năm thành các biểu đồ con độc lập đặt cạnh nhau (Ví dụ: `px.bar(df, x='Huyện', y=['Số hộ nghèo', 'Số hộ cận nghèo'], facet_col='Năm', barmode='group')`). TUYỆT ĐỐI KHÔNG vẽ gộp chung các năm vào 1 biểu đồ đơn mà không có facet hoặc color phân biệt năm vì sẽ gây nhầm lẫn số liệu!
 - ĐỐI VỚI YÊU CẦU "CƠ CẤU", "TỶ LỆ", "TỶ TRỌNG": LƯU Ý QUAN TRỌNG: NẾU DataFrame có từ 2 cột số liệu trở lên (ví dụ có cả cột 'Số hộ nghèo' và 'Số hộ cận nghèo' phân theo 'Huyện'), TUYỆT ĐỐI KHÔNG DÙNG BIỂU ĐỒ TRÒN (`px.pie`) vì biểu đồ tròn không thể hiện được 2 cột số liệu cùng lúc. Trong trường hợp này, BẮT BUỘC phải dùng biểu đồ cột ghép (`px.bar` với `y=['Số hộ nghèo', 'Số hộ cận nghèo']`, `barmode='group'`) hoặc làm phẳng dữ liệu rồi vẽ biểu đồ cột. CHỈ DÙNG BIỂU ĐỒ TRÒN (`px.pie`) khi chỉ có ĐÚNG 1 cột số liệu cần chia tỷ lệ theo 1 cột phân loại (ví dụ: tỷ lệ Nam/Nữ). Khi dùng `px.pie`, bắt buộc gán `values='CộtSốLiệu'` và `names='CộtPhânLoại'`, đồng thời thêm `fig.update_traces(textposition='auto', textinfo='percent+label')`. KHÔNG gán tham số `color` trừ khi dùng color map.
@@ -223,6 +223,28 @@ Dữ liệu mẫu: {sample_data}
                 try:
                     exec(code_str, globals(), local_vars)
                     fig = local_vars.get("fig", None)
+                    
+                    # --- POST-PROCESSING: Tự động sắp xếp và tối ưu UI/Insight cho biểu đồ Plotly ---
+                    if fig is not None:
+                        try:
+                            import plotly.graph_objects as go
+                            fig.update_layout(
+                                margin=dict(l=20, r=30, t=70, b=30),
+                                legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1),
+                                font=dict(family="Arial, sans-serif", size=13)
+                            )
+                            for trace in fig.data:
+                                if isinstance(trace, go.Bar):
+                                    if not getattr(trace, 'textposition', None):
+                                        trace.textposition = 'outside'
+                            
+                            is_horizontal = any(getattr(trace, 'orientation', 'v') == 'h' for trace in fig.data if isinstance(trace, go.Bar))
+                            if is_horizontal:
+                                fig.update_layout(yaxis=dict(categoryorder='total ascending'))
+                            else:
+                                fig.update_layout(xaxis=dict(categoryorder='total descending', tickangle=-30 if len(df) > 5 else 0))
+                        except Exception as opt_err:
+                            print(f"[AgentChartGenerator Layout Optimization Warning] {opt_err}")
                     
                     # Save the image if requested
                     if fig is not None and save_path is not None:

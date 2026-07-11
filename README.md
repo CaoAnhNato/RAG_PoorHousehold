@@ -111,7 +111,7 @@ Sau đó, mở file `.env` và tiến hành cấu hình theo các lưu ý quan t
 > [!NOTE]
 > **💡 LƯU Ý VỀ MODEL LLM (TÙY Ý LỰA CHỌN)**:
 > Ngược lại với Embedding, **Model LLM** (tạo lời giải, viết SQL, sinh mã biểu đồ) hoàn toàn **linh hoạt tùy theo nhu cầu và API Key bạn có**:
-> - **OpenAI / Compatible API (ShopAPI / Direct API)**: Cấu hình `SHOPAPI_LLM_API_KEY`, `SHOPAPI_BASE_URL` (`https://direct.shopaikey.com/v1`), và `SHOPAPI_MODEL_LLM=gpt-4o-mini` (hoặc `gpt-4o`).
+> - **OpenRouter / Compatible API**: Cấu hình `SHOPAPI_LLM_API_KEY`, `SHOPAPI_BASE_URL` (`https://openrouter.ai/api/v1`), và `SHOPAPI_MODEL_LLM=google/gemma-4-26b-a4b-it:free`.
 > - **Google Gemini**: Cấu hình `GEMINI_API_KEY=AIzaSy...`.
 > - **OpenAI gốc**: Cấu hình `OPENAI_API_KEY=sk-...`.
 
@@ -123,10 +123,10 @@ EMBEDDING_MODEL=AITeamVN/Vietnamese_Embedding
 # 2. VECTOR DATABASE
 QDRANT_URL=http://localhost:6333
 
-# 3. LLM PROVIDER (Ví dụ dùng ShopAPI / OpenAI compatible)
-SHOPAPI_LLM_API_KEY=your_api_key_here
-SHOPAPI_BASE_URL=https://direct.shopaikey.com/v1
-SHOPAPI_MODEL_LLM=gpt-4o-mini
+# 3. LLM PROVIDER (Ví dụ dùng OpenRouter / OpenAI compatible)
+SHOPAPI_LLM_API_KEY=your_openrouter_api_key_here
+SHOPAPI_BASE_URL=https://openrouter.ai/api/v1
+SHOPAPI_MODEL_LLM=google/gemma-4-26b-a4b-it:free
 
 # 4. DUCKDB DATABASE PATH
 DUCKDB_PATH=Runtime/duckdb/poor_household.duckdb
